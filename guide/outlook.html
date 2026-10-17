@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading the calibrated outlook · California &amp; Hawaii AI Ensemble Research</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Reading the calibrated outlook -- experimental research, not a forecast.">
+<link rel="stylesheet" href="../pages.css"></head><body><div class="wrap">
+<nav><a href="../index.html">← California &amp; Hawaii AI Ensemble Research</a>
+<a href="../guide/map.html">Reading the map</a><a href="../guide/weeks.html">Reading week 1 and week 2</a>
+<a href="../guide/outlook.html">Reading the calibrated outlook</a>
+<a href="../guide/plumes.html">Reading the plumes</a><a href="../guide/regimes.html">Reading the regimes</a>
+<a href="../guide/patterns.html">Documented patterns</a><a href="../guide/pyroconvection.html">Pyroconvection</a></nav>
+<div class="banner"><b>Experimental research, not a forecast.</b> Built from publicly available data, plus a licensed lightning
+history shown only as derived counts and maps. For official information
+see the <a href="https://www.weather.gov/fire/">National Weather Service fire weather</a> pages and the
+<a href="https://www.nifc.gov/nicc/predictive-services/outlooks">NIFC Predictive Services outlooks</a>.</div>
+
+<h1>Reading the calibrated outlook</h1><p class="sub">The grid of colored boxes on the main page.</p>
+<div class="card"><h2>What each row is</h2>
+<p>Each row is one weather measure (a surface pressure gradient, an upper-air wind or temperature, or a region-wide temperature
+anomaly) with a cutoff learned from history: on days past that cutoff, California fire days with at least 5,000 acres of growth were
+about twice as likely as usual for the time of year (the "elevated" cutoff). Some rows also have a "high" cutoff, about four times as
+likely. Click a row's <b>About</b> link for its stations, history and the fires behind it.</p>
+<p>Rows are grouped by region and season: <b>offshore season</b> (Northern California Sep–Nov, Southern California Oct–Jan) or the
+general <b>fire season</b>. Only rows with real skill (AUC at least 0.65) are shown, so the rows change with the season.</p></div>
+<div class="card"><h2>What the colors mean</h2>
+<div class="swatches"><span style="background:#fdf0e6"></span><span style="background:#f9d2b4"></span><span style="background:#f2a679"></span><span style="background:#e47740"></span><span style="background:#c2531f"></span><span style="background:#8e3812"></span></div><div class="swlab"><span>&lt;5%</span><span>5–20%</span><span>20–40%</span><span>40–60%</span><span>60–80%</span><span>≥80%</span></div>
+<p>Each box is the share of all ensemble members (the four models weighted equally) past the cutoff on that fire day. Hover a box for
+each model's share.</p>
+<ul><li><b>A run of dark boxes several days out</b>, in several rows at once, is the strongest signal: many members, several measures.</li>
+<li><b>Light boxes</b> don't mean "no fire weather". The measure isn't expected past its cutoff, and other drivers (lightning, fuels)
+can still matter.</li>
+<li>A fire day runs 6 AM to 6 AM Pacific, matching how the satellite growth days are counted.</li></ul></div>
+<div class="card"><h2>The two views: members and weather + fuels odds</h2>
+<p><b>% of members past the cutoff</b> is the weather alone. <b>Weather + fuels odds</b> adds the fuels: for each day it takes the
+FEMS 7-day NFDRS forecast (ERC, averaged over the row's footprint PSAs) and asks whether fuels will be critically dry (ERC at or above
+the 90th percentile of 2005–2025). Members past the cutoff then carry history's odds for "past cutoff on dry (or not dry) fuels", and
+the rest carry the odds for "not past". The box shows the result as times the usual odds of a ≥5,000-acre growth day.</p>
+<ul><li>History says weather and fuels multiply. Northern California warmth aloft on critically dry fuels has run about 8× the usual odds,
+and the same warmth on fuels below the 90th percentile about 0.9×.</li>
+<li>Faded boxes are past the 7-day FEMS forecast; the last forecast day's fuels are carried forward.</li>
+<li>Thin history is pulled toward the weather-only odds, so a combination seen on only a few dozen days can't swing the result.</li></ul></div>
+<div class="card"><h2>The measures</h2><ul>
+<li><b>Pressure gradients</b> (SFO–WMC, LAX–TPH, LAX–DAG...): offshore wind.</li>
+<li><b>Minimum relative humidity</b> at inland airports (Sacramento, Redding, Santa Rosa, Burbank, Ontario, Paso Robles): surface
+dryness. Some of the strongest single measures in the record, e.g. Paso Robles and Ontario in the Santa Ana season.</li>
+<li><b>Upper-air warmth and dryness</b> from weather balloons (850 and 700 hPa) and region-wide reanalysis temperatures.</li>
+<li>Each is scored only against fire growth inside its own <b>footprint</b> PSAs, and each page also shows its record for <b>new large
+fires</b>: days a fire that went on to burn 1,000+ acres started.</li></ul></div>
+<div class="card"><h2>Thunderstorm rows (May–Oct)</h2>
+<p>The rows under <b>Thunderstorms and new lightning fires</b> work differently. Their measure is instability (CAPE, the energy that feeds
+thunderstorms) across a footprint, and their cutoff was fit to 25 years of lightning strikes: past it, days with at least 100 strikes in the
+footprint were at least twice as common as usual for the date. Lightning starts more large fires than it grows in the week after, so the
+weather + fuels view for these rows shows the odds of a <b>new large (1,000+ acre) lightning fire</b> found that day or the next.</p>
+<ul><li>Only ECMWF IFS ENS and NOAA GEFS forecast CAPE, so only they feed these rows.</li>
+<li>History: in Northern California, a day with 500+ strikes on critically dry fuels has run several times to over twenty times the usual
+odds of a new large lightning fire, depending on the area; on moister fuels much less.</li>
+<li>The lightning history is licensed (Vaisala NLDN) and is only shown as derived counts, rates and maps.</li></ul></div>
+<div class="card"><h2>The detail chart and the cutoff slider</h2>
+<p>Below the grid, the chart shows each model's share by day for the selected row. Drag the <b>cutoff</b> to see how the forecast changes
+with a stricter or looser threshold. The buttons jump back to the calibrated or "high" cutoff. A model that stays high at the "high"
+cutoff is showing a strong event, not just a marginal one.</p></div>
+<div class="card"><h2>Caveats</h2><ul>
+<li>"× usual odds" describes history. It isn't a fire forecast: ignitions, fuels and suppression aren't in it.</li>
+<li>The cutoffs come from station observations. Each model's own bias at a station isn't removed yet.</li>
+<li>Each member counts once, and each model gets equal weight however many members it has.</li></ul></div>
+<footer>Experimental, non-commercial research; data provided as-is. See the main page for full data credits.</footer>
+</div></body></html>
