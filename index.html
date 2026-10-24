@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>California &amp; Hawaii AI Ensemble Research</title>
+<meta name="description" content="Experimental research: openly available AI and physics weather ensembles compared for California and Hawaii fire-weather patterns, 1-15 days. Not an official forecast.">
+<!-- Experimental research page: kept out of search results until the research is ready to share
+     more widely. Delete this line to allow indexing. -->
+<meta name="robots" content="noindex, nofollow">
+<!-- Template for scripts/ai_ensemble_web_export.py (copied to <output_dir>/web/index.html next to
+     aie_data.js, which sets window.__AIE__). Self-contained: no external libraries, works from
+     file:// and GitHub Pages. PROTOTYPE 2026-10-10.
+     Framing (analyst 2026-10-10): purely experimental research using publicly available resources,
+     focused on California and Hawaii (Hawaii added 2026-10-13) -- no agency branding, official-guidance links in the banner, full data
+     credits in the footer. -->
+<style>
+  :root {
+    --bg: #eef1f0; --surface: #ffffff; --surface-2: #e2e6e4; --border: #c7cdc9;
+    --text: #1b201e; --text-dim: #5c655f; --accent: #d9622a; --accent-ink: #ffffff; --focus: #1b6de0;
+    --ocean: #dfe6ea; --grid: #e4e8e6; --line-country: #3c3c3c; --line-state: #8a8a8a; --line-region: #111111;
+    --contour: #1f1f1f; --seq-0: #fdf0e6; --seq-1: #f9d2b4; --seq-2: #f2a679; --seq-3: #e47740; --seq-4: #c2531f; --seq-5: #8e3812;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12161a; --surface: #191f24; --surface-2: #212830; --border: #333d47;
+      --text: #e8ecef; --text-dim: #8b98a3; --accent: #ff8a4c; --accent-ink: #1b1006; --focus: #6fa8ff;
+      --ocean: #1d2830; --grid: #2a323b; --line-country: #c9d1d8; --line-state: #6d7a85; --line-region: #f2f2f2;
+      --contour: #f0f0f0; --seq-0: #2b1f18; --seq-1: #4d2c19; --seq-2: #7a3d1c; --seq-3: #b2521f; --seq-4: #e46c2c; --seq-5: #ff9a5c;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12161a; --surface: #191f24; --surface-2: #212830; --border: #333d47;
+    --text: #e8ecef; --text-dim: #8b98a3; --accent: #ff8a4c; --accent-ink: #1b1006; --focus: #6fa8ff;
+    --ocean: #1d2830; --grid: #2a323b; --line-country: #c9d1d8; --line-state: #6d7a85; --line-region: #f2f2f2;
+    --contour: #f0f0f0; --seq-0: #2b1f18; --seq-1: #4d2c19; --seq-2: #7a3d1c; --seq-3: #b2521f; --seq-4: #e46c2c; --seq-5: #ff9a5c;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px; line-height: 1.4; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 12px 16px 40px; }
+  header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .brand-mark { font-family: ui-monospace, Consolas, monospace; font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    background: var(--accent); color: var(--accent-ink); padding: 3px 6px; border-radius: 3px; }
+  h1 { font-size: 18px; margin: 0; font-weight: 650; }
+  .runinfo { color: var(--text-dim); font-size: 12px; width: 100%; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 14px; }
+  .card h2 { font-size: 15px; margin: 0 0 4px; font-weight: 650; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .howto { font-size: 12px; font-weight: 500; }
+  a.about { font-size: 11px; margin-left: 6px; white-space: nowrap; }
+  .regRow figure a { color: inherit; text-decoration: none; } .regRow figure a:hover figcaption b { text-decoration: underline; }
+  .card .sub { color: var(--text-dim); font-size: 12px; margin: 0 0 10px; }
+  .mapRow { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+  .mapCol { flex: 1 1 560px; min-width: 0; position: relative; }
+  .side { flex: 0 0 260px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+  .side select, .ctrlRow select { max-width: 100%; }
+  .ctrlRow input[type=range] { max-width: 100%; }
+  @media (max-width: 860px) { .side { flex: 1 1 100%; } }
+  .mapGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mapGrid[hidden], canvas.map[hidden] { display: none; }
+  .mapGrid figure { margin: 0; min-width: 0; }
+  .mapGrid figcaption { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  @media (max-width: 600px) { .mapGrid { grid-template-columns: 1fr; } }
+  .segs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .segs button.on { border-color: var(--accent); background: var(--surface); font-weight: 650; }
+  .opts.off { opacity: .45; pointer-events: none; }
+  canvas.map { width: 100%; display: block; border-radius: 6px; background: var(--ocean); cursor: crosshair; touch-action: none; }
+  .groupLabel { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+  .opts { display: flex; flex-direction: column; gap: 3px; }
+  .opt { display: flex; align-items: center; gap: 7px; padding: 4px 6px; border-radius: 5px; cursor: pointer; border: 1px solid transparent; font-size: 13px; }
+  .opt:hover { background: var(--surface-2); }
+  .opt.on { border-color: var(--accent); background: var(--surface-2); }
+  .opt input { margin: 0; }
+  .sw { width: 18px; height: 0; border-top: 3px solid; flex: 0 0 auto; }
+  .sw.dash { border-top-style: dashed; }
+  .dayRow { display: flex; align-items: center; gap: 6px; }
+  .dayRow input[type=range] { flex: 1; }
+  button { font: inherit; font-size: 12px; padding: 4px 8px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button:focus-visible, input:focus-visible, select:focus-visible, .opt:focus-within { outline: 2px solid var(--focus); outline-offset: 1px; }
+  select { font: inherit; font-size: 13px; padding: 4px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  .dayLabel { font-weight: 650; font-size: 13px; }
+  .legend { display: flex; flex-direction: column; gap: 3px; }
+  .legend .bar { display: flex; height: 12px; border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+  .legend .bar span { flex: 1; }
+  .legend .ticks { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-dim); }
+  .readout { font-size: 12px; background: var(--surface-2); border-radius: 6px; padding: 7px 8px; min-height: 92px; }
+  .readout table { border-collapse: collapse; width: 100%; }
+  .readout td { padding: 1px 2px; }
+  .readout td.v { text-align: right; font-variant-numeric: tabular-nums; }
+  .tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 8px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.18); z-index: 10; display: none; max-width: 300px; }
+  .tip table { border-collapse: collapse; } .tip td { padding: 1px 4px; } .tip td.v { text-align: right; font-variant-numeric: tabular-nums; }
+  .gridTable { overflow-x: auto; }
+  table.og { border-collapse: separate; border-spacing: 2px; font-size: 12px; min-width: 760px; width: 100%; }
+  table.og th { font-weight: 600; color: var(--text-dim); font-size: 11px; padding: 2px; text-align: center; white-space: nowrap; }
+  table.og th.grp { text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); padding: 10px 6px 2px; }
+  table.og td.lab { text-align: left; padding: 4px 6px; white-space: nowrap; cursor: pointer; border-radius: 4px; }
+  table.og tr.sel td.lab { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--accent); }
+  table.og td.c { text-align: center; border-radius: 4px; padding: 5px 0; font-variant-numeric: tabular-nums; min-width: 38px; cursor: default; }
+  .ent { font-size: 10px; color: var(--text-dim); display: block; }
+  /* 2026-10-23: outlook grouped by area (collapsible) and lightning rows tagged by method */
+  table.og th.gacc { text-align: left; padding: 12px 2px 2px; }
+  table.og th.gacc button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); padding: 3px 4px; border-radius: 4px; }
+  table.og th.gacc button:focus-visible { outline: 2px solid var(--focus); }
+  table.og th.gacc .caret { display: inline-block; width: 12px; transition: transform .15s; color: var(--text-dim); }
+  table.og th.gacc button[aria-expanded="false"] .caret { transform: rotate(-90deg); }
+  table.og th.gacc .cnt { font-weight: 400; font-size: 11px; color: var(--text-dim); }
+  .gtag { display: inline-block; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 600; line-height: 18px; color: #fff; letter-spacing: .02em; }
+  .gt-ONCC { background: #1f6fb2; } .gt-OSCC { background: #a8481a; } .gt-HI { background: #2a7347; }
+  .mtag { display: inline-block; padding: 0 6px; border-radius: 8px; font-size: 10px; line-height: 15px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); margin-left: 4px; }
+  .chartBox { position: relative; }
+  svg.chart { width: 100%; display: block; overflow: visible; }
+  svg.chart text { fill: var(--text-dim); font-size: 11px; }
+  svg.chart .axis { stroke: var(--border); }
+  svg.chart .gridl { stroke: var(--grid); }
+  .ctrlRow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 4px 0 8px; font-size: 13px; }
+  .ctrlRow input[type=range] { width: 220px; }
+  .legendRow { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text); margin: 4px 0; }
+  .legendRow span { display: inline-flex; align-items: center; gap: 6px; }
+  .regRow { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 8px; }
+  .regRow figure { margin: 0; } .regRow canvas { width: 100%; display: block; border-radius: 4px; background: var(--ocean); }
+  .regRow figcaption { font-size: 11.5px; color: var(--text); margin-top: 2px; }
+  .note { color: var(--text-dim); font-size: 12px; }
+  .tabs { display: flex; gap: 6px; margin: 2px 0 10px; flex-wrap: wrap; }
+  .tabs button.on { border-color: var(--accent); background: var(--surface); font-weight: 650; }
+  .wkRow { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
+  .wkRow > .wkProb { flex: 1 1 420px; min-width: 0; }
+  .wkRow > .wkSide { flex: 1 1 260px; min-width: 0; font-size: 13px; }
+  .scGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-top: 12px; }
+  .scCard { border: 1px solid var(--border); border-radius: 6px; padding: 8px; }
+  .scCard canvas { width: 100%; display: block; border-radius: 4px; background: var(--ocean); }
+  .scCard h3 { font-size: 13.5px; margin: 6px 0 4px; }
+  .mbar { display: grid; grid-template-columns: 112px 1fr 38px; gap: 6px; align-items: center; font-size: 11.5px; margin: 2px 0; }
+  .mbar .track { height: 10px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .mbar .fill { display: block; height: 100%; border-radius: 3px; }
+  .mbar .v { text-align: right; font-variant-numeric: tabular-nums; }
+  footer { color: var(--text-dim); font-size: 12px; margin-top: 18px; }
+  .banner { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px;
+    padding: 9px 12px; margin-bottom: 14px; font-size: 13px; }
+  a { color: var(--focus); }
+  .about { font-size: 13px; } .about h3 { font-size: 13.5px; margin: 12px 0 4px; } .about p, .about li { margin: 3px 0; }
+  .about ul { padding-left: 18px; margin: 4px 0; }
+  .credits { padding-left: 18px; } .credits li { margin: 3px 0; }
+  footer p { margin: 4px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand-mark">RESEARCH</span>
+    <h1>California &amp; Hawaii AI Ensemble Research — 1–15 Day Patterns</h1>
+    <div class="runinfo" id="runinfo"></div>
+  </header>
+  <div class="banner" role="note"><b>Experimental research, not a forecast.</b> This page compares openly
+    available AI and physics weather ensembles for California and Hawaii fire-weather patterns. It is not an official forecast,
+    outlook, watch or warning, and it hasn't been reviewed or endorsed by any agency. Don't use it for operational decisions.
+    For official information see the <a href="https://www.weather.gov/fire/">National Weather Service fire weather</a>
+    pages and the <a href="https://www.nifc.gov/nicc/predictive-services/outlooks">NIFC Predictive Services outlooks</a>.</div>
+
+  <section class="card">
+    <h2>Pattern map <a class="howto" href="guide/map.html">How to read this</a></h2>
+    <p class="sub">Daily means. Hover (or tap) the map to compare every model at that point.</p>
+    <div class="mapRow">
+      <div class="mapCol"><canvas class="map" id="map" aria-label="Forecast map"></canvas>
+        <div class="mapGrid" id="mapGrid" hidden></div></div>
+      <div class="side">
+        <div><div class="groupLabel">Layout</div>
+          <div class="segs" id="layout" role="group" aria-label="Map layout">
+            <button data-l="single" class="on" aria-pressed="true">One map</button>
+            <button data-l="grid" aria-pressed="false">All four models</button></div></div>
+        <div><div class="groupLabel">View</div>
+          <div class="segs" id="view" role="group" aria-label="Map view">
+            <button data-v="full" class="on" aria-pressed="true">Eastern Pacific</button>
+            <button data-v="ca" aria-pressed="false">California</button>
+            <button data-v="cpac" aria-pressed="false" title="Large-scale pattern around Hawaii: the subtropical high, troughs and upper lows">Central Pacific</button>
+            <button data-v="hi" aria-pressed="false">Hawaii</button></div></div>
+        <div><div class="groupLabel">Field</div>
+          <select id="field" aria-label="Field">
+            <option value="z500a">500 hPa height anomaly (m) + height (dam)</option>
+            <option value="t850a">850 hPa temperature anomaly (°C)</option>
+            <option value="wet">Wetting rain since init (% of members)</option>
+            <option value="agree">Above-normal 500 hPa heights (% of all members)</option>
+            <option value="ltg1">Lightning, Method 1 (logistic): chance of a strike (ONCC, OSCC)</option>
+            <option value="ltg10">Lightning, Method 1 (logistic): chance of 10+ strikes (ONCC, OSCC)</option>
+            <option value="ltgL1">Lightning, Method 2 (ECMWF formula, Lopez 2016): chance of a strike (ONCC, OSCC)</option>
+            <option value="ltgL10">Lightning, Method 2 (ECMWF formula, Lopez 2016): chance of 10+ strikes (ONCC, OSCC)</option>
+          </select>
+          <div class="note" id="ltgNote" hidden style="margin-top:4px">California only, from the two models that forecast CAPE
+            (ECMWF IFS ENS, NOAA GEFS). <a href="guide/lightning.html">How it's made and its assumptions</a></div>
+          <div class="note" id="ltgLNote" hidden style="margin-top:4px">California only, IFS ENS (50 members, 7 fire days): the shape of
+            ECMWF's own lightning scheme (Lopez 2016) on convective rain, cloud ice and water, CAPE and cloud base, calibrated to
+            25 years of NLDN strikes. Same map for every model. <a href="guide/lightning_formula.html">How it's made and how well it does</a></div></div>
+        <div><div class="groupLabel">Model</div><div class="opts" id="models"></div>
+          <div class="note" id="modelsNote" hidden>All four models are shown side by side; switch to "One map" to pick one or the all-model mean.</div></div>
+        <div id="runGroup"><div class="groupLabel">Run</div>
+          <div class="segs" id="runSel" role="group" aria-label="Model run"></div>
+          <div class="note" id="runNote"></div></div>
+        <div><div class="groupLabel">Time step</div>
+          <div class="segs" id="tstep" role="group" aria-label="Time step">
+            <button data-t="day" class="on" aria-pressed="true">Daily mean</button>
+            <button data-t="half" aria-pressed="false">12-hourly</button></div></div>
+        <div><div class="groupLabel" id="dayGroupLabel">Day</div>
+          <div class="dayLabel" id="dayLabel"></div>
+          <div class="dayRow"><button id="prev" aria-label="Previous day">◀</button>
+            <input type="range" id="day" min="1" max="15" value="1" aria-label="Forecast day">
+            <button id="next" aria-label="Next day">▶</button><button id="play">Play</button></div></div>
+        <div class="legend"><div class="groupLabel" id="legendTitle"></div><div class="bar" id="legendBar"></div><div class="ticks" id="legendTicks"></div></div>
+        <div class="readout" id="readout"><span class="note">Hover the map for values.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="weekCard">
+    <h2>Week 1 and week 2 patterns <a class="howto" href="guide/weeks.html">How to read this</a></h2>
+    <p class="sub">The 500 hPa pattern averaged over each week. The map shows how many members of all four models put heights above
+      normal; the cards group every member into the four most distinct scenarios, with how many of each model's members fall in each.</p>
+    <div class="tabs" id="wkTabs" role="tablist"></div>
+    <div class="wkRow">
+      <div class="wkProb"><div class="groupLabel" id="wkTitle"></div><canvas class="map" id="wkMap" aria-label="Week probability map"></canvas></div>
+      <div class="wkSide">
+        <div class="legend"><div class="groupLabel">% of all members above normal</div><div class="bar" id="wkLegendBar"></div><div class="ticks" id="wkLegendTicks"></div></div>
+        <p class="note" style="margin-top:8px">Red: most members agree on a ridge (warm, dry, sinking air). Blue: most agree on a trough.
+          White: the members are split. Each model counts equally however many members it has.</p>
+        <div class="readout" id="wkRead"><span class="note">Hover the map for values.</span></div>
+      </div>
+    </div>
+    <div class="scGrid" id="wkScen"></div>
+  </section>
+
+  <section class="card" id="outlookCard">
+    <h2>Calibrated outlook <a class="howto" href="guide/outlook.html">How to read this</a></h2>
+    <p class="sub">% of all members (models weighted equally) past the cutoff learned from 2001–present satellite
+      large-fire growth days, by fire day. Click a row for the detail; drag the cutoff to try your own.</p>
+    <div class="tabs" id="ogMode" role="tablist">
+      <button data-m="pct" class="on" role="tab">% of members past the cutoff</button>
+      <button data-m="odds" role="tab">Weather + fuels odds</button></div>
+    <p class="note" id="ogModeNote"></p>
+    <div class="gridTable"><table class="og" id="og"></table></div>
+    <div class="ctrlRow" id="ogCtrl"></div>
+    <div class="legendRow" id="ogLegend"></div>
+    <div class="chartBox"><svg class="chart" id="ogChart" role="img" aria-label="Outlook detail chart"></svg></div>
+  </section>
+
+  <section class="card">
+    <h2>Offshore gradients and 850 hPa wind <a class="howto" href="guide/plumes.html">How to read this</a></h2>
+    <p class="sub">Every member, every 12 h. Top: median and 10–90% range by model. Bottom: % of members past the cutoff (drag it).</p>
+    <div class="ctrlRow"><select id="ser" aria-label="Series"></select><span id="serCut"></span></div>
+    <div class="legendRow" id="serLegend"></div>
+    <div class="chartBox"><svg class="chart" id="serChart" role="img" aria-label="Member plume chart"></svg></div>
+    <div class="chartBox"><svg class="chart" id="serProb" role="img" aria-label="Probability chart"></svg></div>
+  </section>
+
+  <section class="card" id="regCard">
+    <h2>500 hPa regimes <a class="howto" href="guide/regimes.html">How to read this</a>
+      <a class="howto" href="guide/patterns.html">How they match documented fire-weather patterns</a></h2>
+    <p class="sub">The six recurring fire-season patterns of 2001–2025 and how often each model's members fall in each, by day.
+      The line is the pattern-implied odds of a ≥5,000-acre fire-growth day vs the usual for the date, from history.</p>
+    <div class="regRow" id="regThumbs"></div>
+    <div class="gridTable"><table class="og" id="regTable"></table></div>
+    <div class="legendRow" id="regLegend"></div>
+    <div class="chartBox"><svg class="chart" id="regChart" role="img" aria-label="Pattern-implied odds"></svg></div>
+  </section>
+
+  <section class="card about">
+    <h2>About this research</h2>
+    <p>The question this page explores: do the new AI weather ensembles add useful early warning of the large-scale
+      patterns that drive large fire growth in California, compared with the traditional physics-based ensembles?</p>
+    <h3>What's shown</h3>
+    <ul>
+      <li>Four openly available global ensembles, each cut to the eastern Pacific and western U.S.: two AI
+        (ECMWF AIFS ENS, NOAA AIGEFS) and two physics-based (ECMWF IFS ENS, NOAA GEFS). Each model's newest complete run
+        is used, updated once a day.</li>
+      <li>"Northern California" and "Southern California" are the two California Geographic Area Coordination Center
+        areas (codes ONCC and OSCC). They're used only as fixed regions for the statistics.</li>
+    </ul>
+    <h3>How the "calibrated" numbers were made</h3>
+    <ul>
+      <li>History, 2001–present: days when a region's large fires grew by at least 5,000 acres in total, dated from
+        NASA FIRMS satellite fire detections inside mapped fire perimeters.</li>
+      <li>For each weather measure (surface pressure gradients from airport observations, upper-air soundings,
+        reanalysis temperatures and 500 hPa patterns), we found the cutoff beyond which those days were at least twice
+        as common as usual <i>for that time of year</i> ("elevated"), or four times ("high"). The offshore-wind seasons
+        (Northern California Sep–Nov, Southern California Oct–Jan) are scored on their own.</li>
+      <li>The forecasts are then scored against those cutoffs as the % of ensemble members beyond them.</li>
+      <li>Thunderstorm rows (May–Oct, ONCC and OSCC) are fit to 25 years of cloud-to-ground lightning strikes instead. Each
+        row is tagged with its method. <b>Method 2</b> (the current rows) is the strikes ECMWF's lightning formula (Lopez 2016)
+        expects over each area, from ECMWF IFS ENS. <b>Method 1</b>, the first build, is a CAPE (instability) measure from the
+        two models that forecast CAPE (ECMWF IFS ENS, NOAA GEFS). Either way the cutoff is fit to observed strikes (past it, days
+        with ≥100 strikes are much more common than usual), and the fire records give the odds of a new large lightning fire.</li>
+    </ul>
+    <h3>Limitations</h3>
+    <ul>
+      <li>The cutoffs come from station observations, not from each model's own history. A model's bias at a station
+        isn't corrected yet.</li>
+      <li>"Times usual odds" describes history. It isn't a fire forecast: ignitions, fuels and suppression aren't in it.
+        Summer weather patterns alone are only weakly related to large growth (lightning and fuels dominate); the
+        offshore-wind seasons are where the signal is strongest.</li>
+      <li>AI ensembles are new and their behavior in extreme events is still being studied.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><b>Data and credits.</b> Everything here comes from publicly available sources, except the lightning history
+      (below), which is licensed and shown only in derived form:</p>
+    <ul class="credits">
+      <li>ECMWF AIFS ENS and IFS ENS open data © European Centre for Medium-Range Weather Forecasts (ECMWF), licensed
+        <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Modified: cut to the region, averaged and
+        compared against thresholds. ECMWF doesn't accept any liability for errors or omissions here.</li>
+      <li>NOAA NCEP AIGEFS and GEFS (NOMADS and the NOAA Open Data Dissemination program); NCEP/NCAR Reanalysis 1 data
+        provided by the NOAA PSL, Boulder, Colorado, USA. U.S. Government works, public domain.</li>
+      <li>Active-fire detections: NASA FIRMS (LANCE / ESDIS). Fire perimeters: MTBS (USGS/USFS) and NIFC WFIGS. Fire
+        records: FPA FOD (Short, USDA Forest Service Research Data Archive) and NIFC InFORM. Region boundaries: NIFC.</li>
+      <li>Surface and upper-air observations: Iowa Environmental Mesonet (Iowa State University). Map lines: Natural Earth.</li>
+      <li>Reanalysis: contains modified Copernicus Climate Change Service information (ERA5, 2001–present). Neither the
+        European Commission nor ECMWF is responsible for any use of it here.</li>
+      <li>Fuels: NFDRS energy release component from the USDA Forest Service Fire Environment Mapping System (FEMS).</li>
+      <li>Lightning: Vaisala National Lightning Detection Network (NLDN), 2000–2025, used under license. Shown only as
+        derived counts, rates and maps; no strike data are published or offered for download.</li>
+      <li>Lightning formula: after the ECMWF IFS lightning parameterization, Lopez, P., 2016: A lightning parameterization
+        for the ECMWF Integrated Forecasting System. <i>Mon. Wea. Rev.</i>, 144, 3057–3075,
+        <a href="https://doi.org/10.1175/MWR-D-16-0026.1">doi:10.1175/MWR-D-16-0026.1</a>. Rebuilt here on IFS ENS open data
+        and calibrated to NLDN with ERA5; it is not ECMWF's lightning product.</li>
+    </ul>
+    <p>Independent, non-commercial research. Data are provided as-is with no warranty.</p>
+    <p id="gen"></p>
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+<script src="aie_data.js"></script>
+<script>
+(function () {
+  "use strict";
+  const D = window.__AIE__;
+  if (!D) { document.body.innerHTML = "<p style='padding:20px'>aie_data.js missing.</p>"; return; }
+  const $ = (id) => document.getElementById(id);
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const models = D.meta.models;
+  const days = D.meta.days;
+  const fmtDay = (iso) => { const d = new Date(iso + "T12:00:00Z");
+    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }); };
+  // "Today" / "Tomorrow" by the California (Pacific) calendar at viewing time, so a page opened the
+  // morning after it was built still labels the days right.
+  const todayPT = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const tomorrowPT = new Date(Date.now() + 864e5).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const relDay = (iso) => iso === todayPT ? "Today" : iso === tomorrowPT ? "Tomorrow" : "";
+  const tip = $("tip");
+  function showTip(html, x, y) { tip.innerHTML = html; tip.style.display = "block";
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(window.innerWidth - w - 8, x + 14) + "px";
+    tip.style.top = Math.max(8, Math.min(window.innerHeight - h - 8, y + 14)) + "px"; }
+  function hideTip() { tip.style.display = "none"; }
+
+  $("runinfo").textContent = models.map(m => `${m.label.replace(/ \((AI|physics)\)/, "")} ${m.cycle.slice(5, 10).replace("-", "/")} ${m.cycle.slice(11)}`).join(" · ")
+    + ` · updated ${D.meta.generated} PT`;
+  $("gen").textContent = `Generated ${D.meta.generated} PT (${D.meta.generated_utc}).`;
+
+  // ---------------------------------------------------------------- decoding
+  function dec(b64) { const s = atob(b64); const a = new Int8Array(s.length);
+    for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a[i] = c > 127 ? c - 256 : c; } return a; }
+  const G = D.grid, NY = G.ny, NX = G.nx, NC = NY * NX;
+  const cache = {};
+  // 12-hourly steps (2026-10-14): each day's 12 UTC (5 a.m. PDT) and the next 00 UTC (5 p.m. PDT) step
+  // The pattern map's data: the current run (in aie_data.js) or an earlier one picked in the run selector
+  // (runs/<YYYYMMDD>/map.js + half.js, 2026-10-14). Every map function reads MAPD, not D directly.
+  const RUNS = D.meta.runs || [];
+  let MAPD = { id: (RUNS[0] || {}).id || "cur", current: true, days: days, steps: D.meta.steps || [], fields: G.fields,
+               agree: G.agree, contours: D.contours, hfields: null, hagree: null, hcontours: null, ltg: D.ltg };
+  const half = () => state.tstep === "half" && (MAPD.steps || []).length > 0;
+  function fieldArr(field, model) {
+    const key = field + ":" + model + ":" + (half() ? "h" : "d") + ":" + MAPD.id;
+    if (!cache[key]) {
+      const raw = half() ? (field === "agree" ? MAPD.hagree : ((MAPD.hfields || {})[field] || {})[model])
+                         : (field === "agree" ? MAPD.agree : (MAPD.fields[field] || {})[model]);
+      if (!raw) return null;
+      const a = dec(raw), scale = { z500a: 4, t850a: 0.2, wet: 1, agree: 1 }[field];
+      const f = new Float32Array(a.length);
+      for (let i = 0; i < a.length; i++) f[i] = a[i] === -128 ? NaN : a[i] * scale;
+      cache[key] = f;
+    }
+    return cache[key];
+  }
+
+  // ---------------------------------------------------------------- color scales
+  const RDBU = ["#08306b", "#2166ac", "#4393c3", "#92c5de", "#c6dbef", "#e8f0f6", "#f7f7f7",
+                "#fbe3d6", "#f4c4a8", "#f4a582", "#d6604d", "#b2182b", "#67001f"];
+  const SCALES = {
+    z500a: { title: "500 hPa anomaly (m)", levels: [-240, -180, -120, -90, -60, -30, 30, 60, 90, 120, 180, 240], colors: RDBU },
+    t850a: { title: "850 hPa temp anomaly (°C)", levels: [-10, -8, -6, -4, -2, -1, 1, 2, 4, 6, 8, 10], colors: RDBU },
+    wet: { title: "% of members with ≥ " + (D.meta.wetting_mm / 25.4).toFixed(2) + " in since init", levels: [5, 10, 20, 30, 50, 70, 90],
+           colors: ["rgba(0,0,0,0)", "#deebf7", "#c6dbef", "#9ecae1", "#6baed6", "#3182bd", "#08519c", "#08306b"] },
+    ltg1: { title: "% chance of a lightning strike in the cell, fire day", levels: [5, 10, 20, 30, 40, 60, 80],
+            colors: ["rgba(0,0,0,0)", "#fff3b0", "#ffd166", "#f4a261", "#e76f51", "#c44569", "#8e2c8c", "#4a1d6b"] },
+    ltg10: { title: "% chance of 10+ lightning strikes in the cell, fire day", levels: [5, 10, 20, 30, 40, 60, 80],
+             colors: ["rgba(0,0,0,0)", "#fff3b0", "#ffd166", "#f4a261", "#e76f51", "#c44569", "#8e2c8c", "#4a1d6b"] },
+    agree: { title: "% of all members above normal", levels: [10, 20, 33, 67, 80, 90],
+             colors: ["#08306b", "#2166ac", "#92c5de", "#f7f7f7", "#f4a582", "#d6604d", "#67001f"] },
+  };
+  SCALES.ltgL1 = Object.assign({}, SCALES.ltg1, { title: "Lightning formula (IFS ENS): % chance of a strike in the cell, fire day" });
+  SCALES.ltgL10 = Object.assign({}, SCALES.ltg10, { title: "Lightning formula (IFS ENS): % chance of 10+ strikes in the cell, fire day" });
+  function colorOf(sc, v) { if (!isFinite(v)) return null; let k = 0; while (k < sc.levels.length && v >= sc.levels[k]) k++; return sc.colors[k]; }
+  function hexRGB(h) { if (h.startsWith("rgba")) return [0, 0, 0, 0];
+    return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16), 230]; }
+
+  // ---------------------------------------------------------------- map
+  let savedLayout = "single";
+  try { savedLayout = localStorage.getItem("aie_map_layout") === "grid" ? "grid" : "single"; } catch (e) { /* storage unavailable */ }
+  let savedView = "full";
+  try { const v = localStorage.getItem("aie_map_view"); if (v === "ca" || v === "hi" || v === "cpac") savedView = v; } catch (e) { /* storage unavailable */ }
+  const state = { field: "z500a", model: "mean", day: 1, hover: null, layout: savedLayout, view: savedView, tstep: "day" };
+  const modelOpts = [{ key: "mean", label: "All-model mean", color: css("--text"), dash: false }].concat(models);
+  const mdiv = $("models");
+  modelOpts.forEach(m => {
+    const l = document.createElement("label"); l.className = "opt" + (m.key === state.model ? " on" : "");
+    l.innerHTML = `<input type="radio" name="mdl" value="${m.key}" ${m.key === state.model ? "checked" : ""}>`
+      + `<span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color}"></span>${m.label}`;
+    l.querySelector("input").addEventListener("change", e => { state.model = e.target.value;
+      mdiv.querySelectorAll(".opt").forEach(o => o.classList.toggle("on", o.querySelector("input").checked)); drawMap(); });
+    mdiv.appendChild(l);
+  });
+  // Lightning fields -> [probability key, fixed series or null]; the formula layer (2026-10-22) is IFS ENS only.
+  const LTG = { ltg1: ["p1", null], ltg10: ["p10", null], ltgL1: ["p1", "lopez"], ltgL10: ["p10", "lopez"] };
+  $("field").addEventListener("change", e => { state.field = e.target.value;
+    $("ltgNote").hidden = !(state.field in LTG) || !!LTG[state.field][1]; $("ltgLNote").hidden = !(LTG[state.field] || [])[1]; drawMap(); });
+  if (!D.ltg) [...$("field").options].filter(o => o.value in LTG).forEach(o => o.remove());
+  else if (!D.ltg.lopez) [...$("field").options].filter(o => o.value.startsWith("ltgL")).forEach(o => o.remove());
+  else if (!D.ltg.models.length) [...$("field").options].filter(o => o.value === "ltg1" || o.value === "ltg10").forEach(o => o.remove());
+  // 2 x 2 panel: every model at once, sharing the field, day, play and hover (added 2026-10-13)
+  const grid = $("mapGrid"), gridCv = {};
+  // physics ensembles on the top row, the AI models on the bottom (analyst, 2026-10-14)
+  const isAI = m => /\(AI\)/.test(m.label) || String(m.kind).toLowerCase() === "ai";
+  models.slice().sort((a, b) => isAI(a) - isAI(b)).forEach(m => {
+    const fig = document.createElement("figure");
+    fig.innerHTML = `<figcaption><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color}"></span>${m.label}</figcaption>`;
+    const cv = document.createElement("canvas"); cv.className = "map"; cv.setAttribute("aria-label", m.label + " forecast map");
+    cv.addEventListener("mousemove", hoverAt); cv.addEventListener("pointerdown", hoverAt);
+    fig.appendChild(cv); grid.appendChild(fig); gridCv[m.key] = cv;
+  });
+  function markLayout() { $("layout").querySelectorAll("button").forEach(b => { const on = b.dataset.l === state.layout;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); }
+  $("layout").querySelectorAll("button").forEach(b => b.onclick = () => { state.layout = b.dataset.l; markLayout();
+    try { localStorage.setItem("aie_map_layout", state.layout); } catch (e) { /* storage unavailable */ }
+    drawMap(); });
+  markLayout();
+  function markView() { $("view").querySelectorAll("button").forEach(b => { const on = b.dataset.v === state.view;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); }
+  $("view").querySelectorAll("button").forEach(b => b.onclick = () => { state.view = b.dataset.v; state.hover = null; markView();
+    try { localStorage.setItem("aie_map_view", state.view); } catch (e) { /* storage unavailable */ }
+    drawMap(); });
+  markView();
+  const dayIn = $("day");
+  const nSteps = () => half() ? MAPD.steps.length : MAPD.days.length;
+  dayIn.max = nSteps();
+  dayIn.addEventListener("input", () => { state.day = +dayIn.value; drawMap(); });
+  $("prev").onclick = () => { dayIn.value = Math.max(1, state.day - 1); dayIn.dispatchEvent(new Event("input")); };
+  $("next").onclick = () => { dayIn.value = Math.min(nSteps(), state.day + 1); dayIn.dispatchEvent(new Event("input")); };
+  let timer = null;
+  $("play").onclick = () => { if (timer) { clearInterval(timer); timer = null; $("play").textContent = "Play"; return; }
+    $("play").textContent = "Stop"; timer = setInterval(() => { dayIn.value = state.day % nSteps() + 1; dayIn.dispatchEvent(new Event("input")); },
+                                                        half() ? 600 : 900); };
+  function markTstep() { $("tstep").querySelectorAll("button").forEach(b => { const on = b.dataset.t === state.tstep;
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); }
+  if (!(D.meta.steps || []).length) $("tstep").parentNode.hidden = true;
+  // the 12-hourly fields live in aie_half.js, fetched the first time they're asked for
+  function withHalf(go) {
+    if (MAPD.hfields) return go();
+    const sc = document.createElement("script");
+    sc.src = MAPD.current ? "aie_half.js" : `runs/${MAPD.id}/half.js`;
+    sc.onload = () => { const H = MAPD.current ? (window.__AIE_HALF__ || {}) : ((window.__AIE_RUNS__ || {})[MAPD.id + "h"] || {});
+      MAPD.hfields = H.hfields; MAPD.hagree = H.hagree; MAPD.hcontours = H.hcontours; go(); };
+    sc.onerror = () => { $("dayLabel").textContent = "12-hourly maps couldn't be loaded."; };
+    $("dayLabel").textContent = "Loading 12-hourly maps…"; document.body.appendChild(sc);
+  }
+  $("tstep").querySelectorAll("button").forEach(b => b.onclick = () => withHalf(() => {
+    if (b.dataset.t === state.tstep) return;
+    // keep the same time: day d <-> its 12 UTC step (2d - 1); a step -> its day
+    state.day = b.dataset.t === "half" ? 2 * state.day - 1 : Math.ceil(state.day / 2);
+    state.tstep = b.dataset.t; markTstep();
+    dayIn.max = nSteps(); dayIn.value = state.day; drawMap(); }));
+  markTstep();
+  const PT = { timeZone: "America/Los_Angeles" };
+  function stepLabel(k) {           // 12-hourly step k (0-based) -> "Tue, Oct 14 · 5 AM PDT (12Z)"
+    const t = new Date(MAPD.steps[k].replace(":00Z", ":00:00Z"));
+    const day = t.toLocaleDateString("en-US", { ...PT, weekday: "short", month: "short", day: "numeric" });
+    const hr = t.toLocaleTimeString("en-US", { ...PT, hour: "numeric", timeZoneName: "short" });
+    return { text: `${day} · ${hr} (${MAPD.steps[k].slice(11, 13)}Z)`, local: t.toLocaleDateString("en-CA", PT) };
+  }
+  // ---- run selector: today's run and the previous days' 00 UTC runs; switching keeps the valid time
+  const fmtRun = r => r.current ? "Today's run" : new Date(r.date + "T12:00:00Z").toLocaleDateString("en-US",
+    { weekday: "short", month: "numeric", day: "numeric", timeZone: "UTC" }) + " run";
+  function runNote() {
+    const c = MAPD.cycles || (RUNS.find(r => r.id === MAPD.id) || {}).cycles || {};
+    const ago = MAPD.current ? "" : ` · ${Math.round((Date.parse(RUNS[0].date) - Date.parse(MAPD.date || RUNS[0].date)) / 864e5)} day(s) older than today's`;
+    $("runNote").textContent = Object.keys(c).length ? `Models initialized ${[...new Set(Object.values(c))].map(v => v.slice(5, 10).replace("-", "/") + " " + v.slice(11))
+      .join(", ")}${ago}` : "";
+  }
+  function currentValid() {          // the time on screen, so a new run can open at the same valid time
+    const k = state.day - 1;
+    return half() ? MAPD.steps[k] : MAPD.days[k];
+  }
+  function selectRun(id) {
+    const want = currentValid();
+    const done = () => {
+      const list = half() ? MAPD.steps : MAPD.days;
+      const i = list.indexOf(want);
+      state.day = i >= 0 ? i + 1 : (want < list[0] ? 1 : list.length);
+      dayIn.max = nSteps(); dayIn.value = state.day;
+      $("runSel").querySelectorAll("button").forEach(b => { const on = b.dataset.r === id; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+      runNote(); drawMap();
+    };
+    const r = RUNS.find(x => x.id === id) || RUNS[0];
+    if (r.current) {
+      MAPD = { id: r.id, current: true, date: r.date, cycles: r.cycles, days: days, steps: D.meta.steps || [], fields: G.fields,
+               agree: G.agree, contours: D.contours, ltg: D.ltg, hfields: MAPD.current ? MAPD.hfields : CUR_HALF.hfields,
+               hagree: MAPD.current ? MAPD.hagree : CUR_HALF.hagree, hcontours: MAPD.current ? MAPD.hcontours : CUR_HALF.hcontours };
+      return half() && !MAPD.hfields ? withHalf(done) : done();
+    }
+    if (MAPD.current) Object.assign(CUR_HALF, { hfields: MAPD.hfields, hagree: MAPD.hagree, hcontours: MAPD.hcontours });
+    const go = () => { const R = (window.__AIE_RUNS__ || {})[id];
+      MAPD = { id, current: false, date: r.date, cycles: R.cycles, days: R.days, steps: R.steps, fields: R.fields, agree: R.agree,
+               contours: R.contours, hfields: null, hagree: null, hcontours: null, ltg: R.ltg };
+      return half() ? withHalf(done) : done(); };
+    if ((window.__AIE_RUNS__ || {})[id]) return go();
+    const sc = document.createElement("script"); sc.src = `runs/${id}/map.js`;
+    sc.onload = go; sc.onerror = () => { $("runNote").textContent = "That run couldn't be loaded."; };
+    $("runNote").textContent = "Loading the earlier run…"; document.body.appendChild(sc);
+  }
+  const CUR_HALF = {};
+  if (RUNS.length > 1) {
+    $("runSel").innerHTML = RUNS.map(r => `<button data-r="${r.id}" class="${r.current ? "on" : ""}" aria-pressed="${r.current}">${fmtRun(r)}</button>`).join("");
+    $("runSel").querySelectorAll("button").forEach(b => b.onclick = () => selectRun(b.dataset.r));
+  } else $("runGroup").hidden = true;
+  runNote();
+
+  const canvas = $("map"), ctx = canvas.getContext("2d");
+  const lonMin = G.lon0 - G.dlon / 2, lonMax = G.lon0 + (NX - 0.5) * G.dlon;
+  const latMax = G.lat0 - G.dlat / 2, latMin = G.lat0 + (NY - 0.5) * G.dlat;     // dlat < 0
+  const FULL = { lonMin, lonMax, latMin, latMax };
+  // Pattern-map views (2026-10-13, Hawaii added): crops of the same grid. The weekly and scenario maps
+  // always show the full domain.
+  const VIEWS = { full: FULL, ca: { lonMin: -127, lonMax: -112.5, latMin: 31.5, latMax: 43 },
+                  hi: { lonMin: -162, lonMax: -153.5, latMin: 17.5, latMax: 23.5 },
+                  // 2026-10-16: the synoptic setting around the islands, as far west and south as the grid goes
+                  cpac: { lonMin: Math.max(lonMin, -170), lonMax: -138, latMin: Math.max(latMin, 15), latMax: 42 } };
+  const aspectOf = V => ((V.lonMax - V.lonMin) * Math.cos((V.latMin + V.latMax) / 2 * Math.PI / 180)) / (V.latMax - V.latMin);
+  const aspect = aspectOf(FULL);
+  function px(lon, lat, W, H, V = FULL) { return [(lon - V.lonMin) / (V.lonMax - V.lonMin) * W, (V.latMax - lat) / (V.latMax - V.latMin) * H]; }
+  // Values are interpolated (bilinear) onto a grid UP x finer and only then binned to colors, so
+  // class edges are smooth curves instead of 1-degree stair steps.
+  const UP = 4, OW = NX * UP, OH = NY * UP;
+  const off = document.createElement("canvas"); off.width = OW; off.height = OH;
+  const offCtx = off.getContext("2d");
+  function sampleBilinear(arr, base, gx, gy) {
+    const x0 = Math.max(0, Math.min(NX - 1, Math.floor(gx))), y0 = Math.max(0, Math.min(NY - 1, Math.floor(gy)));
+    const x1 = Math.min(NX - 1, x0 + 1), y1 = Math.min(NY - 1, y0 + 1);
+    const fx = Math.max(0, Math.min(1, gx - x0)), fy = Math.max(0, Math.min(1, gy - y0));
+    const a = arr[base + y0 * NX + x0], b = arr[base + y0 * NX + x1], c = arr[base + y1 * NX + x0], d = arr[base + y1 * NX + x1];
+    if (!(isFinite(a) && isFinite(b) && isFinite(c) && isFinite(d))) {    // edge of data: nearest cell
+      return arr[base + Math.round(Math.max(0, Math.min(NY - 1, gy))) * NX + Math.round(Math.max(0, Math.min(NX - 1, gx)))]; }
+    return (a * (1 - fx) + b * fx) * (1 - fy) + (c * (1 - fx) + d * fx) * fy;
+  }
+
+  // ---- gridded lightning potential (2026-10-14): 0.5 deg California cells, fire days, IFS ENS / GEFS members
+  // (ai_ensemble_lightning_grid.py, after Nikolov et al. 2024); AI models have no CAPE, so they show the mean.
+  const ltgCache = {};
+  function ltgArr(key, model) {                 // key p1 | p10; (day, ny, nx) % or null
+    const L = MAPD.ltg; if (!L) return null;
+    if (model === "lopez" && !L[key].lopez) return null;          // an earlier run without the formula layer
+    const m = L[key][model] ? model : "mean", ck = MAPD.id + key + m;
+    if (!L[key][m]) return null;
+    if (!ltgCache[ck]) { const a = dec(L[key][m]), f = new Float32Array(a.length);
+      for (let i = 0; i < a.length; i++) f[i] = a[i] === -128 ? NaN : a[i]; ltgCache[ck] = f; }
+    return ltgCache[ck];
+  }
+  function ltgDay(k) {                          // map index -> fire-day index into MAPD.days
+    if (!half()) return k;
+    const t = new Date(MAPD.steps[k].replace(":00Z", ":00:00Z")); t.setUTCHours(t.getUTCHours() - 7 - 6);   // PDT, fire day starts 06
+    return MAPD.days.indexOf(t.toISOString().slice(0, 10));
+  }
+  // Smooth rendering (2026-10-14): values interpolated between cell centres (bilinear) and binned to colors on a
+  // finer image; outside California, where there's no data, the color fades out over half a cell.
+  const ltgImg = {};
+  function ltgImage(key, model, d) {
+    const L = MAPD.ltg, a = ltgArr(key, model); if (!a) return null;
+    const ck = MAPD.id + key + (L[key][model] ? model : "mean") + d;
+    if (ltgImg[ck]) return ltgImg[ck];
+    const UPL = 10, w = L.nx * UPL, h = L.ny * UPL, n = L.ny * L.nx, sc = SCALES[key === "p1" ? "ltg1" : "ltg10"];
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+    const c = cv.getContext("2d"), img = c.createImageData(w, h);
+    const at = (jj, ii) => (jj < 0 || ii < 0 || jj >= L.ny || ii >= L.nx) ? NaN : a[d * n + jj * L.nx + ii];
+    for (let y = 0; y < h; y++) { const gy = (y + 0.5) / UPL - 0.5, j0 = Math.floor(gy), fy = gy - j0;
+      for (let x = 0; x < w; x++) { const gx = (x + 0.5) / UPL - 0.5, i0 = Math.floor(gx), fx = gx - i0;
+        let num = 0, den = 0;
+        for (const [jj, ii, wt] of [[j0, i0, (1 - fx) * (1 - fy)], [j0, i0 + 1, fx * (1 - fy)], [j0 + 1, i0, (1 - fx) * fy], [j0 + 1, i0 + 1, fx * fy]]) {
+          const v = at(jj, ii); if (isFinite(v)) { num += v * wt; den += wt; } }
+        if (den <= 0) continue;
+        const col = colorOf(sc, num / den); if (!col || col.startsWith("rgba")) continue;
+        const rgb = hexRGB(col), alpha = Math.min(1, den * 2) * 0.88;
+        img.data.set([rgb[0], rgb[1], rgb[2], Math.round(255 * alpha)], (y * w + x) * 4); } }
+    c.putImageData(img, 0, 0);
+    return (ltgImg[ck] = cv);
+  }
+  function drawLtg(ctx, W, H, V, model, k, key) {   // key "p1" | "p10"
+    const L = MAPD.ltg; if (!L) return;
+    const d = ltgDay(k); if (d < 0) return;
+    const im = ltgImage(key, model, d); if (!im) return;
+    const [x0, y0] = px(L.lon0 - L.res / 2, L.lat0 + L.res / 2, W, H, V);
+    const [x1, y1] = px(L.lon0 + (L.nx - 0.5) * L.res, L.lat0 - (L.ny - 0.5) * L.res, W, H, V);
+    ctx.save(); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(im, x0, y0, x1 - x0, y1 - y0); ctx.restore();
+  }
+  // One model's (or the mean's) field for day k on canvas cv: bilinear colors, map lines, height contours.
+  function paint(cv, field, model, k, small) {
+    const ctx = cv.getContext("2d"), V = VIEWS[state.view] || FULL;
+    const W = cv.clientWidth || 300, H = Math.round(W / aspectOf(V)), dpr = window.devicePixelRatio || 1;
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = css("--ocean"); ctx.fillRect(0, 0, W, H);
+    const sc = SCALES[field];
+    const arr = fieldArr(field, model);
+    if (arr) {
+      const img = offCtx.createImageData(OW, OH), base = k * NC, rgbOf = {};
+      for (let y = 0; y < OH; y++) { const gy = (y + 0.5) / UP - 0.5;
+        for (let x = 0; x < OW; x++) { const v = sampleBilinear(arr, base, (x + 0.5) / UP - 0.5, gy), c = colorOf(sc, v);
+          img.data.set(c ? (rgbOf[c] || (rgbOf[c] = hexRGB(c))) : [0, 0, 0, 0], (y * OW + x) * 4); } }
+      offCtx.putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+      const sx = (V.lonMin - lonMin) / (lonMax - lonMin) * OW, sw = (V.lonMax - V.lonMin) / (lonMax - lonMin) * OW;
+      const sy = (latMax - V.latMax) / (latMax - latMin) * OH, sh = (V.latMax - V.latMin) / (latMax - latMin) * OH;
+      ctx.drawImage(off, sx, sy, sw, sh, 0, 0, W, H);
+    }
+    if (field in LTG) drawLtg(ctx, W, H, V, LTG[field][1] || model, k, LTG[field][0]);
+    strokeOn(ctx, D.lines.state, css("--line-state"), small ? 0.5 : 0.6, W, H, V);
+    strokeOn(ctx, D.lines.country, css("--line-country"), small ? 0.8 : 0.9, W, H, V);
+    strokeOn(ctx, D.lines.region, css("--line-region"), small ? 1.1 : 1.3, W, H, V);
+    if (field === "z500a") {
+      const cl = ((half() ? MAPD.hcontours : MAPD.contours) || {})[model] && ((half() ? MAPD.hcontours : MAPD.contours)[model][k] || []) || [];
+      ctx.strokeStyle = css("--contour"); ctx.lineWidth = 1; ctx.fillStyle = css("--contour"); ctx.font = "10px system-ui";
+      for (const [lv, pts] of cl) { ctx.beginPath();
+        for (let i = 0; i < pts.length; i += 2) { const [x, y] = px(pts[i], pts[i + 1], W, H, V); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
+        ctx.stroke();
+        if (pts.length > 20) { const m = Math.floor(pts.length / 4) * 2; const [x, y] = px(pts[m], pts[m + 1], W, H, V);
+          ctx.save(); ctx.fillStyle = css("--ocean"); const t = String(lv), tw = ctx.measureText(t).width;
+          ctx.globalAlpha = .75; ctx.fillRect(x - tw / 2 - 2, y - 6, tw + 4, 12); ctx.restore(); ctx.fillText(t, x - tw / 2, y + 3.5); } }
+    }
+    if (state.hover) { const [x, y] = px(state.hover.lon, state.hover.lat, W, H, V);
+      ctx.strokeStyle = css("--focus"); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.stroke(); }
+  }
+  function drawMap() {
+    const field = state.field, sc = SCALES[field], k = state.day - 1;
+    // the "agree" field is one pooled map, so it always shows single
+    const asGrid = state.layout === "grid" && field !== "agree";
+    canvas.hidden = asGrid; grid.hidden = !asGrid;
+    $("models").classList.toggle("off", state.layout === "grid"); $("modelsNote").hidden = state.layout !== "grid";
+    if (asGrid) models.forEach(m => paint(gridCv[m.key], field, m.key, k, true));
+    else paint(canvas, field, field === "agree" ? "pooled" : state.model, k, false);
+    // legend
+    $("legendTitle").textContent = sc.title;
+    $("legendBar").innerHTML = sc.colors.map(c => `<span style="background:${c.startsWith("rgba") ? "var(--ocean)" : c}"></span>`).join("");
+    $("legendTicks").innerHTML = ["", ...sc.levels, ""].filter((_, i, a) => i > 0 && i < a.length - 1 && (i % 2 === 1 || sc.levels.length < 8))
+      .map(v => `<span>${v}</span>`).join("");
+    $("dayGroupLabel").textContent = half() ? "Time" : "Day";
+    if (half()) { const sl = stepLabel(k);
+      $("dayLabel").textContent = `Day ${Math.ceil(state.day / 2)} · ${relDay(sl.local) ? relDay(sl.local) + ", " : ""}${sl.text}`
+        + (field === "agree" ? " · all models pooled" + (state.layout === "grid" ? " (one map)" : "") : "");
+    } else
+    $("dayLabel").textContent = `Day ${state.day} · ${relDay(MAPD.days[k]) ? relDay(MAPD.days[k]) + ", " : ""}${fmtDay(MAPD.days[k])}`
+      + (field === "agree" ? " · all models pooled" + (state.layout === "grid" ? " (one map)" : "") : "");
+    readout();
+  }
+  function readout() {
+    const h = state.hover, el = $("readout");
+    if (!h) { el.innerHTML = '<span class="note">Hover the map for values.</span>'; return; }
+    const j = Math.round((h.lat - G.lat0) / G.dlat), i = Math.round((h.lon - G.lon0) / G.dlon);
+    if (j < 0 || j >= NY || i < 0 || i >= NX) { el.innerHTML = ""; return; }
+    const k = state.day - 1, f = state.field, unit = { z500a: " m", t850a: "°C", wet: "%", agree: "%" }[f];
+    if (f in LTG) {
+      const L = MAPD.ltg, d = ltgDay(k), jl = Math.round((L.lat0 - h.lat) / L.res), il = Math.round((h.lon - L.lon0) / L.res);
+      let rows = "";
+      const formula = { key: "lopez", label: "Lightning formula (IFS ENS)", color: css("--text") };
+      const list = [{ key: "mean", label: "IFS ENS + GEFS mean", color: css("--text") }].concat(models.filter(m => L.models.includes(m.key)));
+      for (const m of LTG[f][1] ? [formula].concat(L.models.length ? [{ key: "mean", label: "Logistic layer (IFS ENS + GEFS)", color: css("--text-dim") }] : [])
+                                : list.concat(L.lopez ? [formula] : [])) {
+        const a = ltgArr(LTG[f][0], m.key);
+        const v = a && d >= 0 && jl >= 0 && jl < L.ny && il >= 0 && il < L.nx ? a[d * L.ny * L.nx + jl * L.nx + il] : NaN;
+        rows += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${isFinite(v) ? Math.round(v) + "%" : "–"}</td></tr>`; }
+      $("readout").innerHTML = `<div class="mono" style="font-size:11px;margin-bottom:3px">${h.lat.toFixed(1)}°N ${(-h.lon).toFixed(1)}°W</div><table>${rows}</table>`
+        + `<div class="note" style="margin-top:3px">Fire day (6 a.m.–6 a.m. PT). California only. AI models: no CAPE in their output.
+           <a href="guide/${LTG[f][1] ? "lightning_formula" : "lightning"}.html">Assumptions</a></div>`;
+      return;
+    }
+    const fmt = v => isFinite(v) ? (f === "t850a" ? (v > 0 ? "+" : "") + v.toFixed(1) : (f === "z500a" && v > 0 ? "+" : "") + Math.round(v)) + unit : "–";
+    let rows = "";
+    const list = f === "agree" ? [{ key: "pooled", label: "All models pooled", color: css("--text") }] : modelOpts;
+    for (const m of list) { const a = fieldArr(f, m.key); const v = a ? a[k * NC + j * NX + i] : NaN;
+      rows += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${fmt(v)}</td></tr>`; }
+    el.innerHTML = `<div class="mono" style="font-size:11px;margin-bottom:3px">${h.lat.toFixed(1)}°N ${(-h.lon).toFixed(1)}°W</div><table>${rows}</table>`;
+  }
+  function hoverAt(ev) { const r = ev.currentTarget.getBoundingClientRect(); const x = ev.clientX - r.left, y = ev.clientY - r.top;
+    const V = VIEWS[state.view] || FULL;
+    state.hover = { lon: V.lonMin + x / r.width * (V.lonMax - V.lonMin), lat: V.latMax - y / r.height * (V.latMax - V.latMin) }; drawMap(); }
+  canvas.addEventListener("mousemove", hoverAt);
+  canvas.addEventListener("pointerdown", hoverAt);
+  window.addEventListener("resize", () => { drawMap(); drawWeeks(); drawOutlook(); drawSeries(); drawRegimes(); });
+  if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawMap(); drawWeeks(); drawOutlook(); drawSeries(); drawRegimes(); });
+
+  // ---------------------------------------------------------------- SVG chart helper
+  const NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function niceTicks(lo, hi, n) { const span = hi - lo || 1, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const step = [1, 2, 2.5, 5, 10].map(s => s * mag).find(s => span / s <= n) || mag * 10;
+    const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(6)); return out; }
+  // chart({svg, height, x:{min,max,ticks:[[v,label]]}, y:{min,max,label, fmt}, draw(g, sx, sy), hover(xval)->html})
+  function chart(o) {
+    const svg = o.svg; while (svg.firstChild) svg.removeChild(svg.firstChild);
+    // A page drawn while hidden/zero-width (background tab) would give negative sizes; draw at 600 and let the
+    // resize handler redraw at the real width.
+    const W = Math.max(200, svg.clientWidth || svg.parentNode.clientWidth || 600), H = o.height, m = { l: 46, r: 14, t: 8, b: o.xlab === false ? 8 : 34 };
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.style.height = H + "px";
+    const sx = v => m.l + (v - o.x.min) / (o.x.max - o.x.min) * (W - m.l - m.r);
+    const sy = v => m.t + (o.y.max - v) / (o.y.max - o.y.min) * (H - m.t - m.b);
+    const g = el("g", {}, svg);
+    for (const v of niceTicks(o.y.min, o.y.max, 5)) { el("line", { x1: m.l, x2: W - m.r, y1: sy(v), y2: sy(v), class: "gridl" }, g);
+      el("text", { x: m.l - 6, y: sy(v) + 4, "text-anchor": "end" }, g).textContent = o.y.fmt ? o.y.fmt(v) : v; }
+    if (o.y.label) { const t = el("text", { x: 12, y: (m.t + H - m.b) / 2, "text-anchor": "middle", transform: `rotate(-90 12 ${(m.t + H - m.b) / 2})` }, g); t.textContent = o.y.label; }
+    if (o.xlab !== false) for (const [v, lab] of o.x.ticks) { el("line", { x1: sx(v), x2: sx(v), y1: m.t, y2: H - m.b, class: "gridl" }, g);
+      const t = el("text", { x: sx(v), y: H - m.b + 14, "text-anchor": "middle" }, g);
+      lab.split("\n").forEach((s, i) => { const ts = el("tspan", { x: sx(v), dy: i ? 12 : 0 }, t); ts.textContent = s; }); }
+    el("line", { x1: m.l, x2: m.l, y1: m.t, y2: H - m.b, class: "axis" }, g);
+    o.draw(el("g", {}, svg), sx, sy);
+    if (o.hover) {
+      const cross = el("line", { y1: m.t, y2: H - m.b, stroke: css("--text-dim"), "stroke-dasharray": "3 3", visibility: "hidden" }, svg);
+      const hit = el("rect", { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: "transparent" }, svg);
+      const move = ev => { const r = svg.getBoundingClientRect(); const xv = o.x.min + (ev.clientX - r.left - m.l) / (W - m.l - m.r) * (o.x.max - o.x.min);
+        const res = o.hover(xv); if (!res) { hideTip(); cross.setAttribute("visibility", "hidden"); return; }
+        cross.setAttribute("x1", sx(res.x)); cross.setAttribute("x2", sx(res.x)); cross.setAttribute("visibility", "visible"); showTip(res.html, ev.clientX, ev.clientY); };
+      hit.addEventListener("mousemove", move); hit.addEventListener("pointerdown", move);
+      hit.addEventListener("mouseleave", () => { hideTip(); cross.setAttribute("visibility", "hidden"); });
+    }
+  }
+  const dayTicks = days.map((d, i) => [i + 1, (d === todayPT ? "Today" : fmtDay(d).split(",")[0]) + "\n" + d.slice(5).replace("-", "/")]);
+  function legendRow(id) { $(id).innerHTML = models.map(m => `<span><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color}"></span>${m.label}</span>`).join(""); }
+  function quant(arr, q) { const a = arr.filter(v => v !== null && isFinite(v)).sort((x, y) => x - y); if (!a.length) return NaN;
+    const p = (a.length - 1) * q, lo = Math.floor(p), hi = Math.ceil(p); return a[lo] + (a[hi] - a[lo]) * (p - lo); }
+  const beyond = (v, cut, tail) => tail === "low" ? v <= cut : v >= cut;
+  function frac(vals, cut, tail) { const a = vals.filter(v => v !== null && isFinite(v)); return a.length ? a.filter(v => beyond(v, cut, tail)).length / a.length : NaN; }
+
+  // ---------------------------------------------------------------- week 1 / week 2
+  const WK = D.weeks || [];
+  const wkState = { i: 0, hover: null };
+  function strokeOn(c, lines, color, width, W, H, V = FULL) {
+    c.strokeStyle = color; c.lineWidth = width; c.beginPath();
+    for (const ln of lines) { for (let i = 0; i < ln.length; i += 2) { const [x, y] = px(ln[i], ln[i + 1], W, H, V);
+      if (i === 0) c.moveTo(x, y); else c.lineTo(x, y); } }
+    c.stroke();
+  }
+  // One field on a canvas, drawn the same way as the main map (bilinear values, then binned colors).
+  function renderField(cv, arr, sc, cl, hover) {
+    const W = cv.clientWidth || 300, H = Math.round(W / aspect), dpr = window.devicePixelRatio || 1;
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+    const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.fillStyle = css("--ocean"); c.fillRect(0, 0, W, H);
+    const img = offCtx.createImageData(OW, OH), rgbOf = {};
+    for (let y = 0; y < OH; y++) { const gy = (y + 0.5) / UP - 0.5;
+      for (let x = 0; x < OW; x++) { const v = sampleBilinear(arr, 0, (x + 0.5) / UP - 0.5, gy), col = colorOf(sc, v);
+        img.data.set(col ? (rgbOf[col] || (rgbOf[col] = hexRGB(col))) : [0, 0, 0, 0], (y * OW + x) * 4); } }
+    offCtx.putImageData(img, 0, 0); c.imageSmoothingEnabled = true; c.imageSmoothingQuality = "high"; c.drawImage(off, 0, 0, W, H);
+    strokeOn(c, D.lines.state, css("--line-state"), 0.5, W, H);
+    strokeOn(c, D.lines.country, css("--line-country"), 0.8, W, H);
+    strokeOn(c, D.lines.region, css("--line-region"), 1.2, W, H);
+    if (cl) { c.strokeStyle = css("--contour"); c.lineWidth = 0.9;
+      for (const [, pts] of cl) { c.beginPath();
+        for (let i = 0; i < pts.length; i += 2) { const [x, y] = px(pts[i], pts[i + 1], W, H); if (i === 0) c.moveTo(x, y); else c.lineTo(x, y); }
+        c.stroke(); } }
+    if (hover) { const [x, y] = px(hover.lon, hover.lat, W, H); c.strokeStyle = css("--focus"); c.lineWidth = 1.5; c.beginPath(); c.arc(x, y, 5, 0, 7); c.stroke(); }
+  }
+  const decCache = {};
+  function decF(b64, scale) { if (!decCache[b64]) { const a = dec(b64), f = new Float32Array(a.length);
+      for (let i = 0; i < a.length; i++) f[i] = a[i] === -128 ? NaN : a[i] * scale; decCache[b64] = f; } return decCache[b64]; }
+  const hatch = "repeating-linear-gradient(135deg, rgba(255,255,255,.55) 0 2px, transparent 2px 5px)";
+  function drawWeeks() {
+    if (!WK.length) { $("weekCard").style.display = "none"; return; }
+    const tabs = $("wkTabs");
+    tabs.innerHTML = WK.map((w, i) => `<button role="tab" aria-selected="${i === wkState.i}" class="${i === wkState.i ? "on" : ""}" data-i="${i}">`
+      + `Week ${i + 1}: days ${w.d0}–${w.d1} (${w.start.slice(5).replace("-", "/")}–${w.end.slice(5).replace("-", "/")})</button>`).join("");
+    tabs.querySelectorAll("button").forEach(b => b.onclick = () => { wkState.i = +b.dataset.i; drawWeeks(); });
+    const w = WK[wkState.i];
+    $("wkTitle").textContent = `Days ${w.d0}–${w.d1}: ${fmtDay(w.start)} to ${fmtDay(w.end)} · ${w.n} members`;
+    const sc = SCALES.agree;
+    renderField($("wkMap"), decF(w.above, 1), sc, null, wkState.hover);
+    $("wkLegendBar").innerHTML = sc.colors.map(c => `<span style="background:${c}"></span>`).join("");
+    $("wkLegendTicks").innerHTML = sc.levels.map(v => `<span>${v}</span>`).join("");
+    const grid = $("wkScen"); grid.innerHTML = "";
+    w.scenarios.forEach(s => {
+      const card = document.createElement("div"); card.className = "scCard";
+      const cv = document.createElement("canvas"); card.appendChild(cv);
+      const bars = models.filter(m => s.by_model[m.key] !== undefined).map(m => { const v = s.by_model[m.key];
+        return `<div class="mbar"><span>${m.label.replace(/ \((AI|physics)\)/, "")}</span><span class="track"><span class="fill" style="width:${Math.round(100 * v)}%;`
+          + `background:${m.color}${m.dash ? ";background-image:" + hatch : ""}"></span></span><span class="v">${Math.round(100 * v)}%</span></div>`; }).join("");
+      card.insertAdjacentHTML("beforeend", `<h3>Scenario ${s.letter}: ${Math.round(100 * s.share)}% of all members</h3>`
+        + `<div class="note" style="margin-bottom:4px">${s.members} members · share of each model's members:</div>${bars}`);
+      grid.appendChild(card);
+      renderField(cv, decF(s.anom, 4), SCALES.z500a, s.contours, null);
+    });
+    wkRead();
+  }
+  function wkRead() {
+    const h = wkState.hover, el = $("wkRead"); if (!h) { el.innerHTML = '<span class="note">Hover the map for values.</span>'; return; }
+    const j = Math.round((h.lat - G.lat0) / G.dlat), i = Math.round((h.lon - G.lon0) / G.dlon);
+    if (j < 0 || j >= NY || i < 0 || i >= NX) { el.innerHTML = ""; return; }
+    const v = decF(WK[wkState.i].above, 1)[j * NX + i];
+    el.innerHTML = `<div class="mono" style="font-size:11px">${h.lat.toFixed(1)}°N ${(-h.lon).toFixed(1)}°W</div>`
+      + `<b>${isFinite(v) ? Math.round(v) + "%" : "–"}</b> of all members above normal`;
+  }
+  $("wkMap").addEventListener("mousemove", ev => { const r = $("wkMap").getBoundingClientRect();
+    wkState.hover = { lon: lonMin + (ev.clientX - r.left) / r.width * (lonMax - lonMin), lat: latMax - (ev.clientY - r.top) / r.height * (latMax - latMin) };
+    renderField($("wkMap"), decF(WK[wkState.i].above, 1), SCALES.agree, null, wkState.hover); wkRead(); });
+
+  // ---------------------------------------------------------------- calibrated outlook
+  const O = D.outlook || [];
+  const ogState = { row: 0, cut: null, mode: "pct" };
+  // Weather + fuels odds for one model's members on day k: the members past the calibrated cutoff
+  // carry the historical odds for "past cutoff" on that day's forecast fuels (FEMS ERC percentile of
+  // the row's area >= the dry percentile or not), the rest carry the "not past" odds.
+  function oddsFor(row, vals, k) {
+    const J = row.joint, F = row.fuels; if (!J || !F || F.erc_pct[k] == null) return NaN;
+    const dry = F.erc_pct[k] >= F.dry_pct;
+    const Lp = J[dry ? "past_dry" : "past_wet"].lift, Ln = J[dry ? "not_dry" : "not_wet"].lift;
+    if (Lp == null || Ln == null) return NaN;
+    const p = frac(vals || [], row.elevated.cutoff, row.tail); return isFinite(p) ? p * Lp + (1 - p) * Ln : NaN;
+  }
+  function pooledOdds(row, k) { const v = models.map(m => row.members[m.key] ? oddsFor(row, row.members[m.key][k], k) : NaN).filter(isFinite);
+    return v.length ? v.reduce((a, b) => a + b) / v.length : NaN; }
+  function oddsColor(o) { if (!isFinite(o)) return "transparent"; if (o < 1) return "var(--surface-2)";
+    const i = o < 1.5 ? 1 : o < 2 ? 2 : o < 3 ? 3 : o < 5 ? 4 : 5; return css("--seq-" + i); }
+  $("ogMode").querySelectorAll("button").forEach(b => b.onclick = () => { ogState.mode = b.dataset.m;
+    $("ogMode").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); drawOutlook(); });
+  const LABELS = { "_min6": " fire-day min gradient", "offshore_kt": "850 hPa offshore wind", "_t850_anom": " 850 hPa temp anomaly", "_z500_anom": " 500 hPa height anomaly" };
+  function niceName(key) {
+    let m;
+    if ((m = key.match(/^(.+)_min6$/))) return `${m[1]} gradient (fire-day min)`;
+    if ((m = key.match(/^([A-Z]{3})850_offshore_kt_(12z|00z)$/))) return `${m[1]} 850 hPa offshore wind (${m[2] === "12z" ? "morning" : "afternoon"})`;
+    if ((m = key.match(/^([A-Z]{3})850_t_(12z|00z)_anom$/))) return `${m[1]} 850 hPa temp anomaly (${m[2] === "12z" ? "morning" : "afternoon"})`;
+    if ((m = key.match(/^([A-Z]{3})500_z_(12z|00z)_anom$/))) return `${m[1]} 500 hPa height anomaly`;
+    if ((m = key.match(/^([A-Z]{3})_rhmin6$/))) return `${m[1]} minimum humidity (%)`;
+    if ((m = key.match(/^([A-Z]{3})_era5_rhmin$/))) return `${m[1]} minimum humidity (ERA5, %)`;
+    if ((m = key.match(/^(.+-.+)_era5$/))) return `${m[1]} gradient (ERA5, fire-day min)`;
+    if ((m = key.match(/^([A-Z]{3})700_dd_(12z|00z)_anom$/))) return `${m[1]} 700 hPa dryness anomaly (${m[2] === "12z" ? "morning" : "afternoon"})`;
+    const HI_ISL = { HI01: "Kauai", HI02: "Oahu", HI03: "Maui Nui", HI04: "Hawaii Island" };
+    if ((m = key.match(/^(HI\d\dN)-(HI\d\dN)_max6$/))) return `trade-wind gradient ${m[1].slice(2)}–${m[2].slice(2)} (fire-day max)`;
+    if ((m = key.match(/^(PH[A-Z]{2})-(PH[A-Z]{2})_(min|max)6$/))) return `${m[1]}–${m[2]} gradient (fire-day ${m[3]})`;
+    if ((m = key.match(/^(PH[A-Z]{2})_rhmin6$/))) return `${m[1]} minimum humidity (%)`;
+    if ((m = key.match(/^(PH[A-Z]{2})850_spd_(12z|00z)$/))) return `${m[1]} 850 hPa trade wind (${m[2] === "12z" ? "night" : "afternoon"}, kt)`;
+    if ((m = key.match(/^(PH[A-Z]{2})700_dd_(12z|00z)$/))) return `${m[1]} 700 hPa dryness (${m[2] === "12z" ? "night" : "afternoon"})`;
+    if ((m = key.match(/^HI_(850spd|850east|700dd)_max$/))) return { "850spd": "trade-wind speed at 850 hPa (m/s)", "850east": "easterly trade wind at 850 hPa (m/s)", "700dd": "700 hPa dryness upstream" }[m[1]];
+    if ((m = key.match(/^(HI0\d)_(vpd_wind|rh_min|wind_max)(_anom)?$/))) return `${HI_ISL[m[1]]} ${{ vpd_wind: "hot-dry-windy", rh_min: "area min humidity", wind_max: "10 m wind" }[m[2]]}${m[3] ? " anomaly" : ""}`;
+    if ((m = key.match(/^([a-z_]+)_capep90$/))) return `${m[1].replace("_", " ")} thunderstorm setup (CAPE)`;
+    if ((m = key.match(/^([a-z_]+)_ltgformula$/))) return `${m[1].replace("_", " ")} lightning formula (expected strikes)`;
+    if ((m = key.match(/^([a-z_]+)_(vpd_wind|rh_min|dry_tstorm)(_anom)?$/))) return `${m[1].replace("_", " ")} ${{vpd_wind: "hot-dry-windy", rh_min: "area min humidity", dry_tstorm: "dry-thunderstorm setup"}[m[2]]}${m[3] ? " anomaly" : ""}`;
+    if ((m = key.match(/^(ONCC|OSCC|CA)_t850_anom$/))) return `${REGION[m[1]]} 850 hPa temp anomaly`;
+    if ((m = key.match(/^(ONCC|OSCC|CA)_z500_anom$/))) return `${REGION[m[1]]} 500 hPa height anomaly`;
+    return key;
+  }
+  const REGION = { ONCC: "Northern California", OSCC: "Southern California", CA: "California", HI: "Hawaii" };
+  function entityName(e) { const [g, s] = e.split("-");
+    if (g === "HI") return "Hawaii, all year (≥300-acre fire days)";
+    return `${REGION[g] || g}${s === "offshore" ? ", offshore season" : s === "lightning" ? ", thunderstorms (May–Oct)" : ", fire season"}`; }
+  const isLtg = row => row.kind === "lightning";
+  const GACCS = ["ONCC", "OSCC", "HI"];
+  const GACC_NAME = { ONCC: "Northern California", OSCC: "Southern California", HI: "Hawaii" };
+  const gaccOf = row => row.entity.split("-")[0];
+  let ogCollapsed = new Set();
+  try { ogCollapsed = new Set(JSON.parse(localStorage.getItem("aie_og_collapsed") || "[]")); } catch (e) { /* storage unavailable */ }
+  // Lightning rows by method: Method 1 = the first build (CAPE thresholds / logistic, IFS ENS + GEFS);
+  // Method 2 = ECMWF's lightning formula (Lopez 2016) on IFS ENS.
+  const ltgMethod = key => /_ltgformula$/.test(key) ? "M2" : "M1";
+  const METHOD = {
+    M1: { short: "Method 1 · CAPE", long: "Method 1: CAPE setup (IFS ENS + GEFS)", tip: "Method 1, the first lightning method: CAPE thresholds fit to NLDN strikes, from the two models that forecast CAPE (ECMWF IFS ENS, NOAA GEFS)" },
+    M2: { short: "Method 2 · ECMWF formula", long: "Method 2: ECMWF lightning formula (Lopez 2016, IFS ENS)", tip: "Method 2: ECMWF's lightning formula (Lopez 2016) on IFS ENS convective fields, calibrated to NLDN strikes. IFS ENS only, 14 fire days; faded past day 7 (low skill, unverified)" } };
+  const ltgFar = (row, k) => isLtg(row) && ltgMethod(row.key) === "M2" && k >= 7;   // 2026-10-23: formula out to day 14
+  const fmtCut = (row, v) => isLtg(row) ? Math.round(v).toString() : v.toFixed(1);
+  const units = key => /_min6$|_max6$|_era5$/.test(key) ? "hPa" : /850_spd_/.test(key) ? "kt" : /^HI_850/.test(key) || /_wind_max/.test(key) ? "m/s" : /offshore_kt/.test(key) ? "kt" : /rhmin|rh_min/.test(key) ? "%"
+    : /z500|500_z/.test(key) ? "m" : /vpd_wind/.test(key) ? "hPa·m/s" : /dry_tstorm/.test(key) ? "share" : /capep90/.test(key) ? "J/kg" : /ltgformula/.test(key) ? "strikes" : "°C";
+  function pooledP(row, k, cut) { const ps = []; for (const m of models) { const mm = row.members[m.key]; if (!mm) continue;
+      const p = frac(mm[k] || [], cut, row.tail); if (isFinite(p)) ps.push(p); } return ps.length ? ps.reduce((a, b) => a + b) / ps.length : NaN; }
+  function seqColor(p) { if (!isFinite(p)) return "transparent"; const i = p < .05 ? 0 : p < .2 ? 1 : p < .4 ? 2 : p < .6 ? 3 : p < .8 ? 4 : 5; return css("--seq-" + i); }
+  function drawOutlook() {
+    if (!O.length) { $("outlookCard").style.display = "none"; return; }
+    const tbl = $("og"); let h = "<tr><th></th>" + days.map((d, i) => `<th>${relDay(d) || fmtDay(d).split(",")[0].split(" ")[0]}<br>${d.slice(5).replace("-", "/")}</th>`).join("") + "</tr>";
+    for (const g of GACCS) { const rows = O.map((row, r) => [row, r]).filter(([row]) => gaccOf(row) === g);
+      if (!rows.length) continue;
+      const open = !ogCollapsed.has(g);
+      h += `<tr><th class="gacc" colspan="${days.length + 1}"><button data-g="${g}" aria-expanded="${open}"><span class="caret">▾</span>`
+        + `<span class="gtag gt-${g}">${g}</span>${GACC_NAME[g]}<span class="cnt">${rows.length} row${rows.length > 1 ? "s" : ""}</span></button></th></tr>`;
+      if (!open) continue;
+      let prevLtg = false;
+      for (const [row, r] of rows) { const op = row.tail === "low" ? "≤" : "≥";
+      if (isLtg(row) && !prevLtg) { const ms = [...new Set(rows.filter(([x]) => isLtg(x)).map(([x]) => ltgMethod(x.key)))];
+        h += `<tr><th class="grp" colspan="${days.length + 1}">Thunderstorms and new lightning fires · fit to 25 years of lightning strikes · `
+          + ms.map(m => METHOD[m].long).join(" + ") + `</th></tr>`; }
+      prevLtg = isLtg(row);
+      h += `<tr class="${r === ogState.row ? "sel" : ""}" data-r="${r}"><td class="lab">${niceName(row.key)} ${op} ${fmtCut(row, row.elevated.cutoff)}`
+        + (isLtg(row) ? `<span class="mtag" title="${METHOD[ltgMethod(row.key)].tip}">${METHOD[ltgMethod(row.key)].short}</span>` : "")
+        + (row.page ? `<a class="about" href="${row.page}" title="${isLtg(row) ? "Lightning history, strike maps and the fires behind this measure" : "Stations, history and the fires behind this measure"}">About ›</a>` : "")
+        + `<span class="ent">${entityName(row.entity)} · ` + (isLtg(row)
+          ? `×${row.elevated.lift_adj.toFixed(1)} usual odds of a ≥${row.ltg.lightning_day}-strike day · AUC ${row.auc.toFixed(2)}`
+          : `×${row.elevated.lift_adj.toFixed(1)} usual odds · AUC ${row.auc.toFixed(2)}`) + `</span></td>`;
+      days.forEach((_, k) => {
+        if (ogState.mode === "odds") { const o = pooledOdds(row, k), dark = isFinite(o) && o >= 3;
+          const pers = (row.fuels && row.fuels.persisted_from && days[k] >= row.fuels.persisted_from) || ltgFar(row, k);
+          h += `<td class="c" data-r="${r}" data-k="${k}" style="background:${oddsColor(o)};color:${dark ? "#fff" : "var(--text)"}${pers ? ";opacity:.7" : ""}">${isFinite(o) ? "×" + o.toFixed(1) : "–"}</td>`;
+        } else { const p = pooledP(row, k, row.elevated.cutoff);
+          const dark = isFinite(p) && p >= .6; h += `<td class="c" data-r="${r}" data-k="${k}" style="background:${seqColor(p)};color:${dark ? "#fff" : "var(--text)"}${ltgFar(row, k) ? ";opacity:.5" : ""}"${ltgFar(row, k) ? ' title="Day 8+: low skill, unverified"' : ""}>${isFinite(p) ? Math.round(100 * p) : "–"}</td>`; } });
+      h += "</tr>"; } }
+    tbl.innerHTML = h;
+    tbl.querySelectorAll("th.gacc button").forEach(b => b.onclick = () => { const g = b.dataset.g;
+      ogCollapsed.has(g) ? ogCollapsed.delete(g) : ogCollapsed.add(g);
+      try { localStorage.setItem("aie_og_collapsed", JSON.stringify([...ogCollapsed])); } catch (e) { /* storage unavailable */ }
+      drawOutlook(); });
+    tbl.querySelectorAll("tr[data-r]").forEach(tr => tr.querySelector("td.lab").addEventListener("click", ev => {
+      if (ev.target.closest("a")) return;           // the About link navigates instead
+      ogState.row = +tr.dataset.r; ogState.cut = null; drawOutlook(); }));
+    tbl.querySelectorAll("td.c").forEach(td => { td.addEventListener("mousemove", ev => { const row = O[+td.dataset.r], k = +td.dataset.k;
+        const odds = ogState.mode === "odds", F = row.fuels;
+        let t = `<b>${fmtDay(days[k])}</b>`;
+        if (ltgFar(row, k)) t += `<br><i>Day ${k + 1}: past day 7 thunderstorm forecasts have little skill (unverified)</i>`;
+        if (odds && F) { const e = F.erc_pct[k], pers = F.persisted_from && days[k] >= F.persisted_from;
+          t += `<br>Forecast ERC: ${e == null ? "–" : Math.round(e) + "th percentile"}${pers ? " (carried from the last FEMS forecast day)" : ""}`
+            + (e == null ? "" : e >= F.dry_pct ? " · critically dry" : " · below the dry threshold"); }
+        t += "<table>";
+        for (const m of models) { const mm = row.members[m.key];
+          const v = !mm ? NaN : odds ? oddsFor(row, mm[k], k) : frac(mm[k] || [], row.elevated.cutoff, row.tail);
+          t += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${!isFinite(v) ? "–" : odds ? "×" + v.toFixed(1) : Math.round(100 * v) + "%"}</td></tr>`; }
+        showTip(t + "</table>", ev.clientX, ev.clientY); }); td.addEventListener("mouseleave", hideTip); });
+    const anyJ = O.some(r => r.joint && r.fuels && r.fuels.erc_pct.some(v => v != null));
+    $("ogModeNote").textContent = ogState.mode === "odds"
+      ? (anyJ ? "How many times the usual odds in each row's area, from the weather (each member past the cutoff or not) "
+          + "combined with the forecast fuels (FEMS ERC percentile across the area, ≥90th = critically dry): a ≥5,000-acre growth day for the "
+          + "weather rows, a new large (≥1,000-acre) lightning fire found that day or the next for the thunderstorm rows. Faded boxes: past the "
+          + "7-day FEMS forecast, the last day's fuels carried forward." : "Fuels forecast not available for this run.")
+      : "";
+    // detail chart
+    const row = O[ogState.row]; const u = units(row.key);
+    let lo = Infinity, hi = -Infinity; for (const m of models) for (const col of (row.members[m.key] || [])) for (const v of col) if (v !== null) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    if (ogState.cut === null) ogState.cut = row.elevated.cutoff;
+    const step = (hi - lo) / 200 || 0.1;
+    $("ogCtrl").innerHTML = `<label>Cutoff <input type="range" id="ogCut" min="${lo.toFixed(2)}" max="${hi.toFixed(2)}" step="${step.toFixed(3)}" value="${ogState.cut}"></label>`
+      + `<span class="mono" id="ogCutVal"></span><button id="ogReset">Calibrated (${fmtCut(row, row.elevated.cutoff)})</button>`
+      + (row.high ? `<button id="ogHigh">High (${fmtCut(row, row.high.cutoff)}, ×${row.high.lift_adj.toFixed(1)})</button>` : "")
+      + (row.refs || []).map((r, i) => `<button class="ogRef" data-i="${i}" title="${r.source}">${r.label} (${fmtCut(row, r.cutoff)}${r.lift ? ", ×" + r.lift.toFixed(1) : ""})</button>`).join("")
+      + (isLtg(row) ? `<span class="note">${ltgMethod(row.key) === "M2" ? "Method 2: ECMWF's lightning formula (Lopez 2016), from ECMWF IFS ENS only, 14 fire days. Days 8–14 are faded: thunderstorm forecasts that far out have little skill and haven't been verified." : "Method 1: CAPE setup, from the two models that forecast CAPE (ECMWF IFS ENS, NOAA GEFS)."} <a href="guide/${ltgMethod(row.key) === "M2" ? "lightning_formula" : "lightning"}.html">How it's made</a></span>` : "");
+    $("ogCutVal").textContent = `${row.tail === "low" ? "≤" : "≥"} ${(+ogState.cut).toFixed(1)} ${u}`;
+    $("ogCut").addEventListener("input", e => { ogState.cut = +e.target.value; drawOutlookChart(); $("ogCutVal").textContent = `${row.tail === "low" ? "≤" : "≥"} ${ogState.cut.toFixed(1)} ${u}`; updateCells(); });
+    $("ogReset").onclick = () => { ogState.cut = row.elevated.cutoff; drawOutlook(); };
+    if (row.high) $("ogHigh").onclick = () => { ogState.cut = row.high.cutoff; drawOutlook(); };
+    $("ogCtrl").querySelectorAll(".ogRef").forEach(bt => bt.onclick = () => { ogState.cut = row.refs[+bt.dataset.i].cutoff; drawOutlook(); });
+    legendRow("ogLegend");
+    drawOutlookChart();
+    function updateCells() { tbl.querySelectorAll(`td.c[data-r="${ogState.row}"]`).forEach(td => { const p = pooledP(row, +td.dataset.k, ogState.cut);
+      td.style.background = seqColor(p); td.style.color = isFinite(p) && p >= .6 ? "#fff" : "var(--text)"; td.textContent = isFinite(p) ? Math.round(100 * p) : "–"; }); }
+  }
+  function drawOutlookChart() {
+    const row = O[ogState.row], cut = ogState.cut;
+    const oddsMode = ogState.mode === "odds";
+    const val = (m, col, k) => oddsMode ? oddsFor(row, col, k) : 100 * frac(col, cut, row.tail);
+    let ymax = 100;
+    if (oddsMode) { ymax = 1.2; for (const m of models) (row.members[m.key] || []).forEach((col, k) => { const o = val(m, col, k); if (isFinite(o)) ymax = Math.max(ymax, o * 1.1); }); }
+    chart({ svg: $("ogChart"), height: 230, x: { min: 0.5, max: days.length + 0.5, ticks: dayTicks },
+      y: { min: 0, max: ymax, label: oddsMode ? "× usual odds" : "% of members", fmt: v => oddsMode ? v.toFixed(1) : v },
+      draw: (g, sx, sy) => { if (oddsMode) el("line", { x1: sx(.5), x2: sx(days.length + .5), y1: sy(1), y2: sy(1), stroke: css("--border") }, g);
+        for (const m of models) { const mm = row.members[m.key]; if (!mm) continue;
+          const pts = mm.map((col, k) => [k + 1, val(m, col, k)]).filter(p => isFinite(p[1]));
+          el("polyline", { points: pts.map(p => sx(p[0]) + "," + sy(p[1])).join(" "), fill: "none", stroke: m.color, "stroke-width": 2, "stroke-dasharray": m.dash ? "6 4" : "" }, g);
+          for (const p of pts) el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 3.2, fill: m.color, stroke: css("--surface"), "stroke-width": 1.5 }, g); } },
+      hover: xv => { const k = Math.round(xv) - 1; if (k < 0 || k >= days.length) return null;
+        let t = `<b>${fmtDay(days[k])}</b> · ${row.tail === "low" ? "≤" : "≥"} ${cut.toFixed(1)} ${units(row.key)}<table>`;
+        for (const m of models) { const mm = row.members[m.key]; if (!mm) continue; const col = mm[k] || []; const p = frac(col, cut, row.tail);
+          const o = oddsFor(row, col, k);
+          t += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${isFinite(p) ? Math.round(100 * p) + "%" : "–"}</td><td class="v">${isFinite(o) ? "×" + o.toFixed(1) : ""}</td><td class="v">med ${isFinite(quant(col, .5)) ? quant(col, .5).toFixed(1) : "–"}</td></tr>`; }
+        return { x: k + 1, html: t + "</table>" }; } });
+  }
+
+  // ---------------------------------------------------------------- member plumes
+  // Members x steps arrive as base64 Int16 (value x 10, -32768 = missing); decoded once per model.
+  function memberRows(d) {
+    if (d._rows) return d._rows;
+    const s = atob(d.m16), nT = d.t.length, rows = [];
+    const dv = new DataView(new ArrayBuffer(s.length)); for (let i = 0; i < s.length; i++) dv.setUint8(i, s.charCodeAt(i));
+    for (let m = 0; m < d.n; m++) { const row = new Array(nT);
+      for (let k = 0; k < nT; k++) { const v = dv.getInt16(2 * (m * nT + k), true); row[k] = v === -32768 ? null : v / 10; }
+      rows.push(row); }
+    return (d._rows = rows);
+  }
+  const S = D.series || [];
+  // 2026-10-23: plume series tagged by area (all current series are California)
+  const serGacc = k => /^(LAX|SoCal)/.test(k) ? "OSCC" : /^(PH|HI)/.test(k) ? "HI" : "ONCC";
+  const serSel = $("ser"); S.forEach((s, i) => { const o = document.createElement("option"); o.value = i; o.textContent = `${serGacc(s.key)} · ${s.key} — ${s.label}`; serSel.appendChild(o); });
+  const serState = { i: 0, cut: null };
+  serSel.addEventListener("change", () => { serState.i = +serSel.value; serState.cut = null; drawSeries(); });
+  function drawSeries() {
+    if (!S.length) return; const s = S[serState.i];
+    if (serState.cut === null) serState.cut = s.ref[0];
+    let lo = Infinity, hi = -Infinity, t0 = Infinity, t1 = -Infinity;
+    const prep = {};
+    for (const m of models) { const d = s.models[m.key]; if (!d) continue; const ts = d.t.map(x => Date.parse(x));
+      const mem = memberRows(d);
+      const cols = ts.map((_, k) => mem.map(row => row[k]));
+      const q = cols.map(c => [quant(c, .1), quant(c, .5), quant(c, .9)]);
+      q.forEach(([a, , c]) => { if (isFinite(a)) lo = Math.min(lo, a); if (isFinite(c)) hi = Math.max(hi, c); });
+      t0 = Math.min(t0, ts[0]); t1 = Math.max(t1, ts[ts.length - 1]); prep[m.key] = { ts, cols, q }; }
+    lo = Math.min(lo, ...s.ref, 0); hi = Math.max(hi, ...s.ref, 0); const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+    const dayMs = 864e5; const ticks = []; for (let t = Math.ceil(t0 / dayMs) * dayMs; t <= t1; t += 2 * dayMs) { const d = new Date(t);
+      ticks.push([t, d.toLocaleDateString("en-US", { weekday: "short", timeZone: "America/Los_Angeles" }) + "\n" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()]); }
+    const fmtT = t => new Date(t).toLocaleString("en-US", { weekday: "short", month: "numeric", day: "numeric", hour: "numeric", timeZone: "America/Los_Angeles" }) + " PT";
+    const nearest = (ts, xv) => { let b = 0; ts.forEach((t, k) => { if (Math.abs(t - xv) < Math.abs(ts[b] - xv)) b = k; }); return b; };
+    $("serCut").innerHTML = `<label>Cutoff <input type="range" id="serCutIn" min="${lo.toFixed(1)}" max="${hi.toFixed(1)}" step="0.5" value="${serState.cut}"></label> `
+      + `<span class="mono" id="serCutVal">${s.tail === "low" ? "≤" : "≥"} ${serState.cut} ${s.units}</span>`;
+    $("serCutIn").addEventListener("input", e => { serState.cut = +e.target.value; $("serCutVal").textContent = `${s.tail === "low" ? "≤" : "≥"} ${serState.cut} ${s.units}`; drawProb(); drawPlume(); });
+    legendRow("serLegend");
+    function drawPlume() {
+      chart({ svg: $("serChart"), height: 230, xlab: false, x: { min: t0, max: t1, ticks }, y: { min: lo, max: hi, label: s.units },
+        draw: (g, sx, sy) => { el("line", { x1: sx(t0), x2: sx(t1), y1: sy(serState.cut), y2: sy(serState.cut), stroke: css("--text"), "stroke-width": 1.2, "stroke-dasharray": "5 4" }, g);
+          for (const m of models) { const p = prep[m.key]; if (!p) continue;
+            const top = p.ts.map((t, k) => [t, p.q[k][2]]).filter(v => isFinite(v[1])), bot = p.ts.map((t, k) => [t, p.q[k][0]]).filter(v => isFinite(v[1])).reverse();
+            el("polygon", { points: top.concat(bot).map(v => sx(v[0]) + "," + sy(v[1])).join(" "), fill: m.color, "fill-opacity": .13, stroke: "none" }, g);
+            el("polyline", { points: p.ts.map((t, k) => [t, p.q[k][1]]).filter(v => isFinite(v[1])).map(v => sx(v[0]) + "," + sy(v[1])).join(" "),
+              fill: "none", stroke: m.color, "stroke-width": 2, "stroke-dasharray": m.dash ? "6 4" : "" }, g); } },
+        hover: xv => { let html = "", xs = null; for (const m of models) { const p = prep[m.key]; if (!p) continue; const k = nearest(p.ts, xv); xs = xs ?? p.ts[k];
+            html += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${isFinite(p.q[k][1]) ? p.q[k][1].toFixed(1) : "–"}</td><td class="v">${isFinite(p.q[k][0]) ? p.q[k][0].toFixed(1) + "…" + p.q[k][2].toFixed(1) : ""}</td></tr>`; }
+          return xs === null ? null : { x: xs, html: `<b>${fmtT(xs)}</b> · median, 10–90%<table>${html}</table>` }; } });
+    }
+    function drawProb() {
+      chart({ svg: $("serProb"), height: 170, x: { min: t0, max: t1, ticks }, y: { min: 0, max: 100, label: "% members" },
+        draw: (g, sx, sy) => { for (const m of models) { const p = prep[m.key]; if (!p) continue;
+            const pts = p.ts.map((t, k) => [t, 100 * frac(p.cols[k], serState.cut, s.tail)]).filter(v => isFinite(v[1]));
+            el("polyline", { points: pts.map(v => sx(v[0]) + "," + sy(v[1])).join(" "), fill: "none", stroke: m.color, "stroke-width": 2, "stroke-dasharray": m.dash ? "6 4" : "" }, g); } },
+        hover: xv => { let html = "", xs = null; for (const m of models) { const p = prep[m.key]; if (!p) continue; const k = nearest(p.ts, xv); xs = xs ?? p.ts[k];
+            const f = frac(p.cols[k], serState.cut, s.tail); html += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${isFinite(f) ? Math.round(100 * f) + "%" : "–"}</td></tr>`; }
+          return xs === null ? null : { x: xs, html: `<b>${fmtT(xs)}</b> · ${s.tail === "low" ? "≤" : "≥"} ${serState.cut} ${s.units}<table>${html}</table>` }; } });
+    }
+    drawPlume(); drawProb();
+  }
+
+  // ---------------------------------------------------------------- regimes
+  const R = D.regimes;
+  function drawRegimes() {
+    if (!R) { $("regCard").style.display = "none"; return; }
+    const th = $("regThumbs"); th.innerHTML = "";
+    const RG = R.grid, rLonMin = RG.lon0 - RG.dlon / 2, rLonMax = RG.lon0 + (RG.nx - .5) * RG.dlon, rLatMax = RG.lat0 - RG.dlat / 2, rLatMin = RG.lat0 + (RG.ny - .5) * RG.dlat;
+    const ra = ((rLonMax - rLonMin) * Math.cos((rLatMin + rLatMax) / 2 * Math.PI / 180)) / Math.abs(rLatMax - rLatMin);
+    R.letters.forEach((L, c) => { const fig = document.createElement("figure"); const cv = document.createElement("canvas");
+      const href = R.pages && R.pages[L]; const holder = href ? Object.assign(document.createElement("a"), { href, title: `About regime ${L}` }) : fig;
+      if (href) fig.appendChild(holder); holder.appendChild(cv);
+      const cap = document.createElement("figcaption"); cap.innerHTML = `<b>${L}</b> · ${Math.round(100 * R.freq[c])}% of days · N. CA ×${R.lift.ONCC[c].toFixed(1)}, S. CA ×${R.lift.OSCC[c].toFixed(1)}`;
+      if (href) cap.innerHTML += ' <span class="note">About ›</span>';
+      holder.appendChild(cap); th.appendChild(fig);
+      const W = cv.clientWidth || 150, H = Math.round(W / ra), dpr = window.devicePixelRatio || 1; cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+      const cx = cv.getContext("2d"); cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const a = dec(R.composites[c]); const o2 = document.createElement("canvas"); o2.width = RG.nx; o2.height = RG.ny; const oc = o2.getContext("2d"); const img = oc.createImageData(RG.nx, RG.ny);
+      for (let i = 0; i < a.length; i++) { const v = a[i] === -128 ? NaN : a[i] * 4; const col = colorOf(SCALES.z500a, v); img.data.set(col ? hexRGB(col) : [0, 0, 0, 0], i * 4); }
+      oc.putImageData(img, 0, 0); cx.imageSmoothingEnabled = true; cx.drawImage(o2, 0, 0, W, H);
+      const P = (lon, lat) => [(lon - rLonMin) / (rLonMax - rLonMin) * W, (rLatMax - lat) / (rLatMax - rLatMin) * H];
+      for (const [set, col, w] of [[D.lines.country, css("--line-country"), .6], [D.lines.region, css("--line-region"), .9]]) { cx.strokeStyle = col; cx.lineWidth = w; cx.beginPath();
+        for (const ln of set) for (let i = 0; i < ln.length; i += 2) { const [x, y] = P(ln[i], ln[i + 1]); if (i === 0) cx.moveTo(x, y); else cx.lineTo(x, y); } cx.stroke(); } });
+    // pooled probability table
+    const pooled = R.letters.map((_, c) => days.map((_, k) => { const ps = models.map(m => R.probs[m.key] ? R.probs[m.key][c][k] : null).filter(v => v !== null);
+      return ps.length ? ps.reduce((a, b) => a + b) / ps.length : NaN; }));
+    let h = "<tr><th></th>" + days.map(d => `<th>${relDay(d) ? relDay(d) + "<br>" : ""}${d.slice(5).replace("-", "/")}</th>`).join("") + "</tr>";
+    R.letters.forEach((L, c) => { h += `<tr><td class="lab" style="cursor:default">Regime ${L}</td>`;
+      days.forEach((_, k) => { const p = pooled[c][k]; h += `<td class="c" data-c="${c}" data-k="${k}" style="background:${seqColor(p)};color:${isFinite(p) && p >= .6 ? "#fff" : "var(--text)"}">${isFinite(p) && p >= .05 ? Math.round(100 * p) : ""}</td>`; });
+      h += "</tr>"; });
+    const tbl = $("regTable"); tbl.innerHTML = h;
+    tbl.querySelectorAll("td.c").forEach(td => { td.addEventListener("mousemove", ev => { const c = +td.dataset.c, k = +td.dataset.k;
+        let t = `<b>Regime ${R.letters[c]} · ${fmtDay(days[k])}</b><table>`; for (const m of models) { const v = R.probs[m.key] ? R.probs[m.key][c][k] : null;
+          t += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${v === null ? "–" : Math.round(100 * v) + "%"}</td></tr>`; }
+        showTip(t + "</table>", ev.clientX, ev.clientY); }); td.addEventListener("mouseleave", hideTip); });
+    const odds = { ONCC: [], OSCC: [] };
+    for (const g of ["ONCC", "OSCC"]) odds[g] = days.map((_, k) => { let s = 0, ok = false; R.letters.forEach((_, c) => { if (isFinite(pooled[c][k])) { s += pooled[c][k] * R.lift[g][c]; ok = true; } }); return ok ? s : NaN; });
+    const all = odds.ONCC.concat(odds.OSCC).filter(isFinite);
+    const lo = Math.min(0.5, ...all) - .05, hi = Math.max(1.5, ...all) + .05;
+    $("regLegend").innerHTML = `<span><span class="sw" style="border-color:var(--text)"></span>Northern California</span><span><span class="sw dash" style="border-color:var(--text-dim)"></span>Southern California</span>`;
+    chart({ svg: $("regChart"), height: 190, x: { min: .5, max: days.length + .5, ticks: dayTicks }, y: { min: lo, max: hi, label: "× usual odds", fmt: v => v.toFixed(2) },
+      draw: (g, sx, sy) => { el("line", { x1: sx(.5), x2: sx(days.length + .5), y1: sy(1), y2: sy(1), stroke: css("--border") }, g);
+        [["ONCC", css("--text"), ""], ["OSCC", css("--text-dim"), "6 4"]].forEach(([k, col, dash]) => { const pts = odds[k].map((v, i) => [i + 1, v]).filter(p => isFinite(p[1]));
+          el("polyline", { points: pts.map(p => sx(p[0]) + "," + sy(p[1])).join(" "), fill: "none", stroke: col, "stroke-width": 2, "stroke-dasharray": dash }, g);
+          for (const p of pts) el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 3, fill: col }, g); }); },
+      hover: xv => { const k = Math.round(xv) - 1; if (k < 0 || k >= days.length) return null;
+        return { x: k + 1, html: `<b>${fmtDay(days[k])}</b><table><tr><td>Northern California</td><td class="v">×${isFinite(odds.ONCC[k]) ? odds.ONCC[k].toFixed(2) : "–"}</td></tr><tr><td>Southern California</td><td class="v">×${isFinite(odds.OSCC[k]) ? odds.OSCC[k].toFixed(2) : "–"}</td></tr></table>` }; } });
+  }
+
+  drawMap(); drawWeeks(); drawOutlook(); drawSeries(); drawRegimes();
+})();
+</script>
+</body>
+</html>
