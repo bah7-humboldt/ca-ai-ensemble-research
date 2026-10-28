@@ -1,0 +1,584 @@
+{
+  "_comment": "Settings for the AI ensemble pattern products (scripts/ai_ensemble_*.py; docs/ai_ensembles/README.md). Open AI ensembles (ECMWF AIFS ENS, NOAA AIGEFS) with physics baselines (ECMWF IFS ENS, NOAA GEFS), cut to the West, plus a calibration against satellite large-fire growth days. The local products are not published; the interactive research viewer is (web_publish), framed as experimental research from public data (analyst, 2026-10-10). Paths are relative to the repo root.",
+  "_comment_enabled": "enabled: whether the scheduled daily run (scripts/ai_ensemble_daily.py) does anything; --force runs anyway.",
+  "enabled": true,
+  "_comment_dirs": "data_dir: fetched runs, climatology and the calibration history. output_dir: one folder per products run, latest/ (newest complete set) and logs/.",
+  "data_dir": "data/ai_ensembles",
+  "output_dir": "data/outputs/ai_ensembles",
+  "_comment_task": "Daily task start (local time; scripts/setup_ai_ensemble_task.ps1). All four 00Z runs are posted by ~01:00 PDT; AIGEFS takes ~1 h from NOMADS, so 02:30 has products ready ~03:45, well before 06:00. The 06Z runs don't finish until after 05:00, so a run started then always uses 00Z.",
+  "task_hour_local": 2,
+  "task_minute_local": 30,
+  "_comment_keep": "keep_output_runs: dated products folders kept in output_dir (latest/ is separate). keep_cycles: fetched runs kept per model in data_dir/runs/ (~75-130 MB each).",
+  "keep_output_runs": 14,
+  "_comment_web": "web_export: build the interactive research viewer (<output_dir>/web/, scripts/ai_ensemble_web_export.py) on every daily run. web_publish: also push it to GitHub Pages (config/github_pages_config.json's ai_ensemble_clone_path, e.g. bah7-humboldt.github.io/ca-ai-ensemble-research); each push replaces the repo history so it holds one day. Public page, framed as experimental research from public data (analyst 2026-10-10); only the openly licensed models are ever exported. web_publish false since 2026-10-28: the site is built and deployed by the GitHub Actions cloud run (docs/ai_ensembles/README.md, Cloud run); turning it back on would push to main of the pipeline repo.",
+  "web_export": true,
+  "web_publish": false,
+  "_comment_pyroconvection_page": "pyroconvection_page: add the research viewer's guide/pyroconvection.html (pyroCb / pyroCu days of seven California fires against this project's 500 hPa regimes and documented patterns, the PFT ingredient thresholds, soundings) plus a pyroconvection line on each regime page. Reads <data_dir>/history/calibration/pyroconv/ (exported by scripts/pyrocb_patterns.py). Added 2026-10-17; turned on 2026-10-17 after the analyst reviewed the local preview (the viewer is public).",
+  "pyroconvection_page": true,
+  "domain": {
+    "lat_min": 15.0,
+    "lat_max": 65.0,
+    "lon_min": -170.0,
+    "lon_max": -100.0,
+    "res": 0.5
+  },
+  "step_h": 12,
+  "precip_step_h": 6,
+  "max_lead_h": 360,
+  "fields": [
+    "z500",
+    "msl",
+    "u850",
+    "v850",
+    "t850",
+    "tp"
+  ],
+  "_comment_extra_fields": "extra_fields: per-model fields beyond 'fields' (added 2026-10-11): 700 hPa temperature + humidity (700 hPa dryness), 2 m temperature + dewpoint / RH (surface RH), CAPE where published. AIGEFS has no surface humidity and no CAPE; AIFS has no CAPE. u10/v10: 10 m wind, for the footprint Hot-Dry-Windy analogue.",
+  "extra_fields": {
+    "aifs_ens": [
+      "t700",
+      "q700",
+      "t2m",
+      "d2m",
+      "u10",
+      "v10"
+    ],
+    "ifs_ens": [
+      "t700",
+      "q700",
+      "t2m",
+      "d2m",
+      "cape",
+      "u10",
+      "v10"
+    ],
+    "aigefs": [
+      "t700",
+      "q700",
+      "t2m",
+      "u10",
+      "v10"
+    ],
+    "gefs": [
+      "t700",
+      "rh700",
+      "t2m",
+      "rh2m",
+      "cape",
+      "u10",
+      "v10"
+    ]
+  },
+  "keep_cycles": 4,
+  "models": {
+    "aifs_ens": {
+      "enabled": true,
+      "label": "ECMWF AIFS ENS (AI)",
+      "kind": "ai"
+    },
+    "aigefs": {
+      "enabled": true,
+      "label": "NOAA AIGEFS (AI)",
+      "kind": "ai"
+    },
+    "ifs_ens": {
+      "enabled": true,
+      "label": "ECMWF IFS ENS (physics)",
+      "kind": "physics"
+    },
+    "gefs": {
+      "enabled": true,
+      "label": "NOAA GEFS (physics)",
+      "kind": "physics"
+    },
+    "weathernext3": {
+      "enabled": false,
+      "label": "Google WeatherNext 3 (AI)",
+      "kind": "ai",
+      "_note": "Google DeepMind access requested 2026-10-10 (GCS Zarr). Experimental terms; stub in ai_ensemble_sources.py."
+    }
+  },
+  "points": {
+    "SFO": [
+      37.62,
+      -122.37
+    ],
+    "SAC": [
+      38.51,
+      -121.49
+    ],
+    "WMC": [
+      40.9,
+      -117.81
+    ],
+    "RNO": [
+      39.5,
+      -119.77
+    ],
+    "RDD": [
+      40.51,
+      -122.29
+    ],
+    "MFR": [
+      42.37,
+      -122.87
+    ],
+    "LAX": [
+      33.94,
+      -118.41
+    ],
+    "DAG": [
+      34.85,
+      -116.79
+    ],
+    "TPH": [
+      38.06,
+      -117.09
+    ],
+    "NorthBay850": [
+      38.5,
+      -122.4
+    ],
+    "SacValley850": [
+      39.8,
+      -122.2
+    ],
+    "SoCal850": [
+      34.3,
+      -118.4
+    ],
+    "PHLI": [
+      21.98,
+      -159.34
+    ],
+    "PHNL": [
+      21.32,
+      -157.92
+    ],
+    "PHOG": [
+      20.9,
+      -156.43
+    ],
+    "PHNY": [
+      20.79,
+      -156.95
+    ],
+    "PHMK": [
+      21.15,
+      -157.1
+    ],
+    "PHKO": [
+      19.74,
+      -156.05
+    ],
+    "PHTO": [
+      19.72,
+      -155.05
+    ],
+    "HI30N": [
+      30.0,
+      -157.0
+    ],
+    "HI25N": [
+      25.0,
+      -157.0
+    ],
+    "HI19N": [
+      19.0,
+      -157.0
+    ],
+    "SMX": [
+      34.9,
+      -120.45
+    ],
+    "SBA": [
+      34.43,
+      -119.84
+    ]
+  },
+  "_gradients_note": "MSLP difference first minus second, hPa; offshore = negative. Thresholds are STARTING POINTS to calibrate against past events, not established criteria.",
+  "gradients": [
+    {
+      "name": "SFO-WMC",
+      "a": "SFO",
+      "b": "WMC",
+      "label": "Diablo / NorCal offshore",
+      "thresholds": [
+        -8,
+        -12
+      ]
+    },
+    {
+      "name": "SFO-SAC",
+      "a": "SFO",
+      "b": "SAC",
+      "label": "Bay Area-Valley offshore",
+      "thresholds": [
+        -2,
+        -4
+      ]
+    },
+    {
+      "name": "RDD-MFR",
+      "a": "RDD",
+      "b": "MFR",
+      "label": "Sacramento Valley north wind",
+      "thresholds": [
+        -4,
+        -7
+      ]
+    },
+    {
+      "name": "LAX-DAG",
+      "a": "LAX",
+      "b": "DAG",
+      "label": "Santa Ana (LAX-Daggett)",
+      "thresholds": [
+        -4,
+        -6
+      ]
+    },
+    {
+      "name": "LAX-TPH",
+      "a": "LAX",
+      "b": "TPH",
+      "label": "Santa Ana (LAX-Tonopah)",
+      "thresholds": [
+        -6,
+        -9
+      ]
+    },
+    {
+      "name": "SAC-MFR",
+      "a": "SAC",
+      "b": "MFR",
+      "_comment": "North-wind gradient (2026-10-13): Sacramento minus Medford, after the NWS Redding north-wind technique (MFR -> RBL -> SAC gradient) in 'Critical Fire Weather Patterns of the United States'. Negative = higher pressure at Medford (northerly). Top 2 % of MFR-SAC ran x2.7 for >= 1,000-ac Sacramento Valley / Northwestern Mountains growth days, 2001-2025.",
+      "label": "Sacramento minus Medford (north wind)",
+      "thresholds": [
+        -8.3,
+        -11.6
+      ]
+    }
+  ],
+  "_wind850_note": "850 hPa wind blowing FROM a direction inside dir_from (degrees, clockwise) at or above min_kt counts as offshore. Starting points to calibrate.",
+  "wind850": [
+    {
+      "point": "NorthBay850",
+      "label": "North Bay 850 hPa NE-E wind",
+      "dir_from": [
+        0,
+        110
+      ],
+      "min_kt": 25
+    },
+    {
+      "point": "SacValley850",
+      "label": "Sac Valley 850 hPa N-NE wind",
+      "dir_from": [
+        330,
+        60
+      ],
+      "min_kt": 25
+    },
+    {
+      "point": "SoCal850",
+      "label": "SoCal 850 hPa NE-E wind",
+      "dir_from": [
+        0,
+        110
+      ],
+      "min_kt": 25
+    }
+  ],
+  "_comment_rh_stations": "rh_stations: ASOS sites whose fire-day minimum RH (and strongest wind/gust) are calibrated as surface-dryness predictors (added 2026-10-11). The forecast side reads the models' 2 m temperature + dewpoint (RH for GEFS) at the nearest 0.5 deg cell; AIGEFS has no surface humidity. Each belongs to the footprint listed in 'footprints'.",
+  "rh_stations": {
+    "SAC": [
+      38.51,
+      -121.49
+    ],
+    "RDD": [
+      40.51,
+      -122.29
+    ],
+    "STS": [
+      38.51,
+      -122.81
+    ],
+    "BUR": [
+      34.2,
+      -118.36
+    ],
+    "ONT": [
+      34.06,
+      -117.6
+    ],
+    "PRB": [
+      35.67,
+      -120.63
+    ]
+  },
+  "regions": {
+    "ONCC": "config/oncc_boundary.geojson",
+    "OSCC": "config/oscc_boundary.geojson"
+  },
+  "t850_anom_threshold_c": 4.0,
+  "wetting_rain_mm": 6.35,
+  "map_days": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "compare_days": [
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14
+  ],
+  "scenarios": {
+    "windows_days": [
+      [
+        3,
+        7
+      ],
+      [
+        8,
+        14
+      ]
+    ],
+    "k": 4,
+    "n_eofs": 10,
+    "box": {
+      "lat_min": 25.0,
+      "lat_max": 60.0,
+      "lon_min": -160.0,
+      "lon_max": -105.0
+    }
+  },
+  "_comment_footprints": "footprints: the PSAs each measure is scored against (analyst 2026-10-10: \"the patterns need to match the actual growth footprint from the satellite detections\"). A measure's large-growth days are counted from satellite growth inside its footprint's PSAs only, not the whole GACC. 'members' lists the gradient names (A-B) and sounding sites (OAK...) that use it; region-mean measures use their whole GACC. Each has >= 30 days of >= 5,000 ac in its offshore season (checked 2026-10-10).",
+  "footprints": {
+    "diablo": {
+      "gacc": "ONCC",
+      "label": "Bay Area, North Bay and Sacramento Valley foothills (Diablo / North wind)",
+      "psas": [
+        "NC02",
+        "NC03A",
+        "NC03B",
+        "NC05"
+      ],
+      "members": [
+        "SFO-WMC",
+        "SFO-SAC",
+        "OAK",
+        "STS",
+        "SAC"
+      ]
+    },
+    "northwind": {
+      "gacc": "ONCC",
+      "label": "Sacramento Valley, its foothills and the Northwestern Mountains (north wind)",
+      "psas": [
+        "NC02",
+        "NC04",
+        "NC05"
+      ],
+      "members": [
+        "RDD",
+        "RDD-MFR",
+        "SAC-MFR"
+      ]
+    },
+    "far_north": {
+      "gacc": "ONCC",
+      "label": "North Coast, Northwestern Mountains and Northeast California",
+      "psas": [
+        "NC01",
+        "NC04",
+        "NC06"
+      ],
+      "members": [
+        "MFR"
+      ]
+    },
+    "east_side": {
+      "gacc": "ONCC",
+      "label": "Northeast California, Northern Sierra and Far Eastside",
+      "psas": [
+        "NC06",
+        "NC07",
+        "NC08"
+      ],
+      "members": [
+        "REV"
+      ]
+    },
+    "santa_ana": {
+      "gacc": "OSCC",
+      "label": "Central and South Coast and the Southern California mountains (Santa Ana)",
+      "psas": [
+        "SC07",
+        "SC08",
+        "SC09",
+        "SC10",
+        "SC11"
+      ],
+      "members": [
+        "LAX-DAG",
+        "LAX-TPH",
+        "BUR",
+        "ONT"
+      ]
+    },
+    "central_coast": {
+      "gacc": "OSCC",
+      "label": "Central Coast, Central Coast Interior and South Coast",
+      "psas": [
+        "SC06",
+        "SC07",
+        "SC08"
+      ],
+      "members": [
+        "PRB",
+        "VBG"
+      ]
+    },
+    "san_diego": {
+      "gacc": "OSCC",
+      "label": "South Coast and the Eastern and Southern Mountains",
+      "psas": [
+        "SC08",
+        "SC10",
+        "SC11"
+      ],
+      "members": [
+        "NKX"
+      ]
+    }
+  },
+  "_comment_natural_earth_dir": "Natural Earth 50m country/state lines for the maps -- the copy the Rx window tool caches. Missing files just leave the lines off.",
+  "natural_earth_dir": "data/rx_window/cache",
+  "lightning_src": "incoming/Lightning",
+  "_comment_lightning_src": "Vaisala NLDN strike exports ({ONCC,OSCC}/*.csv), read by ai_ensemble_history_lightning.py. LICENSE: raw strikes are never redistributed or offered for download; derived counts and heat maps may be published.",
+  "_comment_lightning_lopez": "Lightning formula layer (ai_ensemble_lightning_lopez.py, added 2026-10-22): the ECMWF IFS lightning parameterization's shape (Lopez 2016) on IFS ENS open-data fields, calibrated to NLDN. enabled: fetch it in the daily run (~3.9 GB of byte ranges, ~5 min) and show it on the research viewer. max_lead_h: last IFS ENS step fetched (180 = seven fire days). Needs calibration/lightning_lopez.json (ai_ensemble_lightning_lopez_calibrate.py).",
+  "lightning_lopez": {
+    "enabled": true,
+    "max_lead_h": 360
+  },
+  "hawaii": {
+    "_comment": "Hawaii (2026-10-13, analyst: 'California and Hawaii for focus'). Island groups as footprints (config/hawaii_psa/HAWAII_PSA.shp, ai_ensemble_history_hawaii.py). Station gradients along the chain; the trade-wind north-south gradient comes from ERA5 / the models.",
+    "gradients": [
+      {
+        "name": "PHLI-PHTO",
+        "a": "PHLI",
+        "b": "PHTO"
+      },
+      {
+        "name": "PHLI-PHOG",
+        "a": "PHLI",
+        "b": "PHOG"
+      },
+      {
+        "name": "PHNL-PHTO",
+        "a": "PHNL",
+        "b": "PHTO"
+      }
+    ],
+    "stations": {
+      "PHLI": [
+        21.98,
+        -159.34
+      ],
+      "PHNL": [
+        21.32,
+        -157.92
+      ],
+      "PHOG": [
+        20.9,
+        -156.43
+      ],
+      "PHNY": [
+        20.79,
+        -156.95
+      ],
+      "PHMK": [
+        21.15,
+        -157.1
+      ],
+      "PHKO": [
+        19.74,
+        -156.05
+      ],
+      "PHTO": [
+        19.72,
+        -155.05
+      ],
+      "PHJR": [
+        21.31,
+        -158.07
+      ]
+    },
+    "footprints": {
+      "HI01": {
+        "label": "Kauai",
+        "psas": [
+          "HI01"
+        ]
+      },
+      "HI02": {
+        "label": "Oahu",
+        "psas": [
+          "HI02"
+        ]
+      },
+      "HI03": {
+        "label": "Maui Nui (Maui, Molokai, Lanai)",
+        "psas": [
+          "HI03"
+        ]
+      },
+      "HI04": {
+        "label": "Hawaii Island",
+        "psas": [
+          "HI04"
+        ]
+      }
+    },
+    "thresholds": [
+      300,
+      1000
+    ],
+    "model_gradients": [
+      {
+        "name": "HI25N-HI19N",
+        "a": "HI25N",
+        "b": "HI19N"
+      },
+      {
+        "name": "HI30N-HI19N",
+        "a": "HI30N",
+        "b": "HI19N"
+      }
+    ]
+  },
+  "_comment_domain_hawaii": "lat_min 20 -> 15 on 2026-10-13 so the whole of Hawaii Island (18.9 N) and the trade-wind gradient south of the chain are in the grid.",
+  "sundowner": {
+    "a": "SMX",
+    "b": "SBA",
+    "_comment": "Sundowner gradient, Santa Maria minus Santa Barbara (DRI CEFA). Used by ai_ensemble_cefa_patterns.py (evening max); not a calibrated outlook row -- AUC 0.53 against Santa Barbara-area growth, 2001-2025. Its sign is the opposite of the offshore gradients, so it isn't in 'gradients' (those are scored by their minimum)."
+  },
+  "_comment_keep_cycles": "Full runs kept per model in <data_dir>/runs/ (about 0.8 GB per day for all four). 4 since 2026-10-14 so the research viewer's run selector can show today plus the previous three daily runs."
+}

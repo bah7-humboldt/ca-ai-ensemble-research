@@ -1,0 +1,9 @@
+# Fetched model runs and built products are made by the run, never committed.
+data/ai_ensembles/runs/
+data/ai_ensembles/archive/
+data/ai_ensembles/nfdrs/
+data/outputs/
+__pycache__/
+# station CSVs the CurrentYear refresh downloads (only the PSA/station DOY + extremes files are kept)
+data/historic_fires_research/*/CurrentYear/*/[0-9]*.csv
+!data/historic_fires_research/*/CurrentYear/*/*_DOY.csv

@@ -1,0 +1,2155 @@
+{
+ "regime_descriptions": {
+  "A": "This pattern has a ridge (heights +65 m above normal) centered near the northeast Pacific and a trough (-58 m) centered near the Gulf of Alaska, with near-normal heights over California.",
+  "B": "This pattern has a ridge (heights +106 m above normal) centered near the northeast Pacific and a trough (-99 m) centered near the Pacific Northwest, with lower than normal heights over California (cooler, more onshore flow, more chance of showers).",
+  "C": "This pattern has a ridge (heights +164 m above normal) centered near British Columbia and a trough (-41 m) centered near the northeast Pacific, with higher than normal heights over California (warm, dry, sinking air).",
+  "D": "This pattern has a ridge (heights +105 m above normal) centered near British Columbia and a trough (-124 m) centered near the northeast Pacific, with higher than normal heights over California (warm, dry, sinking air).",
+  "E": "This pattern has a ridge (heights +63 m above normal) centered near the northern Rockies and a trough (-182 m) centered near the northeast Pacific, with near-normal heights over California.",
+  "F": "This pattern has a ridge (heights +218 m above normal) centered near the northeast Pacific and a trough (-96 m) centered near the northern Rockies, with lower than normal heights over California (cooler, more onshore flow, more chance of showers)."
+ },
+ "regime_by_class": {
+  "pyroCb": {
+   "A": {
+    "days": 3,
+    "share": 0.23,
+    "lift": 0.8
+   },
+   "B": {
+    "days": 1,
+    "share": 0.08,
+    "lift": 0.61
+   },
+   "C": {
+    "days": 5,
+    "share": 0.38,
+    "lift": 1.5
+   },
+   "D": {
+    "days": 4,
+    "share": 0.31,
+    "lift": 1.84
+   },
+   "E": {
+    "days": 0,
+    "share": 0.0,
+    "lift": 0.0
+   },
+   "F": {
+    "days": 0,
+    "share": 0.0,
+    "lift": 0.0
+   }
+  },
+  "pyroCu": {
+   "A": {
+    "days": 12,
+    "share": 0.22,
+    "lift": 0.77
+   },
+   "B": {
+    "days": 11,
+    "share": 0.2,
+    "lift": 1.61
+   },
+   "C": {
+    "days": 17,
+    "share": 0.31,
+    "lift": 1.23
+   },
+   "D": {
+    "days": 8,
+    "share": 0.15,
+    "lift": 0.89
+   },
+   "E": {
+    "days": 4,
+    "share": 0.07,
+    "lift": 0.91
+   },
+   "F": {
+    "days": 2,
+    "share": 0.04,
+    "lift": 0.47
+   }
+  },
+  "ambiguous": {
+   "A": {
+    "days": 10,
+    "share": 0.13,
+    "lift": 0.45
+   },
+   "B": {
+    "days": 9,
+    "share": 0.12,
+    "lift": 0.94
+   },
+   "C": {
+    "days": 21,
+    "share": 0.28,
+    "lift": 1.08
+   },
+   "D": {
+    "days": 22,
+    "share": 0.29,
+    "lift": 1.73
+   },
+   "E": {
+    "days": 11,
+    "share": 0.14,
+    "lift": 1.78
+   },
+   "F": {
+    "days": 3,
+    "share": 0.04,
+    "lift": 0.5
+   }
+  },
+  "none": {
+   "A": {
+    "days": 117,
+    "share": 0.34,
+    "lift": 1.16
+   },
+   "B": {
+    "days": 41,
+    "share": 0.12,
+    "lift": 0.93
+   },
+   "C": {
+    "days": 83,
+    "share": 0.24,
+    "lift": 0.93
+   },
+   "D": {
+    "days": 48,
+    "share": 0.14,
+    "lift": 0.83
+   },
+   "E": {
+    "days": 25,
+    "share": 0.07,
+    "lift": 0.88
+   },
+   "F": {
+    "days": 34,
+    "share": 0.1,
+    "lift": 1.23
+   }
+  }
+ },
+ "patterns_by_class": {
+  "nc_dry_tstorm": {
+   "pyroCb": 1,
+   "pyroCu": 2,
+   "ambiguous": 9,
+   "none": 4,
+   "all_days": 16
+  },
+  "nc_ne_foehn": {
+   "pyroCb": 1,
+   "pyroCu": 4,
+   "ambiguous": 3,
+   "none": 41,
+   "all_days": 49
+  },
+  "nc_sw_foehn": {
+   "pyroCb": 0,
+   "pyroCu": 4,
+   "ambiguous": 3,
+   "none": 22,
+   "all_days": 29
+  },
+  "breakdown_stage2": {
+   "pyroCb": 1,
+   "pyroCu": 2,
+   "ambiguous": 5,
+   "none": 9,
+   "all_days": 17
+  },
+  "breakdown_stage3": {
+   "pyroCb": 0,
+   "pyroCu": 2,
+   "ambiguous": 1,
+   "none": 13,
+   "all_days": 16
+  },
+  "ridge_persists": {
+   "pyroCb": 8,
+   "pyroCu": 21,
+   "ambiguous": 32,
+   "none": 104,
+   "all_days": 165
+  }
+ },
+ "ne_foehn_cutoff_hpa": -8.9,
+ "composites": {
+  "pyroCb": {
+   "n": 13,
+   "png": "composite_pyroCb.png",
+   "text": "This pattern has a ridge (heights +98 m above normal) centered near British Columbia and a trough (-38 m) centered near the northeast Pacific, with higher than normal heights over California (warm, dry, sinking air)."
+  },
+  "pyroCu": {
+   "n": 45,
+   "png": "composite_pyroCu.png",
+   "text": "This pattern has a ridge (heights +56 m above normal) centered near the Pacific Northwest and a trough (-35 m) centered near British Columbia, with higher than normal heights over California (warm, dry, sinking air)."
+  },
+  "big_none": {
+   "n": 30,
+   "png": "composite_big_none.png",
+   "text": "This pattern has a ridge (heights +51 m above normal) centered near California and a trough (-30 m) centered near the northern Rockies, with higher than normal heights over California (warm, dry, sinking air)."
+  }
+ },
+ "cases": [
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-07-18",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 224.2272743562,
+   "ratio_max": 0.2624867373,
+   "q_ml_gkg": 3.6341890496,
+   "u_ml": 8.3352614687,
+   "growth_ac": 27016.0313558052,
+   "bt_rooted_min": -38.6845092773
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-07-19",
+   "final_class": "pyroCb",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": true,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 56.5668873893,
+   "ratio_max": 0.8332373171,
+   "q_ml_gkg": 6.2774974564,
+   "u_ml": 5.4070793897,
+   "growth_ac": 25486.4490445234,
+   "bt_rooted_min": -43.5393371582
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-07-24",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 148.619930124,
+   "ratio_max": 0.3671099074,
+   "q_ml_gkg": 4.1335630498,
+   "u_ml": 3.8440057179,
+   "growth_ac": 17398.6899091031,
+   "bt_rooted_min": -27.1312866211
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-07-25",
+   "final_class": "pyroCu",
+   "regime": "E",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 35.4404338312,
+   "ratio_max": 0.3079593024,
+   "q_ml_gkg": 5.0925205405,
+   "u_ml": 2.3217551691,
+   "growth_ac": 2352.4432315674,
+   "bt_rooted_min": -29.2821655273
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-07-28",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 66.2186823668,
+   "ratio_max": 0.0677057502,
+   "q_ml_gkg": 3.1034693406,
+   "u_ml": 4.8797572253,
+   "growth_ac": 8745.059450123,
+   "bt_rooted_min": -26.5167541504
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-07-29",
+   "final_class": "pyroCb",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 32.9234190218,
+   "ratio_max": 0.6694804887,
+   "q_ml_gkg": 4.2587777435,
+   "u_ml": 3.2142828612,
+   "growth_ac": 10672.4814255669,
+   "bt_rooted_min": -51.2824401855
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-04",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.678601766,
+   "u_ml": null,
+   "growth_ac": 75819.3441955703,
+   "bt_rooted_min": -26.8854675293
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-09",
+   "final_class": "pyroCb",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 15.7204838578,
+   "ratio_max": 2.9602752583,
+   "q_ml_gkg": 2.8726765691,
+   "u_ml": 0.5794209335,
+   "growth_ac": 14287.6331564315,
+   "bt_rooted_min": -42.0029907227
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-10",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 13.1640114402,
+   "ratio_max": 1.6281409211,
+   "q_ml_gkg": 2.0294297301,
+   "u_ml": 0.4499329758,
+   "growth_ac": 9078.6517151037,
+   "bt_rooted_min": -23.6284484863
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-11",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 41.0033609058,
+   "ratio_max": 0.4896087005,
+   "q_ml_gkg": 2.480371034,
+   "u_ml": 1.3673531105,
+   "growth_ac": 5582.1105673433,
+   "bt_rooted_min": -34.0755310059
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-13",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 11.5976195004,
+   "ratio_max": 2.3892133474,
+   "q_ml_gkg": 4.8307375819,
+   "u_ml": 1.132648457,
+   "growth_ac": 2888.6619093512,
+   "bt_rooted_min": -38.6230773926
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-14",
+   "final_class": "pyroCb",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 19.0094857168,
+   "ratio_max": 1.6705782365,
+   "q_ml_gkg": 4.4718858379,
+   "u_ml": 0.8948488635,
+   "growth_ac": 19491.67249013,
+   "bt_rooted_min": -43.9695129395
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-15",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 25.7702072254,
+   "ratio_max": 0.9463240678,
+   "q_ml_gkg": 3.1247252526,
+   "u_ml": 1.0306964589,
+   "growth_ac": 8391.6987546249,
+   "bt_rooted_min": -37.2096252441
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-16",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 352.6770120193,
+   "ratio_max": 0.5940883421,
+   "q_ml_gkg": 2.6690475454,
+   "u_ml": 12.3677107041,
+   "growth_ac": 48830.4944317265,
+   "bt_rooted_min": -35.6733093262
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-17",
+   "final_class": "pyroCu",
+   "regime": "F",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": true,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 760.9170415,
+   "ratio_max": 0.0520849953,
+   "q_ml_gkg": 1.4974090471,
+   "u_ml": 16.1880994489,
+   "growth_ac": 44595.1081933793,
+   "bt_rooted_min": -30.94140625
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-30",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.458993901,
+   "u_ml": null,
+   "growth_ac": 31876.5942092643,
+   "bt_rooted_min": -26.5782165527
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-08-31",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": true,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.4254441409,
+   "u_ml": null,
+   "growth_ac": 25540.8122284462,
+   "bt_rooted_min": -23.1982727051
+  },
+  {
+   "fire": "Dixie 2021",
+   "fire_day": "2021-09-06",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.3172859679,
+   "u_ml": null,
+   "growth_ac": 3190.1304747411,
+   "bt_rooted_min": -22.3993835449
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-07-24",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 53.9278509725,
+   "ratio_max": 0.3889877967,
+   "q_ml_gkg": 6.3051923773,
+   "u_ml": 3.4407007906,
+   "growth_ac": 4596.1600952893,
+   "bt_rooted_min": -39.7292175293
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-07-26",
+   "final_class": "pyroCb",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 186.2176636427,
+   "ratio_max": 0.455031797,
+   "q_ml_gkg": 2.7344724788,
+   "u_ml": 4.3310099112,
+   "growth_ac": 23072.2294675892,
+   "bt_rooted_min": -44.6454772949
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-07-27",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 1.1486541873,
+   "u_ml": null,
+   "growth_ac": 45590.942880692,
+   "bt_rooted_min": -38.8688659668
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-07-29",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 381.9062608073,
+   "ratio_max": 0.0139374933,
+   "q_ml_gkg": 2.0144475771,
+   "u_ml": 6.6390367683,
+   "growth_ac": 5134.8498268877,
+   "bt_rooted_min": -25.3491516113
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-07-31",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 266.2453370761,
+   "ratio_max": 0.0504469078,
+   "q_ml_gkg": 2.5708765872,
+   "u_ml": 7.4407122101,
+   "growth_ac": 7035.0902103702,
+   "bt_rooted_min": -25.5335083008
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-08-14",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 195.3568492968,
+   "ratio_max": 0.0637805356,
+   "q_ml_gkg": 3.0905903553,
+   "u_ml": 5.4605409269,
+   "growth_ac": 5107.6682349263,
+   "bt_rooted_min": -26.9469299316
+  },
+  {
+   "fire": "Carr 2018",
+   "fire_day": "2018-08-16",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 1.0337624323,
+   "u_ml": null,
+   "growth_ac": 2606.9617744786,
+   "bt_rooted_min": -38.4386901855
+  },
+  {
+   "fire": "Loyalton 2020",
+   "fire_day": "2020-08-15",
+   "final_class": "pyroCb",
+   "regime": "A",
+   "nc_dry_tstorm": true,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 44.9920664316,
+   "ratio_max": 0.2443806608,
+   "q_ml_gkg": 4.9871857065,
+   "u_ml": 5.6768205734,
+   "growth_ac": 25199.8,
+   "bt_rooted_min": -51.9584350586
+  },
+  {
+   "fire": "North Complex (incl. Bear) 2020",
+   "fire_day": "2020-08-18",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": true,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 121.890074678,
+   "ratio_max": 0.0324460665,
+   "q_ml_gkg": 4.6697531219,
+   "u_ml": 9.0896196955,
+   "growth_ac": 1129.2715933049,
+   "bt_rooted_min": -41.3269958496
+  },
+  {
+   "fire": "North Complex (incl. Bear) 2020",
+   "fire_day": "2020-08-22",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 286.3948520534,
+   "ratio_max": 0.0163213589,
+   "q_ml_gkg": 2.5146029329,
+   "u_ml": 8.7515182087,
+   "growth_ac": 2947.9672009033,
+   "bt_rooted_min": -24.0586242676
+  },
+  {
+   "fire": "North Complex (incl. Bear) 2020",
+   "fire_day": "2020-08-24",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 24.8869290418,
+   "ratio_max": 0.2426934436,
+   "q_ml_gkg": 7.0738778811,
+   "u_ml": 3.8977513852,
+   "growth_ac": 3674.4570224167,
+   "bt_rooted_min": -22.7066650391
+  },
+  {
+   "fire": "North Complex (incl. Bear) 2020",
+   "fire_day": "2020-09-08",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": true,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.5912970486,
+   "u_ml": null,
+   "growth_ac": 211443.132813824,
+   "bt_rooted_min": -34.198425293
+  },
+  {
+   "fire": "North Complex (incl. Bear) 2020",
+   "fire_day": "2020-09-09",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": true,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.7050667447,
+   "u_ml": null,
+   "growth_ac": 10798.5051701151,
+   "bt_rooted_min": -31.433013916
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-08-16",
+   "final_class": "pyroCu",
+   "regime": "E",
+   "nc_dry_tstorm": true,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 157.0511453697,
+   "ratio_max": 0.0592574052,
+   "q_ml_gkg": 6.4038529843,
+   "u_ml": 12.1799889344,
+   "growth_ac": 5122.4945578143,
+   "bt_rooted_min": -31.5559387207
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-08-18",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": true,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 91.208574558,
+   "ratio_max": 0.5000290952,
+   "q_ml_gkg": 7.1050614581,
+   "u_ml": 6.7363197319,
+   "growth_ac": 70854.997081895,
+   "bt_rooted_min": -42.4331665039
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-08-19",
+   "final_class": "pyroCu",
+   "regime": "E",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": true,
+   "ridge_persists": false,
+   "pft_min_gw": 559.8792328066,
+   "ratio_max": 0.2883800617,
+   "q_ml_gkg": 2.357069402,
+   "u_ml": 12.495037516,
+   "growth_ac": 90111.9194596312,
+   "bt_rooted_min": -40.0364990234
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-08-22",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 291.8173909809,
+   "ratio_max": 0.073690787,
+   "q_ml_gkg": 1.8477599485,
+   "u_ml": 7.2327757429,
+   "growth_ac": 15033.8914084623,
+   "bt_rooted_min": -27.3771057129
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-08-23",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 108.0017365389,
+   "ratio_max": 0.1076325191,
+   "q_ml_gkg": 4.7327332743,
+   "u_ml": 7.2563098326,
+   "growth_ac": 5337.4762396908,
+   "bt_rooted_min": -32.8464355469
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-08-26",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 123.7792330666,
+   "ratio_max": 0.0544884015,
+   "q_ml_gkg": 1.8850316327,
+   "u_ml": 4.8301032678,
+   "growth_ac": 8347.2197859608,
+   "bt_rooted_min": -22.2150268555
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-09-06",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 24.2601678539,
+   "ratio_max": 1.425288155,
+   "q_ml_gkg": 4.0915126194,
+   "u_ml": 0.6552775528,
+   "growth_ac": 14742.3070583311,
+   "bt_rooted_min": -24.1200866699
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-09-09",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": true,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.6415780556,
+   "u_ml": null,
+   "growth_ac": 49537.2158227226,
+   "bt_rooted_min": -28.175994873
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-09-17",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 521.4192769621,
+   "ratio_max": 0.0665245094,
+   "q_ml_gkg": 2.8647128336,
+   "u_ml": 14.2051131486,
+   "growth_ac": 11319.8975250108,
+   "bt_rooted_min": -38.3772583008
+  },
+  {
+   "fire": "August Complex 2020",
+   "fire_day": "2020-10-08",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 121.081006149,
+   "ratio_max": 0.0420628032,
+   "q_ml_gkg": 1.7301235907,
+   "u_ml": 5.5583358276,
+   "growth_ac": 4287.2783684553,
+   "bt_rooted_min": -34.0140686035
+  },
+  {
+   "fire": "Creek 2020",
+   "fire_day": "2020-09-05",
+   "final_class": "pyroCb",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 255.7004258429,
+   "ratio_max": 0.6400373284,
+   "q_ml_gkg": 2.3987251325,
+   "u_ml": 7.6808596644,
+   "growth_ac": 112044.9931186568,
+   "bt_rooted_min": -60.0702819824
+  },
+  {
+   "fire": "Creek 2020",
+   "fire_day": "2020-09-06",
+   "final_class": "pyroCb",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 24.8333641554,
+   "ratio_max": 5.1652554332,
+   "q_ml_gkg": 2.492034,
+   "u_ml": 0.7450519553,
+   "growth_ac": 18970.2801352343,
+   "bt_rooted_min": -50.8522644043
+  },
+  {
+   "fire": "Creek 2020",
+   "fire_day": "2020-09-07",
+   "final_class": "pyroCb",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": true,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 383.6670837505,
+   "ratio_max": 0.2950232931,
+   "q_ml_gkg": 2.6164591081,
+   "u_ml": 8.2128737007,
+   "growth_ac": 43433.7129004836,
+   "bt_rooted_min": -42.740447998
+  },
+  {
+   "fire": "Creek 2020",
+   "fire_day": "2020-09-10",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 1.2287582943,
+   "u_ml": null,
+   "growth_ac": 5545.0447601232,
+   "bt_rooted_min": -37.8856201172
+  },
+  {
+   "fire": "Creek 2020",
+   "fire_day": "2020-10-06",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 1.5331692172,
+   "u_ml": null,
+   "growth_ac": 4583.8048262159,
+   "bt_rooted_min": -38.5616149902
+  },
+  {
+   "fire": "Caldor 2021",
+   "fire_day": "2021-08-31",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": true,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.4300256944,
+   "u_ml": null,
+   "growth_ac": 8021.0406824242,
+   "bt_rooted_min": -21.7848510742
+  },
+  {
+   "fire": "Ranch (Mendocino Complex) 2018",
+   "fire_day": "2018-08-03",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 658.3712762259,
+   "ratio_max": 0.1028259803,
+   "q_ml_gkg": 1.5535832422,
+   "u_ml": 13.0781277049,
+   "growth_ac": 41338.3,
+   "bt_rooted_min": -25.5949707031
+  },
+  {
+   "fire": "Sugar (Beckwourth Complex) 2021",
+   "fire_day": "2021-07-09",
+   "final_class": "pyroCb",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 176.4866319866,
+   "ratio_max": 0.7753660462,
+   "q_ml_gkg": 4.0885072694,
+   "u_ml": 8.9434035167,
+   "growth_ac": 33322.2,
+   "bt_rooted_min": -41.8186340332
+  },
+  {
+   "fire": "Sugar (Beckwourth Complex) 2021",
+   "fire_day": "2021-07-10",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 213.2177780509,
+   "ratio_max": 0.3243200716,
+   "q_ml_gkg": 4.0021687957,
+   "u_ml": 8.0433843932,
+   "growth_ac": 15478.6,
+   "bt_rooted_min": -31.7402954102
+  },
+  {
+   "fire": "Antelope 2021",
+   "fire_day": "2021-08-15",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 47.2842900389,
+   "ratio_max": 0.1224766204,
+   "q_ml_gkg": 4.4602226706,
+   "u_ml": 3.5567230237,
+   "growth_ac": 1317.1,
+   "bt_rooted_min": -21.4161376953
+  },
+  {
+   "fire": "McKinney 2022",
+   "fire_day": "2022-07-29",
+   "final_class": "pyroCb",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 7.4475788322,
+   "ratio_max": 0.0607614408,
+   "q_ml_gkg": 4.316623956,
+   "u_ml": 0.3455801112,
+   "growth_ac": 14979.5,
+   "bt_rooted_min": -46.6734619141
+  },
+  {
+   "fire": "Mosquito 2022",
+   "fire_day": "2022-09-07",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 78.8503739004,
+   "ratio_max": 0.2885169344,
+   "q_ml_gkg": 4.1495903236,
+   "u_ml": 5.4072689768,
+   "growth_ac": 9422.1,
+   "bt_rooted_min": -25.8407592773
+  },
+  {
+   "fire": "Mosquito 2022",
+   "fire_day": "2022-09-08",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": true,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 30.512860429,
+   "ratio_max": 0.923409348,
+   "q_ml_gkg": 1.7818117009,
+   "u_ml": 0.7112950322,
+   "growth_ac": 24653.7,
+   "bt_rooted_min": -39.6063232422
+  },
+  {
+   "fire": "Park 2024",
+   "fire_day": "2024-07-26",
+   "final_class": "pyroCu",
+   "regime": "F",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": true,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 388.2343975953,
+   "ratio_max": 0.960547455,
+   "q_ml_gkg": 3.4339839608,
+   "u_ml": 9.6990838275,
+   "growth_ac": 155419.4,
+   "bt_rooted_min": -29.5894165039
+  },
+  {
+   "fire": "Park 2024",
+   "fire_day": "2024-08-06",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 417.4708113897,
+   "ratio_max": 0.0111720562,
+   "q_ml_gkg": 1.6296002754,
+   "u_ml": 8.5509576824,
+   "growth_ac": 6620.0,
+   "bt_rooted_min": -24.7960510254
+  },
+  {
+   "fire": "Ferguson 2018",
+   "fire_day": "2018-07-15",
+   "final_class": "pyroCu",
+   "regime": "A",
+   "nc_dry_tstorm": true,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 132.9178577842,
+   "ratio_max": 0.1436900471,
+   "q_ml_gkg": 4.2639111579,
+   "u_ml": 3.4442796167,
+   "growth_ac": 6928.8,
+   "bt_rooted_min": -37.1481933594
+  },
+  {
+   "fire": "Castle (SQF Complex) 2020",
+   "fire_day": "2020-08-22",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 7.2270908969,
+   "ratio_max": 2.7162853607,
+   "q_ml_gkg": 5.0183208228,
+   "u_ml": 0.941345965,
+   "growth_ac": 4487.4,
+   "bt_rooted_min": -29.2821655273
+  },
+  {
+   "fire": "Castle (SQF Complex) 2020",
+   "fire_day": "2020-08-23",
+   "final_class": "pyroCb",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 17.2669829533,
+   "ratio_max": 0.5485118374,
+   "q_ml_gkg": 6.1521851793,
+   "u_ml": 3.1738043811,
+   "growth_ac": 9288.7,
+   "bt_rooted_min": -43.8465881348
+  },
+  {
+   "fire": "Castle (SQF Complex) 2020",
+   "fire_day": "2020-08-24",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 57.4948742145,
+   "ratio_max": 0.7201962687,
+   "q_ml_gkg": 5.1606490298,
+   "u_ml": 8.5503786172,
+   "growth_ac": 8685.8,
+   "bt_rooted_min": -26.3323974609
+  },
+  {
+   "fire": "Castle (SQF Complex) 2020",
+   "fire_day": "2020-09-06",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 3.6644211912,
+   "ratio_max": 5.1543450457,
+   "q_ml_gkg": 3.7524193147,
+   "u_ml": 0.1824116332,
+   "growth_ac": 2992.4,
+   "bt_rooted_min": -28.7290649414
+  },
+  {
+   "fire": "Castle (SQF Complex) 2020",
+   "fire_day": "2020-09-22",
+   "final_class": "pyroCu",
+   "regime": "E",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": null,
+   "ratio_max": 0.0,
+   "q_ml_gkg": 0.7163565925,
+   "u_ml": null,
+   "growth_ac": 2478.5,
+   "bt_rooted_min": -30.4497680664
+  },
+  {
+   "fire": "Bobcat 2020",
+   "fire_day": "2020-09-06",
+   "final_class": "pyroCu",
+   "regime": "C",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 37.1011608814,
+   "ratio_max": 0.2491985845,
+   "q_ml_gkg": 4.1789820102,
+   "u_ml": 2.0479919536,
+   "growth_ac": 10726.9,
+   "bt_rooted_min": -25.5335083008
+  },
+  {
+   "fire": "York 2023",
+   "fire_day": "2023-07-29",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": false,
+   "pft_min_gw": 94.6292551307,
+   "ratio_max": 0.2990679891,
+   "q_ml_gkg": 5.5844872339,
+   "u_ml": 6.3051703372,
+   "growth_ac": 58025.3,
+   "bt_rooted_min": -36.7180175781
+  },
+  {
+   "fire": "Line 2024",
+   "fire_day": "2024-09-06",
+   "final_class": "pyroCu",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 6.508837558,
+   "ratio_max": 0.5862159058,
+   "q_ml_gkg": 4.4142649785,
+   "u_ml": 0.142883441,
+   "growth_ac": 8243.5,
+   "bt_rooted_min": -31.6173706055
+  },
+  {
+   "fire": "Line 2024",
+   "fire_day": "2024-09-07",
+   "final_class": "pyroCb",
+   "regime": "D",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": false,
+   "ridge_persists": true,
+   "pft_min_gw": 6.3285005891,
+   "ratio_max": 0.5687956651,
+   "q_ml_gkg": 6.9841868658,
+   "u_ml": 0.7853281614,
+   "growth_ac": 5498.1,
+   "bt_rooted_min": -60.0088195801
+  },
+  {
+   "fire": "Line 2024",
+   "fire_day": "2024-09-09",
+   "final_class": "pyroCu",
+   "regime": "B",
+   "nc_dry_tstorm": false,
+   "nc_ne_foehn": false,
+   "nc_sw_foehn": false,
+   "breakdown_stage2": false,
+   "breakdown_stage3": true,
+   "ridge_persists": false,
+   "pft_min_gw": 6.6612276722,
+   "ratio_max": 0.8722332135,
+   "q_ml_gkg": 6.9945165945,
+   "u_ml": 2.1911607794,
+   "growth_ac": 6733.6,
+   "bt_rooted_min": -33.0308227539
+  }
+ ],
+ "summary": {
+  "fires": "Dixie 2021, Carr 2018, Loyalton 2020, North Complex (incl. Bear) 2020, August Complex 2020, Creek 2020, Caldor 2021, Ranch (Mendocino Complex) 2018, Camp 2018, Hennessey (LNU Complex) 2020, Sugar (Beckwourth Complex) 2021, Antelope 2021, McKinney 2022, Mosquito 2022, Park 2024, Ferguson 2018, Woolsey 2018, Castle (SQF Complex) 2020, Bobcat 2020, York 2023, Borel 2024, Bridge 2024, Line 2024",
+  "n_fires": 23,
+  "years": "2018\u20132024",
+  "days": 491,
+  "n_pyrocb": 13,
+  "n_pyrocu": 54,
+  "n_ambiguous": 76,
+  "n_none": 348
+ },
+ "images": [
+  [
+   "compare_dixie.png",
+   "Dixie 2021 soundings: a pyroCb day, a pyroCu day and a big day with no deep plume cloud"
+  ],
+  [
+   "compare_creek.png",
+   "Creek 2020 soundings: the record pyroCb day against pyroCu and no-plume days"
+  ],
+  [
+   "dot_ratio_max.png",
+   "Fire power \u00f7 PFT, every fire day of all seven fires"
+  ],
+  [
+   "dot_q_ml_gkg.png",
+   "Mixed-layer moisture, every fire day"
+  ],
+  [
+   "dot_radar_rooted_top_km.png",
+   "Radar: height of the fire-rooted plume echo column"
+  ],
+  [
+   "dot_ratio_fuel.png",
+   "LANDFIRE fuel-based fire power \u00f7 PFT"
+  ],
+  [
+   "regime_q700.png",
+   "Every study fire day by 500 hPa regime and 700 hPa moisture at the fire (ERA5)"
+  ]
+ ],
+ "regime_moisture": {
+  "rules": {
+   "regime C or D": {
+    "pooled_q_cut": null,
+    "pooled_pyroCb": "9/13",
+    "pooled_pyroCu": "25/54",
+    "pooled_none": "131/348",
+    "lofo_hit": "9/13",
+    "lofo_fa": "156/402",
+    "lofo_bal_acc": 0.65
+   },
+   "regime A, C or D": {
+    "pooled_q_cut": null,
+    "pooled_pyroCb": "12/13",
+    "pooled_pyroCu": "37/54",
+    "pooled_none": "248/348",
+    "lofo_hit": "12/13",
+    "lofo_fa": "285/402",
+    "lofo_bal_acc": 0.61
+   },
+   "ERA5 q700 >= cut": {
+    "pooled_q_cut": 3.59,
+    "pooled_pyroCb": "13/13",
+    "pooled_pyroCu": "32/54",
+    "pooled_none": "141/348",
+    "lofo_hit": "12/13",
+    "lofo_fa": "174/402",
+    "lofo_bal_acc": 0.75
+   },
+   "regime C or D AND q700 >= cut": {
+    "pooled_q_cut": 3.56,
+    "pooled_pyroCb": "9/13",
+    "pooled_pyroCu": "13/54",
+    "pooled_none": "48/348",
+    "lofo_hit": "8/13",
+    "lofo_fa": "61/402",
+    "lofo_bal_acc": 0.73
+   },
+   "regime A, C or D AND q700 >= cut": {
+    "pooled_q_cut": 3.59,
+    "pooled_pyroCb": "12/13",
+    "pooled_pyroCu": "21/54",
+    "pooled_none": "101/348",
+    "lofo_hit": "11/13",
+    "lofo_fa": "123/402",
+    "lofo_bal_acc": 0.77
+   }
+  },
+  "cases_by_regime": {
+   "A": [
+    {
+     "fire": "Ferguson",
+     "date": "2018-07-15",
+     "class": "pyroCu",
+     "q700": 5.5,
+     "growth_ac": 6928
+    },
+    {
+     "fire": "Ranch (Mendocino Complex)",
+     "date": "2018-08-03",
+     "class": "pyroCu",
+     "q700": 2.6,
+     "growth_ac": 41338
+    },
+    {
+     "fire": "Carr",
+     "date": "2018-08-14",
+     "class": "pyroCu",
+     "q700": 2.9,
+     "growth_ac": 5107
+    },
+    {
+     "fire": "Loyalton",
+     "date": "2020-08-15",
+     "class": "pyroCb",
+     "q700": 5.7,
+     "growth_ac": 25199
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-08-26",
+     "class": "pyroCu",
+     "q700": 3.7,
+     "growth_ac": 8347
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-10-08",
+     "class": "pyroCu",
+     "q700": 1.6,
+     "growth_ac": 4287
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-07-24",
+     "class": "pyroCu",
+     "q700": 4.6,
+     "growth_ac": 17398
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-04",
+     "class": "pyroCu",
+     "q700": 2.7,
+     "growth_ac": 75819
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-09",
+     "class": "pyroCb",
+     "q700": 4.7,
+     "growth_ac": 14287
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-10",
+     "class": "pyroCu",
+     "q700": 3.8,
+     "growth_ac": 9078
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-14",
+     "class": "pyroCb",
+     "q700": 5.0,
+     "growth_ac": 19491
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-15",
+     "class": "pyroCu",
+     "q700": 4.3,
+     "growth_ac": 8391
+    },
+    {
+     "fire": "Antelope",
+     "date": "2021-08-15",
+     "class": "pyroCu",
+     "q700": 6.4,
+     "growth_ac": 1317
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-16",
+     "class": "pyroCu",
+     "q700": 4.5,
+     "growth_ac": 48830
+    },
+    {
+     "fire": "Mosquito",
+     "date": "2022-09-07",
+     "class": "pyroCu",
+     "q700": 4.5,
+     "growth_ac": 9422
+    }
+   ],
+   "B": [
+    {
+     "fire": "North Complex",
+     "date": "2020-08-22",
+     "class": "pyroCu",
+     "q700": 2.4,
+     "growth_ac": 2947
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-08-22",
+     "class": "pyroCu",
+     "q700": 5.4,
+     "growth_ac": 15033
+    },
+    {
+     "fire": "Castle (SQF Complex)",
+     "date": "2020-08-22",
+     "class": "pyroCu",
+     "q700": 4.1,
+     "growth_ac": 4487
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-08-23",
+     "class": "pyroCu",
+     "q700": 4.6,
+     "growth_ac": 5337
+    },
+    {
+     "fire": "Castle (SQF Complex)",
+     "date": "2020-08-23",
+     "class": "pyroCb",
+     "q700": 6.3,
+     "growth_ac": 9288
+    },
+    {
+     "fire": "North Complex",
+     "date": "2020-08-24",
+     "class": "pyroCu",
+     "q700": 7.2,
+     "growth_ac": 3674
+    },
+    {
+     "fire": "Castle (SQF Complex)",
+     "date": "2020-08-24",
+     "class": "pyroCu",
+     "q700": 6.2,
+     "growth_ac": 8685
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-30",
+     "class": "pyroCu",
+     "q700": 2.3,
+     "growth_ac": 31876
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-31",
+     "class": "pyroCu",
+     "q700": 1.7,
+     "growth_ac": 25540
+    },
+    {
+     "fire": "Caldor",
+     "date": "2021-08-31",
+     "class": "pyroCu",
+     "q700": 2.5,
+     "growth_ac": 8021
+    },
+    {
+     "fire": "York",
+     "date": "2023-07-29",
+     "class": "pyroCu",
+     "q700": 7.6,
+     "growth_ac": 58025
+    },
+    {
+     "fire": "Line",
+     "date": "2024-09-09",
+     "class": "pyroCu",
+     "q700": 4.9,
+     "growth_ac": 6733
+    }
+   ],
+   "C": [
+    {
+     "fire": "Carr",
+     "date": "2018-07-24",
+     "class": "pyroCu",
+     "q700": 4.6,
+     "growth_ac": 4596
+    },
+    {
+     "fire": "Carr",
+     "date": "2018-07-26",
+     "class": "pyroCb",
+     "q700": 3.7,
+     "growth_ac": 23072
+    },
+    {
+     "fire": "Carr",
+     "date": "2018-07-27",
+     "class": "pyroCu",
+     "q700": 3.5,
+     "growth_ac": 45590
+    },
+    {
+     "fire": "Carr",
+     "date": "2018-07-29",
+     "class": "pyroCu",
+     "q700": 3.5,
+     "growth_ac": 5134
+    },
+    {
+     "fire": "Carr",
+     "date": "2018-07-31",
+     "class": "pyroCu",
+     "q700": 2.5,
+     "growth_ac": 7035
+    },
+    {
+     "fire": "Creek",
+     "date": "2020-09-05",
+     "class": "pyroCb",
+     "q700": 4.9,
+     "growth_ac": 112044
+    },
+    {
+     "fire": "Bobcat",
+     "date": "2020-09-06",
+     "class": "pyroCu",
+     "q700": 4.3,
+     "growth_ac": 10726
+    },
+    {
+     "fire": "Creek",
+     "date": "2020-09-06",
+     "class": "pyroCb",
+     "q700": 3.9,
+     "growth_ac": 18970
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-09-06",
+     "class": "pyroCu",
+     "q700": 5.5,
+     "growth_ac": 14742
+    },
+    {
+     "fire": "Castle (SQF Complex)",
+     "date": "2020-09-06",
+     "class": "pyroCu",
+     "q700": 4.5,
+     "growth_ac": 2992
+    },
+    {
+     "fire": "Creek",
+     "date": "2020-09-07",
+     "class": "pyroCb",
+     "q700": 4.1,
+     "growth_ac": 43433
+    },
+    {
+     "fire": "North Complex",
+     "date": "2020-09-08",
+     "class": "pyroCu",
+     "q700": 0.5,
+     "growth_ac": 211443
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-09-09",
+     "class": "pyroCu",
+     "q700": 1.2,
+     "growth_ac": 49537
+    },
+    {
+     "fire": "North Complex",
+     "date": "2020-09-09",
+     "class": "pyroCu",
+     "q700": 1.4,
+     "growth_ac": 10798
+    },
+    {
+     "fire": "Creek",
+     "date": "2020-09-10",
+     "class": "pyroCu",
+     "q700": 4.1,
+     "growth_ac": 5545
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-09-17",
+     "class": "pyroCu",
+     "q700": 3.6,
+     "growth_ac": 11319
+    },
+    {
+     "fire": "Creek",
+     "date": "2020-10-06",
+     "class": "pyroCu",
+     "q700": 1.9,
+     "growth_ac": 4583
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-11",
+     "class": "pyroCu",
+     "q700": 3.3,
+     "growth_ac": 5582
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-08-13",
+     "class": "pyroCu",
+     "q700": 5.8,
+     "growth_ac": 2888
+    },
+    {
+     "fire": "McKinney",
+     "date": "2022-07-29",
+     "class": "pyroCb",
+     "q700": 3.6,
+     "growth_ac": 14979
+    },
+    {
+     "fire": "Mosquito",
+     "date": "2022-09-08",
+     "class": "pyroCu",
+     "q700": 5.1,
+     "growth_ac": 24653
+    },
+    {
+     "fire": "Park",
+     "date": "2024-08-06",
+     "class": "pyroCu",
+     "q700": 1.5,
+     "growth_ac": 6620
+    }
+   ],
+   "D": [
+    {
+     "fire": "Carr",
+     "date": "2018-08-16",
+     "class": "pyroCu",
+     "q700": 3.2,
+     "growth_ac": 2606
+    },
+    {
+     "fire": "North Complex",
+     "date": "2020-08-18",
+     "class": "pyroCu",
+     "q700": 6.2,
+     "growth_ac": 1129
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-08-18",
+     "class": "pyroCu",
+     "q700": 7.5,
+     "growth_ac": 70854
+    },
+    {
+     "fire": "Sugar (Beckwourth Complex)",
+     "date": "2021-07-09",
+     "class": "pyroCb",
+     "q700": 5.6,
+     "growth_ac": 33322
+    },
+    {
+     "fire": "Sugar (Beckwourth Complex)",
+     "date": "2021-07-10",
+     "class": "pyroCu",
+     "q700": 6.1,
+     "growth_ac": 15478
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-07-18",
+     "class": "pyroCu",
+     "q700": 4.0,
+     "growth_ac": 27016
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-07-19",
+     "class": "pyroCb",
+     "q700": 6.7,
+     "growth_ac": 25486
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-07-28",
+     "class": "pyroCu",
+     "q700": 4.4,
+     "growth_ac": 8745
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-07-29",
+     "class": "pyroCb",
+     "q700": 4.8,
+     "growth_ac": 10672
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-09-06",
+     "class": "pyroCu",
+     "q700": 2.4,
+     "growth_ac": 3190
+    },
+    {
+     "fire": "Line",
+     "date": "2024-09-06",
+     "class": "pyroCu",
+     "q700": 4.0,
+     "growth_ac": 8243
+    },
+    {
+     "fire": "Line",
+     "date": "2024-09-07",
+     "class": "pyroCb",
+     "q700": 4.4,
+     "growth_ac": 5498
+    }
+   ],
+   "E": [
+    {
+     "fire": "August Complex",
+     "date": "2020-08-16",
+     "class": "pyroCu",
+     "q700": 7.3,
+     "growth_ac": 5122
+    },
+    {
+     "fire": "August Complex",
+     "date": "2020-08-19",
+     "class": "pyroCu",
+     "q700": 3.7,
+     "growth_ac": 90111
+    },
+    {
+     "fire": "Castle (SQF Complex)",
+     "date": "2020-09-22",
+     "class": "pyroCu",
+     "q700": 2.6,
+     "growth_ac": 2478
+    },
+    {
+     "fire": "Dixie",
+     "date": "2021-07-25",
+     "class": "pyroCu",
+     "q700": 5.0,
+     "growth_ac": 2352
+    }
+   ],
+   "F": [
+    {
+     "fire": "Dixie",
+     "date": "2021-08-17",
+     "class": "pyroCu",
+     "q700": 4.3,
+     "growth_ac": 44595
+    },
+    {
+     "fire": "Park",
+     "date": "2024-07-26",
+     "class": "pyroCu",
+     "q700": 3.3,
+     "growth_ac": 155419
+    }
+   ]
+  },
+  "q700_median_by_regime_class": {
+   "none": {
+    "A": 3.5,
+    "B": 2.9,
+    "C": 2.7,
+    "D": 3.3,
+    "E": 3.6,
+    "F": 3.5
+   },
+   "pyroCb": {
+    "A": 5.0,
+    "B": 6.3,
+    "C": 3.9,
+    "D": 5.2,
+    "E": null,
+    "F": null
+   },
+   "pyroCu": {
+    "A": 4.1,
+    "B": 4.6,
+    "C": 3.5,
+    "D": 4.2,
+    "E": 4.4,
+    "F": 3.8
+   }
+  },
+  "note": "ERA5 700 hPa q at the day's hot front, moister of 18Z/00Z. Leave-one-fire-out; ambiguous days excluded."
+ },
+ "thresholds": [
+  {
+   "metric": "radar fire-rooted plume echo top (km MSL, 2nd-highest scan)",
+   "rule": ">= 10.8",
+   "lofo_hit": "9/10",
+   "lofo_false_alarm": "4/256",
+   "lofo_balanced_acc": 0.94
+  },
+  {
+   "metric": "max hourly FP / PFT",
+   "rule": ">= 0.244",
+   "lofo_hit": "11/13",
+   "lofo_false_alarm": "44/402",
+   "lofo_balanced_acc": 0.87
+  },
+  {
+   "metric": "max pyroconvective CAPE, 12-22 PDT (J/kg; 0 = no pyroCb parcel)",
+   "rule": ">= 115",
+   "lofo_hit": "11/13",
+   "lofo_false_alarm": "88/402",
+   "lofo_balanced_acc": 0.81
+  },
+  {
+   "metric": "dtheta_fc at PFT min (K)",
+   "rule": "<= 7.61",
+   "lofo_hit": "11/13",
+   "lofo_false_alarm": "93/402",
+   "lofo_balanced_acc": 0.81
+  },
+  {
+   "metric": "U_ML at PFT min (m/s)",
+   "rule": "<= 8.95",
+   "lofo_hit": "12/13",
+   "lofo_false_alarm": "128/402",
+   "lofo_balanced_acc": 0.8
+  },
+  {
+   "metric": "PCAPE at PFT min (J/kg; 0 = no pyroCb parcel)",
+   "rule": ">= 38.9",
+   "lofo_hit": "12/13",
+   "lofo_false_alarm": "135/402",
+   "lofo_balanced_acc": 0.79
+  },
+  {
+   "metric": "fuel-based firepower / min PFT",
+   "rule": ">= 0.242",
+   "lofo_hit": "10/13",
+   "lofo_false_alarm": "82/395",
+   "lofo_balanced_acc": 0.78
+  },
+  {
+   "metric": "satellite growth (ac / fire day)",
+   "rule": ">= 9,227",
+   "lofo_hit": "11/13",
+   "lofo_false_alarm": "112/402",
+   "lofo_balanced_acc": 0.78
+  },
+  {
+   "metric": "min PFT, 12-22 PDT (GW)",
+   "rule": "<= 386",
+   "lofo_hit": "11/13",
+   "lofo_false_alarm": "127/402",
+   "lofo_balanced_acc": 0.77
+  },
+  {
+   "metric": "max mixed-layer q (g/kg)",
+   "rule": ">= 2.39",
+   "lofo_hit": "10/13",
+   "lofo_false_alarm": "90/402",
+   "lofo_balanced_acc": 0.77
+  },
+  {
+   "metric": "z_fc at PFT min (km AGL)",
+   "rule": "<= 6.43",
+   "lofo_hit": "9/13",
+   "lofo_false_alarm": "133/402",
+   "lofo_balanced_acc": 0.68
+  },
+  {
+   "metric": "fuel-based firepower at peak (GW; LANDFIRE x area / GOES timing)",
+   "rule": ">= 33",
+   "lofo_hit": "9/13",
+   "lofo_false_alarm": "180/395",
+   "lofo_balanced_acc": 0.62
+  },
+  {
+   "metric": "max hourly firepower (GW)",
+   "rule": ">= 23.7",
+   "lofo_hit": "5/13",
+   "lofo_false_alarm": "140/402",
+   "lofo_balanced_acc": 0.52
+  },
+  {
+   "metric": "fuel ahead: crown-fire-susceptible fraction",
+   "rule": ">= 0.00222",
+   "lofo_hit": "11/12",
+   "lofo_false_alarm": "356/389",
+   "lofo_balanced_acc": 0.5
+  },
+  {
+   "metric": "burned that day: available fuel (kg/m2)",
+   "rule": ">= 0.854",
+   "lofo_hit": "11/13",
+   "lofo_false_alarm": "350/397",
+   "lofo_balanced_acc": 0.48
+  },
+  {
+   "metric": "fuel ahead: mean slope (deg)",
+   "rule": ">= 10.7",
+   "lofo_hit": "10/12",
+   "lofo_false_alarm": "348/389",
+   "lofo_balanced_acc": 0.47
+  },
+  {
+   "metric": "fuel ahead: available fine + crown fuel (kg/m2)",
+   "rule": ">= 1.19",
+   "lofo_hit": "9/12",
+   "lofo_false_alarm": "341/389",
+   "lofo_balanced_acc": 0.44
+  },
+  {
+   "metric": "fuel ahead: canopy fuel load (kg/m2)",
+   "rule": ">= 0.325",
+   "lofo_hit": "8/12",
+   "lofo_false_alarm": "357/389",
+   "lofo_balanced_acc": 0.37
+  }
+ ],
+ "findings": [
+  "PyroCb days fell mostly in regimes C, D and A (12 of 13), once in regime B (Castle, 23 Aug 2020) and never in E or F. Their average 500 hPa map has a strong ridge over British Columbia with a trough offshore in the northeast Pacific: southerly flow that carries mid-level (monsoon) moisture north under a hot ridge.",
+  "The biggest growth days without deep plume cloud have the opposite map: a ridge over California and a trough over the northern Rockies, dry northerly or offshore flow. 41 of the 49 northeast-foehn days in the study made no deep plume cloud, and the two biggest days of all (8 Sep 2020, North Complex/Bear and August Complex) were offshore-wind runs with no pyroCb potential.",
+  "49% of all growth came on days when the air was too dry for a pyroCb at any hour (no PFT solution); 6% came on pyroCb days.",
+  "The best single measure is the fire's power against the air's threshold (FP/PFT, same hour): at about 0.24 or more it caught 11 of 13 pyroCb days and flagged 44 of 402 other days when each fire was held out. The cut fitted on the first seven fires, tried unchanged on 16 more, caught 3 of 4 new pyroCb days and flagged 11 of 162 new no-plume days. It works in the north (7 of 8 pyroCb days, 12 of 220 no-plume days flagged) and the south (5 of 5, 8 of 128).",
+  "Two ways to a pyroCb: a modest fire under very favourable air (Dixie, Loyalton, Castle, Line; thresholds 6-57 GW) or a big fire under marginal air (Creek, Carr, Sugar; 110-220 GW of fire power against 176-384 GW thresholds; Creek on 6 Sep, with a 25 GW threshold, was the exception).",
+  "LANDFIRE fuels (the newest vintage before each fire, with later disturbance masked) set the energy scale but do not separate pyroCb days: fuel type, load, canopy and slope are nearly the same on pyroCb, pyroCu and no-plume days.",
+  "Forecastable: in a morning hindcast (05 PDT HRRR, yesterday\u2019s fire front), no pyroCb formed on any of the 236 days the forecast said the air could not support one. The forecast threshold (PFT 360 GW or less) flagged all 12 pyroCb days that had a morning forecast, along with 32 of 52 pyroCu days and 85 of 329 days with no deep plume cloud; adding yesterday\u2019s satellite fire power cut the no-plume flags to 43 while catching 10 of 12."
+ ],
+ "caveats": [
+  "23 fires and 13 pyroCb days: the regime counts and thresholds are indicative, not calibrated forecasts.",
+  "Pattern rules are the Northern California ones from the Documented patterns page; 8 of the 23 fires are in Southern California.",
+  "Days with ordinary thunderstorms over or beside the fire (76) are left out: satellite cloud tops can't separate a pyroCb inside them.",
+  "Some dramatic plumes stayed warmer than -40 C at the GOES cloud top (Park 25 Jul 2024, Bridge 10 Sep 2024), so they count as pyroCu or no deep plume here.",
+  "The record Creek pyroCb (5 Sep 2020) formed in hours when HRRR gave no pyroCb solution; a 'not possible' from the model doesn't rule out a pyroCb from a fire putting out ~150 GW.",
+  "The McKinney pyroCb (29 Jul 2022) formed around 23 PDT on the fire's first day, after the 12-22 PDT window the study scores, so FP/PFT missed it.",
+  "GOES-17's archive has no data between about 11 p.m. and 4 a.m. on many 2020-21 nights, so late-night pyroCbs can be missed."
+ ]
+}
