@@ -2,7 +2,8 @@
 data/ai_ensembles/runs/
 data/ai_ensembles/archive/
 data/ai_ensembles/nfdrs/
-data/historic_fires_research/*/Forecast/
 data/outputs/
 __pycache__/
-results/
+# station CSVs the CurrentYear refresh downloads (only the PSA/station DOY + extremes files are kept)
+data/historic_fires_research/*/CurrentYear/*/[0-9]*.csv
+!data/historic_fires_research/*/CurrentYear/*/*_DOY.csv

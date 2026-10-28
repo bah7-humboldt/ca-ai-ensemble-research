@@ -1,0 +1,130 @@
+# California & Hawaii AI ensemble research viewer -- the daily run on a GitHub-hosted runner.
+# Source of truth: FireAnalystToolkit scripts/templates/ai_ensemble_cloud/ (staged here by
+# scripts/ai_ensemble_cloud_stage.py); edit it there, not in this repo.
+#
+#   build : refresh the CurrentYear NFDRS observations, fetch the newest runs of the four open
+#           ensembles, build the products and the viewer, archive the regime-box fields
+#   deploy: publish the viewer to GitHub Pages -- only from main, and only once the repo variable
+#           AI_ENSEMBLE_DEPLOY_PAGES is "true" (Settings -> Pages -> Source must be "GitHub Actions")
+name: AI ensemble daily
+
+on:
+  schedule:
+    # 08:45 UTC = 01:45 PDT / 00:45 PST: all four 00Z runs are posted by ~08:00 UTC. GitHub
+    # often starts scheduled runs late; with a ~75 min run there is still room before 06:00 Pacific.
+    - cron: "45 8 * * *"
+  workflow_dispatch:
+  push:
+    branches: [pipeline-test]
+
+permissions:
+  contents: write    # archive releases
+  pages: write
+  id-token: write
+  actions: write     # cache cleanup + keeping the schedule enabled
+
+concurrency:
+  group: ai-ensemble-daily
+  cancel-in-progress: false
+
+env:
+  TZ: America/Los_Angeles      # products are named and charted in Pacific time
+  PYTHONUNBUFFERED: "1"
+  GH_TOKEN: ${{ github.token }}
+  RUNS_CACHE_PREFIX: ai-ensemble-runs-
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      # The previous cycles (keep_cycles per model, ~3.4 GB) feed the viewer's run selector.
+      - name: Restore previous runs
+        uses: actions/cache/restore@v4
+        with:
+          path: data/ai_ensembles/runs
+          key: ${{ env.RUNS_CACHE_PREFIX }}${{ github.run_id }}
+          restore-keys: ${{ env.RUNS_CACHE_PREFIX }}
+
+      - name: Refresh CurrentYear NFDRS observations (FEMS)
+        continue-on-error: true   # stations that fail keep what is on disk; the run goes on
+        run: python scripts/ai_ensemble_refresh_current.py
+
+      - name: Daily run
+        run: python scripts/ai_ensemble_daily.py
+
+      - name: Save runs for tomorrow
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/ai_ensembles/runs
+          key: ${{ env.RUNS_CACHE_PREFIX }}${{ github.run_id }}
+
+      - name: Drop older runs caches
+        if: always()
+        continue-on-error: true
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/actions/caches?key=$RUNS_CACHE_PREFIX&ref=$GITHUB_REF&sort=created_at&direction=desc&per_page=100" \
+              --jq '.actions_caches[1:][].id' | while read -r id; do
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/caches/$id"; done
+
+      # One release per month holds that month's archive files (regime-box fields + footprint
+      # series, ~1.4 MB per model run) -- kept out of git history on purpose.
+      - name: Upload the archive to this month's release
+        if: always()
+        continue-on-error: true
+        run: |
+          shopt -s nullglob
+          files=(data/ai_ensembles/archive/*_archive.nc)
+          [ ${#files[@]} -eq 0 ] && { echo "no archive files this run"; exit 0; }
+          tag="archive-$(date -u +%Y-%m)"
+          gh release view "$tag" > /dev/null 2>&1 || gh release create "$tag" --target "$GITHUB_SHA" --latest=false \
+              --title "Archive $(date -u +%Y-%m)" \
+              --notes "Regime-box fields and footprint series archived from each model run this month (ECMWF AIFS ENS / IFS ENS open data, CC BY 4.0; NOAA GEFS / AIGEFS, public domain). Experimental research data."
+          gh release upload "$tag" "${files[@]}" --clobber
+
+      - name: Summary
+        if: always()
+        run: |
+          tail -n 1 data/outputs/ai_ensembles/logs/ai_ensembles_history.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "no run summary" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: data/outputs/ai_ensembles/logs
+          retention-days: 30
+          if-no-files-found: warn
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: data/outputs/ai_ensembles/web
+
+      # A public repo's schedule is switched off after 60 days without repository activity;
+      # re-enabling it every run keeps it on.
+      - name: Keep the schedule enabled
+        if: always()
+        continue-on-error: true
+        run: gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/ai-ensemble-daily.yml/enable"
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && vars.AI_ENSEMBLE_DEPLOY_PAGES == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
