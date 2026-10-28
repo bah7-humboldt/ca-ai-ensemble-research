@@ -56,6 +56,20 @@ jobs:
           key: ${{ env.RUNS_CACHE_PREFIX }}${{ github.run_id }}
           restore-keys: ${{ env.RUNS_CACHE_PREFIX }}
 
+      # Fills gaps in the cache (first run, or a lost cache) from a runs-seed release of earlier
+      # runs uploaded from the local PC; fetch prunes back to keep_cycles. No release, no-op.
+      - name: Seed missing runs
+        continue-on-error: true
+        run: |
+          gh release view runs-seed > /dev/null 2>&1 || { echo "no runs-seed release"; exit 0; }
+          mkdir -p data/ai_ensembles/runs
+          oldest=$(date -d "-3 days" +%Y%m%d)   # the viewer shows today + the previous 3 days
+          gh release view runs-seed --json assets --jq '.assets[].name' | while read -r f; do
+            d=$(echo "$f" | grep -oE '[0-9]{10}' | cut -c1-8)
+            [ -n "$d" ] && [ "$d" -ge "$oldest" ] && [ ! -e "data/ai_ensembles/runs/$f" ] \
+                && gh release download runs-seed -p "$f" -D data/ai_ensembles/runs; done
+          ls -l data/ai_ensembles/runs
+
       - name: Refresh CurrentYear NFDRS observations (FEMS)
         continue-on-error: true   # stations that fail keep what is on disk; the run goes on
         run: python scripts/ai_ensemble_refresh_current.py
