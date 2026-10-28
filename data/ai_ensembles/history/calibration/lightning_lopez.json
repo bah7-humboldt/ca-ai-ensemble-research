@@ -1,0 +1,897 @@
+{
+ "added": "2026-10-22",
+ "refit": "2026-10-24 full year from the ERA5 archive",
+ "months": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12
+ ],
+ "train_years": [
+  2001,
+  2020
+ ],
+ "test_years": [
+  2021,
+  2025
+ ],
+ "params": {
+  "a_cp": 0.5,
+  "b_q": 1.0,
+  "c_cape": 1.5,
+  "d_zb": 5.0,
+  "cp_min": 0.0,
+  "log_alpha": -10.252632521951934
+ },
+ "curves": {
+  "p1": {
+   "a": -1.3270505214892971,
+   "b": 0.643299193675546,
+   "eps": 0.01
+  },
+  "p10": {
+   "a": -2.2893706234249027,
+   "b": 0.6262575547395929,
+   "eps": 0.01
+  }
+ },
+ "lopez_shape": {
+  "params": {
+   "a_cp": 1.0,
+   "b_q": 1.0,
+   "c_cape": 0.5,
+   "d_zb": 2.0,
+   "cp_min": 0.0,
+   "log_alpha": -2.5010981081144865
+  },
+  "curves": {
+   "p1": {
+    "a": -2.4256681783879293,
+    "b": 0.5970437962906181,
+    "eps": 0.01
+   },
+   "p10": {
+    "a": -3.254048909531658,
+    "b": 0.6121354121347455,
+    "eps": 0.01
+   }
+  }
+ },
+ "grid_search": {
+  "grid": {
+   "a_cp": [
+    0.0,
+    0.03,
+    0.06,
+    0.125,
+    0.25,
+    0.5,
+    1.0
+   ],
+   "b_q": [
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+   ],
+   "c_cape": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0
+   ],
+   "d_zb": [
+    0.0,
+    1.0,
+    2.0,
+    3.0,
+    4.0,
+    5.0,
+    6.0,
+    8.0
+   ],
+   "cp_min": [
+    0.0,
+    0.02,
+    0.05
+   ]
+  },
+  "edge": []
+ },
+ "credit": "Lightning formula: after the ECMWF IFS lightning parameterization (Lopez 2016, Mon. Wea. Rev. 144, 3057-3075), rebuilt on ECMWF IFS ENS open data (CC BY 4.0) and calibrated to Vaisala NLDN strikes (licensed; derived only) with ERA5 (Copernicus Climate Change Service).",
+ "verify": {
+  "p1": {
+   "lopez": {
+    "auc": 0.925,
+    "brier": 0.0259,
+    "brier_climatology": 0.0334,
+    "bss": 0.226,
+    "base_rate": 0.0366,
+    "n": 357700,
+    "reliability": [
+     {
+      "bin": "0.00-0.05",
+      "forecast": 0.015,
+      "observed": 0.01,
+      "n": 326232
+     },
+     {
+      "bin": "0.05-0.10",
+      "forecast": 0.071,
+      "observed": 0.139,
+      "n": 8549
+     },
+     {
+      "bin": "0.10-0.20",
+      "forecast": 0.143,
+      "observed": 0.203,
+      "n": 7263
+     },
+     {
+      "bin": "0.20-0.30",
+      "forecast": 0.247,
+      "observed": 0.281,
+      "n": 3869
+     },
+     {
+      "bin": "0.30-0.50",
+      "forecast": 0.393,
+      "observed": 0.386,
+      "n": 4867
+     },
+     {
+      "bin": "0.50-0.70",
+      "forecast": 0.598,
+      "observed": 0.502,
+      "n": 3377
+     },
+     {
+      "bin": "0.70-1.00",
+      "forecast": 0.821,
+      "observed": 0.659,
+      "n": 3543
+     }
+    ]
+   },
+   "lopez_shape": {
+    "auc": 0.908,
+    "brier": 0.0271,
+    "brier_climatology": 0.0334,
+    "bss": 0.19,
+    "base_rate": 0.0366,
+    "n": 357700,
+    "reliability": [
+     {
+      "bin": "0.00-0.05",
+      "forecast": 0.008,
+      "observed": 0.009,
+      "n": 299153
+     },
+     {
+      "bin": "0.05-0.10",
+      "forecast": 0.073,
+      "observed": 0.064,
+      "n": 17404
+     },
+     {
+      "bin": "0.10-0.20",
+      "forecast": 0.144,
+      "observed": 0.105,
+      "n": 19346
+     },
+     {
+      "bin": "0.20-0.30",
+      "forecast": 0.245,
+      "observed": 0.206,
+      "n": 10413
+     },
+     {
+      "bin": "0.30-0.50",
+      "forecast": 0.38,
+      "observed": 0.385,
+      "n": 8371
+     },
+     {
+      "bin": "0.50-0.70",
+      "forecast": 0.58,
+      "observed": 0.639,
+      "n": 2512
+     },
+     {
+      "bin": "0.70-1.00",
+      "forecast": 0.761,
+      "observed": 0.802,
+      "n": 501
+     }
+    ]
+   },
+   "grid": {
+    "auc": 0.916,
+    "brier": 0.029,
+    "brier_climatology": 0.0334,
+    "bss": 0.133,
+    "base_rate": 0.0366,
+    "n": 357700,
+    "reliability": [
+     {
+      "bin": "0.00-0.05",
+      "forecast": 0.017,
+      "observed": 0.008,
+      "n": 294795
+     },
+     {
+      "bin": "0.05-0.10",
+      "forecast": 0.07,
+      "observed": 0.08,
+      "n": 31366
+     },
+     {
+      "bin": "0.10-0.20",
+      "forecast": 0.14,
+      "observed": 0.176,
+      "n": 19151
+     },
+     {
+      "bin": "0.20-0.30",
+      "forecast": 0.243,
+      "observed": 0.33,
+      "n": 6432
+     },
+     {
+      "bin": "0.30-0.50",
+      "forecast": 0.382,
+      "observed": 0.438,
+      "n": 4550
+     },
+     {
+      "bin": "0.50-0.70",
+      "forecast": 0.574,
+      "observed": 0.499,
+      "n": 1384
+     }
+    ]
+   },
+   "climatology_auc": 0.787
+  },
+  "p10": {
+   "lopez": {
+    "auc": 0.941,
+    "brier": 0.014,
+    "brier_climatology": 0.0169,
+    "bss": 0.172,
+    "base_rate": 0.0178,
+    "n": 357700,
+    "reliability": [
+     {
+      "bin": "0.00-0.05",
+      "forecast": 0.007,
+      "observed": 0.005,
+      "n": 336733
+     },
+     {
+      "bin": "0.05-0.10",
+      "forecast": 0.071,
+      "observed": 0.095,
+      "n": 6441
+     },
+     {
+      "bin": "0.10-0.20",
+      "forecast": 0.143,
+      "observed": 0.161,
+      "n": 5434
+     },
+     {
+      "bin": "0.20-0.30",
+      "forecast": 0.244,
+      "observed": 0.24,
+      "n": 2863
+     },
+     {
+      "bin": "0.30-0.50",
+      "forecast": 0.391,
+      "observed": 0.346,
+      "n": 3250
+     },
+     {
+      "bin": "0.50-0.70",
+      "forecast": 0.59,
+      "observed": 0.436,
+      "n": 1954
+     },
+     {
+      "bin": "0.70-1.00",
+      "forecast": 0.795,
+      "observed": 0.567,
+      "n": 1025
+     }
+    ]
+   },
+   "lopez_shape": {
+    "auc": 0.92,
+    "brier": 0.0146,
+    "brier_climatology": 0.0169,
+    "bss": 0.136,
+    "base_rate": 0.0178,
+    "n": 357700,
+    "reliability": [
+     {
+      "bin": "0.00-0.05",
+      "forecast": 0.005,
+      "observed": 0.005,
+      "n": 318330
+     },
+     {
+      "bin": "0.05-0.10",
+      "forecast": 0.072,
+      "observed": 0.044,
+      "n": 17375
+     },
+     {
+      "bin": "0.10-0.20",
+      "forecast": 0.14,
+      "observed": 0.104,
+      "n": 13934
+     },
+     {
+      "bin": "0.20-0.30",
+      "forecast": 0.242,
+      "observed": 0.233,
+      "n": 4608
+     },
+     {
+      "bin": "0.30-0.50",
+      "forecast": 0.374,
+      "observed": 0.421,
+      "n": 2787
+     },
+     {
+      "bin": "0.50-0.70",
+      "forecast": 0.569,
+      "observed": 0.565,
+      "n": 614
+     },
+     {
+      "bin": "0.70-1.00",
+      "forecast": 0.741,
+      "observed": 0.731,
+      "n": 52
+     }
+    ]
+   },
+   "grid": {
+    "auc": 0.93,
+    "brier": 0.0154,
+    "brier_climatology": 0.0169,
+    "bss": 0.088,
+    "base_rate": 0.0178,
+    "n": 357700,
+    "reliability": [
+     {
+      "bin": "0.00-0.05",
+      "forecast": 0.012,
+      "observed": 0.006,
+      "n": 328013
+     },
+     {
+      "bin": "0.05-0.10",
+      "forecast": 0.07,
+      "observed": 0.088,
+      "n": 16149
+     },
+     {
+      "bin": "0.10-0.20",
+      "forecast": 0.139,
+      "observed": 0.195,
+      "n": 9693
+     },
+     {
+      "bin": "0.20-0.30",
+      "forecast": 0.242,
+      "observed": 0.268,
+      "n": 2620
+     },
+     {
+      "bin": "0.30-0.50",
+      "forecast": 0.356,
+      "observed": 0.381,
+      "n": 1225
+     }
+    ]
+   },
+   "climatology_auc": 0.831
+  }
+ },
+ "per_year": [
+  {
+   "year": 2001,
+   "fit": true,
+   "strikes": 128184,
+   "expected": 124178.0,
+   "cell_days_hit": 2386,
+   "auc1_lopez": 0.919,
+   "auc1_grid": 0.91,
+   "auc10_lopez": 0.933,
+   "auc10_grid": 0.943
+  },
+  {
+   "year": 2002,
+   "fit": true,
+   "strikes": 78076,
+   "expected": 42985.0,
+   "cell_days_hit": 1955,
+   "auc1_lopez": 0.905,
+   "auc1_grid": 0.919,
+   "auc10_lopez": 0.918,
+   "auc10_grid": 0.937
+  },
+  {
+   "year": 2003,
+   "fit": true,
+   "strikes": 243380,
+   "expected": 134846.0,
+   "cell_days_hit": 3088,
+   "auc1_lopez": 0.9,
+   "auc1_grid": 0.919,
+   "auc10_lopez": 0.91,
+   "auc10_grid": 0.938
+  },
+  {
+   "year": 2004,
+   "fit": true,
+   "strikes": 173655,
+   "expected": 97089.0,
+   "cell_days_hit": 2563,
+   "auc1_lopez": 0.918,
+   "auc1_grid": 0.91,
+   "auc10_lopez": 0.935,
+   "auc10_grid": 0.94
+  },
+  {
+   "year": 2005,
+   "fit": true,
+   "strikes": 388613,
+   "expected": 166978.0,
+   "cell_days_hit": 3669,
+   "auc1_lopez": 0.91,
+   "auc1_grid": 0.894,
+   "auc10_lopez": 0.928,
+   "auc10_grid": 0.917
+  },
+  {
+   "year": 2006,
+   "fit": true,
+   "strikes": 267465,
+   "expected": 194071.0,
+   "cell_days_hit": 3800,
+   "auc1_lopez": 0.891,
+   "auc1_grid": 0.906,
+   "auc10_lopez": 0.899,
+   "auc10_grid": 0.928
+  },
+  {
+   "year": 2007,
+   "fit": true,
+   "strikes": 97313,
+   "expected": 60995.0,
+   "cell_days_hit": 1797,
+   "auc1_lopez": 0.894,
+   "auc1_grid": 0.925,
+   "auc10_lopez": 0.896,
+   "auc10_grid": 0.944
+  },
+  {
+   "year": 2008,
+   "fit": true,
+   "strikes": 80034,
+   "expected": 66054.0,
+   "cell_days_hit": 1826,
+   "auc1_lopez": 0.913,
+   "auc1_grid": 0.921,
+   "auc10_lopez": 0.924,
+   "auc10_grid": 0.934
+  },
+  {
+   "year": 2009,
+   "fit": true,
+   "strikes": 112393,
+   "expected": 145824.0,
+   "cell_days_hit": 2377,
+   "auc1_lopez": 0.919,
+   "auc1_grid": 0.912,
+   "auc10_lopez": 0.931,
+   "auc10_grid": 0.934
+  },
+  {
+   "year": 2010,
+   "fit": true,
+   "strikes": 172221,
+   "expected": 127701.0,
+   "cell_days_hit": 2350,
+   "auc1_lopez": 0.916,
+   "auc1_grid": 0.904,
+   "auc10_lopez": 0.926,
+   "auc10_grid": 0.928
+  },
+  {
+   "year": 2011,
+   "fit": true,
+   "strikes": 204927,
+   "expected": 126099.0,
+   "cell_days_hit": 2343,
+   "auc1_lopez": 0.904,
+   "auc1_grid": 0.918,
+   "auc10_lopez": 0.911,
+   "auc10_grid": 0.933
+  },
+  {
+   "year": 2012,
+   "fit": true,
+   "strikes": 151939,
+   "expected": 155341.0,
+   "cell_days_hit": 2214,
+   "auc1_lopez": 0.887,
+   "auc1_grid": 0.919,
+   "auc10_lopez": 0.898,
+   "auc10_grid": 0.94
+  },
+  {
+   "year": 2013,
+   "fit": true,
+   "strikes": 215685,
+   "expected": 430926.0,
+   "cell_days_hit": 2487,
+   "auc1_lopez": 0.935,
+   "auc1_grid": 0.935,
+   "auc10_lopez": 0.949,
+   "auc10_grid": 0.95
+  },
+  {
+   "year": 2014,
+   "fit": true,
+   "strikes": 165968,
+   "expected": 239837.0,
+   "cell_days_hit": 2618,
+   "auc1_lopez": 0.923,
+   "auc1_grid": 0.928,
+   "auc10_lopez": 0.945,
+   "auc10_grid": 0.94
+  },
+  {
+   "year": 2015,
+   "fit": true,
+   "strikes": 381248,
+   "expected": 233426.0,
+   "cell_days_hit": 4139,
+   "auc1_lopez": 0.914,
+   "auc1_grid": 0.911,
+   "auc10_lopez": 0.925,
+   "auc10_grid": 0.921
+  },
+  {
+   "year": 2016,
+   "fit": true,
+   "strikes": 105600,
+   "expected": 99164.0,
+   "cell_days_hit": 2457,
+   "auc1_lopez": 0.925,
+   "auc1_grid": 0.899,
+   "auc10_lopez": 0.942,
+   "auc10_grid": 0.908
+  },
+  {
+   "year": 2017,
+   "fit": true,
+   "strikes": 175556,
+   "expected": 344093.0,
+   "cell_days_hit": 2937,
+   "auc1_lopez": 0.918,
+   "auc1_grid": 0.922,
+   "auc10_lopez": 0.94,
+   "auc10_grid": 0.94
+  },
+  {
+   "year": 2018,
+   "fit": true,
+   "strikes": 114025,
+   "expected": 404813.0,
+   "cell_days_hit": 2357,
+   "auc1_lopez": 0.939,
+   "auc1_grid": 0.932,
+   "auc10_lopez": 0.953,
+   "auc10_grid": 0.944
+  },
+  {
+   "year": 2019,
+   "fit": true,
+   "strikes": 97053,
+   "expected": 129697.0,
+   "cell_days_hit": 2679,
+   "auc1_lopez": 0.931,
+   "auc1_grid": 0.896,
+   "auc10_lopez": 0.946,
+   "auc10_grid": 0.914
+  },
+  {
+   "year": 2020,
+   "fit": true,
+   "strikes": 48561,
+   "expected": 77779.0,
+   "cell_days_hit": 1604,
+   "auc1_lopez": 0.929,
+   "auc1_grid": 0.921,
+   "auc10_lopez": 0.936,
+   "auc10_grid": 0.938
+  },
+  {
+   "year": 2021,
+   "fit": false,
+   "strikes": 79931,
+   "expected": 127762.0,
+   "cell_days_hit": 1919,
+   "auc1_lopez": 0.918,
+   "auc1_grid": 0.918,
+   "auc10_lopez": 0.934,
+   "auc10_grid": 0.937
+  },
+  {
+   "year": 2022,
+   "fit": false,
+   "strikes": 96829,
+   "expected": 203763.0,
+   "cell_days_hit": 2468,
+   "auc1_lopez": 0.922,
+   "auc1_grid": 0.929,
+   "auc10_lopez": 0.944,
+   "auc10_grid": 0.938
+  },
+  {
+   "year": 2023,
+   "fit": false,
+   "strikes": 129364,
+   "expected": 204650.0,
+   "cell_days_hit": 3679,
+   "auc1_lopez": 0.924,
+   "auc1_grid": 0.904,
+   "auc10_lopez": 0.943,
+   "auc10_grid": 0.918
+  },
+  {
+   "year": 2024,
+   "fit": false,
+   "strikes": 49625,
+   "expected": 51920.0,
+   "cell_days_hit": 2031,
+   "auc1_lopez": 0.905,
+   "auc1_grid": 0.895,
+   "auc10_lopez": 0.909,
+   "auc10_grid": 0.915
+  },
+  {
+   "year": 2025,
+   "fit": false,
+   "strikes": 130694,
+   "expected": 223781.0,
+   "cell_days_hit": 2979,
+   "auc1_lopez": 0.941,
+   "auc1_grid": 0.923,
+   "auc10_lopez": 0.954,
+   "auc10_grid": 0.937
+  }
+ ],
+ "per_month": [
+  {
+   "month": 1,
+   "auc1_lopez": 0.947,
+   "auc1_grid": 0.927,
+   "base_rate": 0.0111
+  },
+  {
+   "month": 2,
+   "auc1_lopez": 0.935,
+   "auc1_grid": 0.934,
+   "base_rate": 0.0121
+  },
+  {
+   "month": 3,
+   "auc1_lopez": 0.91,
+   "auc1_grid": 0.866,
+   "base_rate": 0.0303
+  },
+  {
+   "month": 4,
+   "auc1_lopez": 0.953,
+   "auc1_grid": 0.895,
+   "base_rate": 0.0171
+  },
+  {
+   "month": 5,
+   "auc1_lopez": 0.943,
+   "auc1_grid": 0.909,
+   "base_rate": 0.0418
+  },
+  {
+   "month": 6,
+   "auc1_lopez": 0.934,
+   "auc1_grid": 0.909,
+   "base_rate": 0.0654
+  },
+  {
+   "month": 7,
+   "auc1_lopez": 0.906,
+   "auc1_grid": 0.896,
+   "base_rate": 0.0703
+  },
+  {
+   "month": 8,
+   "auc1_lopez": 0.918,
+   "auc1_grid": 0.897,
+   "base_rate": 0.0802
+  },
+  {
+   "month": 9,
+   "auc1_lopez": 0.891,
+   "auc1_grid": 0.868,
+   "base_rate": 0.0669
+  },
+  {
+   "month": 10,
+   "auc1_lopez": 0.936,
+   "auc1_grid": 0.913,
+   "base_rate": 0.021
+  },
+  {
+   "month": 11,
+   "auc1_lopez": 0.953,
+   "auc1_grid": 0.941,
+   "base_rate": 0.01
+  },
+  {
+   "month": 12,
+   "auc1_lopez": 0.932,
+   "auc1_grid": 0.914,
+   "base_rate": 0.0104
+  }
+ ],
+ "daily": {
+  "rho_cells_lopez": 0.824,
+  "rho_cells_grid": 0.744,
+  "rho_strikes_lopez": 0.808,
+  "test_days": 1825
+ },
+ "sieges": [
+  {
+   "date": "2003-09-03",
+   "observed_cells": 121,
+   "strikes": 23018,
+   "expected_cells_lopez": 54.7,
+   "expected_cells_grid": 42.4,
+   "expected_strikes_lopez": 4441.0,
+   "fit_year": true,
+   "png_lopez": "lightning_lopez_case_20030903_lopez.png",
+   "png_grid": "lightning_lopez_case_20030903_grid.png"
+  },
+  {
+   "date": "2008-06-21",
+   "observed_cells": 73,
+   "strikes": 12711,
+   "expected_cells_lopez": 35.0,
+   "expected_cells_grid": 10.7,
+   "expected_strikes_lopez": 1382.0,
+   "fit_year": true,
+   "png_lopez": "lightning_lopez_case_20080621_lopez.png",
+   "png_grid": "lightning_lopez_case_20080621_grid.png"
+  },
+  {
+   "date": "2015-07-30",
+   "observed_cells": 84,
+   "strikes": 20443,
+   "expected_cells_lopez": 56.8,
+   "expected_cells_grid": 47.0,
+   "expected_strikes_lopez": 34268.0,
+   "fit_year": true,
+   "png_lopez": "lightning_lopez_case_20150730_lopez.png",
+   "png_grid": "lightning_lopez_case_20150730_grid.png"
+  },
+  {
+   "date": "2020-08-16",
+   "observed_cells": 62,
+   "strikes": 3529,
+   "expected_cells_lopez": 69.7,
+   "expected_cells_grid": 41.7,
+   "expected_strikes_lopez": 4380.0,
+   "fit_year": true,
+   "png_lopez": "lightning_lopez_case_20200816_lopez.png",
+   "png_grid": "lightning_lopez_case_20200816_grid.png"
+  },
+  {
+   "date": "2025-08-25",
+   "observed_cells": 117,
+   "strikes": 12283,
+   "expected_cells_lopez": 93.3,
+   "expected_cells_grid": 51.2,
+   "expected_strikes_lopez": 17571.0,
+   "fit_year": false,
+   "png_lopez": "lightning_lopez_case_20250825_lopez.png",
+   "png_grid": "lightning_lopez_case_20250825_grid.png"
+  }
+ ],
+ "per_season": {
+  "warm (Jun-Sep)": {
+   "base_rate": 0.0708,
+   "cell_days": 119560,
+   "p1": {
+    "lopez": {
+     "auc": 0.913,
+     "bss": 0.27
+    },
+    "grid": {
+     "auc": 0.889,
+     "bss": 0.156
+    },
+    "season_curves_bss": 0.282
+   },
+   "p10": {
+    "lopez": {
+     "auc": 0.927,
+     "bss": 0.197
+    },
+    "grid": {
+     "auc": 0.892,
+     "bss": 0.102
+    },
+    "season_curves_bss": 0.212
+   }
+  },
+  "cool (Oct-May)": {
+   "base_rate": 0.0194,
+   "cell_days": 238140,
+   "p1": {
+    "lopez": {
+     "auc": 0.941,
+     "bss": 0.15
+    },
+    "grid": {
+     "auc": 0.914,
+     "bss": 0.096
+    },
+    "season_curves_bss": 0.131
+   },
+   "p10": {
+    "lopez": {
+     "auc": 0.955,
+     "bss": 0.1
+    },
+    "grid": {
+     "auc": 0.927,
+     "bss": 0.048
+    },
+    "season_curves_bss": 0.07
+   }
+  }
+ },
+ "footprints": {
+  "diablo": 29,
+  "northwind": 29,
+  "far_north": 21,
+  "east_side": 26,
+  "santa_ana": 28,
+  "central_coast": 28,
+  "san_diego": 17
+ }
+}

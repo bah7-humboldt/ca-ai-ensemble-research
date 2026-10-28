@@ -1,0 +1,111 @@
+# Smoke test: can the AI ensemble daily run work entirely on a GitHub-hosted runner?
+# Runs on every push to pipeline-test. Deploys NOTHING to Pages; it writes its findings to the
+# pipeline-test-results branch (and the built site as a 7-day artifact).
+name: AI ensemble smoke test
+
+on:
+  push:
+    branches: [pipeline-test]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-ensemble-smoke
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      TZ: America/Los_Angeles      # products are named and charted in Pacific time, as on the Windows host
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      # Previous cycles (the run keeps 4 per model, ~3.4 GB) and the regime archive carry over
+      # between runs through the Actions cache; the first run starts empty.
+      - name: Restore previous runs
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/ai_ensembles/runs
+            data/ai_ensembles/archive
+          key: ai-ensemble-runs-${{ github.run_id }}
+          restore-keys: ai-ensemble-runs-
+
+      - name: Probe data sources
+        run: |
+          mkdir -p results
+          probe() {  # name url
+            # browser-like User-Agent, as scripts/fems_api.py sends (FEMS 403s plain clients)
+            out=$(curl -sS -o /dev/null -L --max-time 60 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" -w "%{http_code} %{time_total}s" "$2" 2>&1) || true
+            echo "$1 | $2 | $out" | tee -a results/probes.txt
+          }
+          probe NOMADS-AIGEFS https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigefs/prod/
+          probe GEFS-AWS "https://noaa-gefs-pds.s3.amazonaws.com/?list-type=2&max-keys=1"
+          probe ECMWF-AWS "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/?list-type=2&max-keys=1"
+          probe ECMWF-GCS "https://storage.googleapis.com/ecmwf-open-data/?max-keys=1"
+          probe ECMWF-direct https://data.ecmwf.int/forecasts/
+          probe FEMS "https://fems.fs2c.usda.gov/api/climatology/download-nfdr-daily-summary/?dataset=forecast&startDate=$(date -u +%F)&endDate=$(date -u -d '+1 day' +%F)&dataFormat=csv&stationIds=40429&fuelModels=Y"
+          df -h / | tee results/disk_before.txt
+
+      - name: Daily run (fetch, products, web export; no publish)
+        run: |
+          set +e
+          /usr/bin/time -v python scripts/ai_ensemble_daily.py --force > results/run.log 2> >(tee results/time_and_stderr.txt >&2)
+          echo $? > results/exit_code.txt
+          tail -40 results/run.log
+          exit 0
+
+      - name: Save runs for next time
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/ai_ensembles/runs
+            data/ai_ensembles/archive
+          key: ai-ensemble-runs-${{ github.run_id }}
+
+      - name: Collect results
+        if: always()
+        run: |
+          cp data/outputs/ai_ensembles/logs/ai_ensembles_history.log results/ 2>/dev/null || true
+          cp data/outputs/ai_ensembles/logs/ai_ensembles_*.log results/ 2>/dev/null || true
+          df -h / > results/disk_after.txt
+          du -sh data/ai_ensembles/* data/outputs/ai_ensembles/* > results/sizes.txt 2>&1 || true
+          ls -la data/ai_ensembles/runs >> results/sizes.txt 2>&1 || true
+          find data/outputs/ai_ensembles/web -type f | wc -l > results/web_file_count.txt 2>&1 || true
+          grep -E "Maximum resident|Elapsed \(wall|Exit status" results/time_and_stderr.txt > results/summary.txt || true
+          cat results/probes.txt results/exit_code.txt >> results/summary.txt
+          cat results/summary.txt
+
+      - name: Push results to pipeline-test-results
+        if: always()
+        run: |
+          cd results
+          git init -q -b pipeline-test-results
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Smoke test results, run ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" pipeline-test-results
+
+      - name: Keep the built site for a look
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-ensemble-web
+          path: data/outputs/ai_ensembles/web
+          retention-days: 7
+          if-no-files-found: warn

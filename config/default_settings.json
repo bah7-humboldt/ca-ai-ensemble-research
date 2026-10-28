@@ -1,0 +1,17 @@
+{
+  "climatology_station_csv": "config/oncc_raws_stations.csv",
+  "climatology_index_list": [
+    "100HrFM",
+    "1000HrFM",
+    "ERC",
+    "BI",
+    "KBDI"
+  ],
+  "climatology_dir": "data/historic_fires_research",
+  "climatology_hist_startdate": "2005-03-01",
+  "climatology_hist_enddate": "2025-12-31",
+  "climatology_season_enabled": true,
+  "climatology_season_startdate": "01-01",
+  "climatology_season_enddate": "12-31",
+  "climatology_daily_refresh_enabled": true
+}

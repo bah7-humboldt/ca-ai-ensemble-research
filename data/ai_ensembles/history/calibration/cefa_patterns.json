@@ -1,0 +1,1112 @@
+{
+ "source": {
+  "name": "DRI CEFA, GACC Critical Fire Thresholds -- Critical Fire Weather Patterns",
+  "url": "https://cefa.dri.edu/CriticalFire/home.php",
+  "accessed": "2026-10-13"
+ },
+ "source2": {
+  "name": "Werth, P.A. et al. 2011. Synthesis of Knowledge of Extreme Fire Behavior: Volume I for Fire Managers. Gen. Tech. Rep. PNW-GTR-854. USDA Forest Service, Pacific Northwest Research Station. California region, pp. 41-43.",
+  "url": "https://www.fs.usda.gov/research/treesearch/39553"
+ },
+ "source3": {
+  "name": "NWCG, Fire Behavior Field Reference Guide (PMS 437), Weather: Critical Fire Weather",
+  "url": "https://www.nwcg.gov/publications/pms437/weather/critical-fire-weather",
+  "accessed": "2026-10-13"
+ },
+ "patterns": [
+  {
+   "id": "nc_dry_tstorm",
+   "gacc": "ONCC",
+   "name": "Dry thunderstorms",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "fp": [
+    "NC01",
+    "NC02",
+    "NC03A",
+    "NC03B",
+    "NC04",
+    "NC05",
+    "NC06",
+    "NC07",
+    "NC08"
+   ],
+   "cefa": "Under an upper ridge that brings monsoon moisture north (thunderstorms on its west side in south to southeast flow), or on the edge of an upper trough approaching the Pacific Northwest coast; moist mid levels over dry low levels. Case: 20-21 June 2008, over 5,000 strikes and 602 fires.",
+   "cases": [
+    [
+     "2008-06-20",
+     "June 2008 lightning siege (CEFA case)"
+    ],
+    [
+     "2008-06-21",
+     "June 2008 lightning siege (CEFA case)"
+    ]
+   ],
+   "rule": "\u2265 500 lightning strikes in Northern California's PSAs",
+   "regimes": [
+    {
+     "regime": "A",
+     "share_event": 0.277,
+     "share_season": 0.311,
+     "enrichment": 0.89
+    },
+    {
+     "regime": "B",
+     "share_event": 0.131,
+     "share_season": 0.188,
+     "enrichment": 0.7
+    },
+    {
+     "regime": "C",
+     "share_event": 0.262,
+     "share_season": 0.153,
+     "enrichment": 1.7
+    },
+    {
+     "regime": "D",
+     "share_event": 0.236,
+     "share_season": 0.152,
+     "enrichment": 1.55
+    },
+    {
+     "regime": "E",
+     "share_event": 0.046,
+     "share_season": 0.118,
+     "enrichment": 0.39
+    },
+    {
+     "regime": "F",
+     "share_event": 0.049,
+     "share_season": 0.077,
+     "enrichment": 0.63
+    }
+   ],
+   "top_regime": "C",
+   "composite_text": "This pattern has a ridge (heights +50 m above normal) centered near the Pacific Northwest and a trough (-34 m) centered near the California coast, with near-normal heights over California.",
+   "png": "cefa_nc_dry_tstorm.png",
+   "growth_lift": 1.04,
+   "growth_share": 0.106,
+   "start_lift": 2.19,
+   "days": 390,
+   "per_year": 15.6,
+   "case_check": [
+    {
+     "date": "2008-06-20",
+     "label": "June 2008 lightning siege (CEFA case)",
+     "event": true,
+     "regime": "B",
+     "strikes_nc": 1777,
+     "SFO-WMC": -5.6,
+     "LAX-TPH": -4.5,
+     "SMX-SBA": 2.2
+    },
+    {
+     "date": "2008-06-21",
+     "label": "June 2008 lightning siege (CEFA case)",
+     "event": true,
+     "regime": "E",
+     "strikes_nc": 12033,
+     "SFO-WMC": -2.6,
+     "LAX-TPH": -3.0,
+     "SMX-SBA": 3.4
+    }
+   ]
+  },
+  {
+   "id": "nc_ne_foehn",
+   "gacc": "ONCC",
+   "name": "Northeast foehn winds",
+   "months": [
+    9,
+    10,
+    11
+   ],
+   "fp": [
+    "NC02",
+    "NC03A",
+    "NC03B",
+    "NC05"
+   ],
+   "cefa": "A strong, positively tilted upper trough moving inland over the Pacific Northwest or Great Basin, a ridge building in the eastern Pacific behind it, northeast cross-mountain flow and sinking air: downslope wind on the west slopes of the Sierra and Cascades, with a tight north-south surface gradient. Case: 49er Fire, September 1988 (before this record).",
+   "cases": [
+    [
+     "2017-10-09",
+     "Tubbs / Atlas / North Bay fires (not a CEFA case)"
+    ],
+    [
+     "2020-09-08",
+     "August Complex and Bear fires run (not a CEFA case)"
+    ]
+   ],
+   "rule": "SFO\u2013WMC fire-day minimum gradient \u2264 -8.9 hPa",
+   "regimes": [
+    {
+     "regime": "A",
+     "share_event": 0.346,
+     "share_season": 0.225,
+     "enrichment": 1.54
+    },
+    {
+     "regime": "B",
+     "share_event": 0.022,
+     "share_season": 0.158,
+     "enrichment": 0.14
+    },
+    {
+     "regime": "C",
+     "share_event": 0.377,
+     "share_season": 0.165,
+     "enrichment": 2.28
+    },
+    {
+     "regime": "D",
+     "share_event": 0.134,
+     "share_season": 0.156,
+     "enrichment": 0.86
+    },
+    {
+     "regime": "E",
+     "share_event": 0.039,
+     "share_season": 0.171,
+     "enrichment": 0.23
+    },
+    {
+     "regime": "F",
+     "share_event": 0.082,
+     "share_season": 0.125,
+     "enrichment": 0.66
+    }
+   ],
+   "top_regime": "C",
+   "composite_text": "This pattern has a ridge (heights +119 m above normal) centered near the Pacific Northwest and a trough (-52 m) centered near the northeast Pacific, with higher than normal heights over California (warm, dry, sinking air).",
+   "png": "cefa_nc_ne_foehn.png",
+   "growth_lift": 3.91,
+   "growth_share": 0.293,
+   "start_lift": 5.28,
+   "days": 231,
+   "per_year": 9.2,
+   "case_check": [
+    {
+     "date": "2017-10-09",
+     "label": "Tubbs / Atlas / North Bay fires (not a CEFA case)",
+     "event": true,
+     "regime": "F",
+     "strikes_nc": 0,
+     "SFO-WMC": -14.3,
+     "LAX-TPH": -11.7,
+     "SMX-SBA": 1.4
+    },
+    {
+     "date": "2020-09-08",
+     "label": "August Complex and Bear fires run (not a CEFA case)",
+     "event": true,
+     "regime": "C",
+     "strikes_nc": 0,
+     "SFO-WMC": -15.0,
+     "LAX-TPH": -9.7,
+     "SMX-SBA": 1.6
+    }
+   ]
+  },
+  {
+   "id": "nc_sw_foehn",
+   "gacc": "ONCC",
+   "name": "Southwest foehn winds",
+   "months": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "fp": [
+    "NC06",
+    "NC07",
+    "NC08"
+   ],
+   "cefa": "An upper trough just offshore or over the Pacific Northwest, strong southwest flow and the trough's dry slot over the Sierra and Cascades, a jet overhead: downslope wind on the east slopes, a strong west-east surface gradient. Case: Fountain Fire, August 1992 (before this record).",
+   "cases": [],
+   "rule": "Reno 700 hPa wind from 200\u2013260\u00b0 at \u2265 25 kt with dewpoint depression \u2265 15 \u00b0C (dry slot), under 100 strikes",
+   "regimes": [
+    {
+     "regime": "A",
+     "share_event": 0.167,
+     "share_season": 0.307,
+     "enrichment": 0.54
+    },
+    {
+     "regime": "B",
+     "share_event": 0.431,
+     "share_season": 0.191,
+     "enrichment": 2.26
+    },
+    {
+     "regime": "C",
+     "share_event": 0.046,
+     "share_season": 0.156,
+     "enrichment": 0.3
+    },
+    {
+     "regime": "D",
+     "share_event": 0.063,
+     "share_season": 0.155,
+     "enrichment": 0.41
+    },
+    {
+     "regime": "E",
+     "share_event": 0.195,
+     "share_season": 0.119,
+     "enrichment": 1.64
+    },
+    {
+     "regime": "F",
+     "share_event": 0.098,
+     "share_season": 0.072,
+     "enrichment": 1.35
+    }
+   ],
+   "top_regime": "B",
+   "composite_text": "This pattern has a ridge (heights +45 m above normal) centered near the northeast Pacific and a trough (-94 m) centered near the Pacific Northwest, with near-normal heights over California.",
+   "png": "cefa_nc_sw_foehn.png",
+   "growth_lift": 0.68,
+   "growth_share": 0.032,
+   "start_lift": 0.68,
+   "days": 174,
+   "per_year": 7.0,
+   "case_check": []
+  },
+  {
+   "id": "sc_santa_ana",
+   "gacc": "OSCC",
+   "name": "Santa Ana winds",
+   "months": [
+    10,
+    11,
+    12,
+    1
+   ],
+   "fp": [
+    "SC07",
+    "SC08",
+    "SC09",
+    "SC10",
+    "SC11"
+   ],
+   "cefa": "High pressure over a cooling Great Basin after the monsoon, a pressure gradient across Southern California and northeast cross-mountain flow, often after a front through the interior West; the jet's right-exit region gives sinking air. Case: Cedar Fire, late October 2003.",
+   "cases": [
+    [
+     "2003-10-25",
+     "Cedar Fire (CEFA case)"
+    ],
+    [
+     "2003-10-26",
+     "Cedar Fire (CEFA case)"
+    ]
+   ],
+   "rule": "LAX\u2013TPH fire-day minimum gradient \u2264 -8.6 hPa",
+   "regimes": [
+    {
+     "regime": "A",
+     "share_event": 0.242,
+     "share_season": 0.189,
+     "enrichment": 1.28
+    },
+    {
+     "regime": "B",
+     "share_event": 0.025,
+     "share_season": 0.135,
+     "enrichment": 0.19
+    },
+    {
+     "regime": "C",
+     "share_event": 0.314,
+     "share_season": 0.18,
+     "enrichment": 1.74
+    },
+    {
+     "regime": "D",
+     "share_event": 0.26,
+     "share_season": 0.162,
+     "enrichment": 1.61
+    },
+    {
+     "regime": "E",
+     "share_event": 0.105,
+     "share_season": 0.181,
+     "enrichment": 0.58
+    },
+    {
+     "regime": "F",
+     "share_event": 0.054,
+     "share_season": 0.153,
+     "enrichment": 0.35
+    }
+   ],
+   "top_regime": "C",
+   "composite_text": "This pattern has a ridge (heights +106 m above normal) centered near the Pacific Northwest and a trough (-57 m) centered near the northeast Pacific, with higher than normal heights over California (warm, dry, sinking air).",
+   "png": "cefa_sc_santa_ana.png",
+   "growth_lift": 3.08,
+   "growth_share": 0.567,
+   "start_lift": 4.08,
+   "days": 592,
+   "per_year": 23.7,
+   "case_check": [
+    {
+     "date": "2003-10-25",
+     "label": "Cedar Fire (CEFA case)",
+     "event": true,
+     "regime": "C",
+     "strikes_nc": 0,
+     "SFO-WMC": -14.9,
+     "LAX-TPH": -10.9,
+     "SMX-SBA": 1.7
+    },
+    {
+     "date": "2003-10-26",
+     "label": "Cedar Fire (CEFA case)",
+     "event": true,
+     "regime": "C",
+     "strikes_nc": 0,
+     "SFO-WMC": -12.6,
+     "LAX-TPH": -9.3,
+     "SMX-SBA": 1.2
+    }
+   ]
+  },
+  {
+   "id": "sc_sundowner",
+   "gacc": "OSCC",
+   "name": "Sundowner winds",
+   "months": [
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    12,
+    1
+   ],
+   "fp": [
+    "SC06",
+    "SC07"
+   ],
+   "cefa": "Downslope wind over the Santa Ynez Mountains from higher pressure at Santa Maria than Santa Barbara, set up by a southwest-northeast jet from northern California into the Intermountain West; May-July and again in fall and winter, often 12-24 h before a Santa Ana. Case: Jesusita Fire, 5 May 2009.",
+   "cases": [
+    [
+     "2009-05-05",
+     "Jesusita Fire (CEFA case)"
+    ],
+    [
+     "2009-05-06",
+     "Jesusita Fire (CEFA case)"
+    ],
+    [
+     "2008-11-13",
+     "Tea Fire (named by CEFA)"
+    ]
+   ],
+   "rule": "Santa Maria minus Santa Barbara pressure, evening (3\u201311 p.m.) max \u2265 4.7 hPa (97th percentile), May\u2013Jul and Sep\u2013Jan as CEFA describes",
+   "regimes": [
+    {
+     "regime": "A",
+     "share_event": 0.242,
+     "share_season": 0.256,
+     "enrichment": 0.94
+    },
+    {
+     "regime": "B",
+     "share_event": 0.275,
+     "share_season": 0.166,
+     "enrichment": 1.65
+    },
+    {
+     "regime": "C",
+     "share_event": 0.071,
+     "share_season": 0.162,
+     "enrichment": 0.44
+    },
+    {
+     "regime": "D",
+     "share_event": 0.093,
+     "share_season": 0.158,
+     "enrichment": 0.59
+    },
+    {
+     "regime": "E",
+     "share_event": 0.225,
+     "share_season": 0.146,
+     "enrichment": 1.54
+    },
+    {
+     "regime": "F",
+     "share_event": 0.093,
+     "share_season": 0.112,
+     "enrichment": 0.84
+    }
+   ],
+   "top_regime": "B",
+   "composite_text": "This pattern has a ridge (heights +36 m above normal) centered near California and a trough (-65 m) centered near the Pacific Northwest, with near-normal heights over California.",
+   "png": "cefa_sc_sundowner.png",
+   "growth_lift": 1.06,
+   "growth_share": 0.04,
+   "start_lift": 0.3,
+   "days": 182,
+   "per_year": 7.3,
+   "case_check": [
+    {
+     "date": "2009-05-05",
+     "label": "Jesusita Fire (CEFA case)",
+     "event": true,
+     "regime": "E",
+     "strikes_nc": 0,
+     "SFO-WMC": 6.1,
+     "LAX-TPH": -0.7,
+     "SMX-SBA": 5.6
+    },
+    {
+     "date": "2009-05-06",
+     "label": "Jesusita Fire (CEFA case)",
+     "event": true,
+     "regime": "E",
+     "strikes_nc": 0,
+     "SFO-WMC": 5.7,
+     "LAX-TPH": -2.7,
+     "SMX-SBA": 5.4
+    },
+    {
+     "date": "2008-11-13",
+     "label": "Tea Fire (named by CEFA)",
+     "event": false,
+     "regime": "A",
+     "strikes_nc": 0,
+     "SFO-WMC": -10.7,
+     "LAX-TPH": -12.5,
+     "SMX-SBA": 4.2
+    }
+   ]
+  },
+  {
+   "id": "sc_dry_tstorm",
+   "gacc": "OSCC",
+   "name": "Dry thunderstorms",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "fp": [
+    "SC06",
+    "SC07",
+    "SC08",
+    "SC09",
+    "SC10",
+    "SC11"
+   ],
+   "cefa": "The edge of a monsoon moisture surge, often with a cut-off upper low just off the Southern California coast; moisture aloft over dry low levels. Case: 21 September 2011.",
+   "cases": [
+    [
+     "2011-09-21",
+     "Cut-off low dry lightning (CEFA case)"
+    ]
+   ],
+   "rule": "\u2265 500 lightning strikes in the Santa Ana, Central Coast and San Diego footprints",
+   "regimes": [
+    {
+     "regime": "A",
+     "share_event": 0.333,
+     "share_season": 0.311,
+     "enrichment": 1.07
+    },
+    {
+     "regime": "B",
+     "share_event": 0.115,
+     "share_season": 0.188,
+     "enrichment": 0.61
+    },
+    {
+     "regime": "C",
+     "share_event": 0.184,
+     "share_season": 0.153,
+     "enrichment": 1.2
+    },
+    {
+     "regime": "D",
+     "share_event": 0.282,
+     "share_season": 0.152,
+     "enrichment": 1.85
+    },
+    {
+     "regime": "E",
+     "share_event": 0.075,
+     "share_season": 0.118,
+     "enrichment": 0.63
+    },
+    {
+     "regime": "F",
+     "share_event": 0.011,
+     "share_season": 0.077,
+     "enrichment": 0.15
+    }
+   ],
+   "top_regime": "D",
+   "composite_text": "This pattern has a ridge (heights +49 m above normal) centered near the Pacific Northwest and a trough (-38 m) centered near the northeast Pacific, with near-normal heights over California.",
+   "png": "cefa_sc_dry_tstorm.png",
+   "growth_lift": 0.38,
+   "growth_share": 0.018,
+   "start_lift": 0.87,
+   "days": 174,
+   "per_year": 7.0,
+   "case_check": [
+    {
+     "date": "2011-09-21",
+     "label": "Cut-off low dry lightning (CEFA case)",
+     "event": false,
+     "regime": "E",
+     "strikes_nc": 0,
+     "SFO-WMC": -5.7,
+     "LAX-TPH": -3.5,
+     "SMX-SBA": 1.2
+    }
+   ]
+  }
+ ],
+ "sundowner_lead": {
+  "p_after_sundowner": 0.463,
+  "p_any_day": 0.271,
+  "sundowner_days": 41
+ },
+ "literature_cases": [
+  {
+   "date": "1953-07-09",
+   "case": "Rattlesnake Fire",
+   "source": "Krumm 1954, in the Synthesis",
+   "pattern": "evening downslope (coastal high)",
+   "expected": [
+    "C",
+    "A"
+   ],
+   "regime": "D",
+   "from": "R1 archive (classified)",
+   "match": false
+  },
+  {
+   "date": "1956-11-25",
+   "case": "Inaja Fire",
+   "source": "Countryman et al. 1956, in the Synthesis",
+   "pattern": "Santa Ana",
+   "expected": [
+    "C",
+    "A",
+    "D"
+   ],
+   "regime": "D",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1988-09-11",
+   "case": "49er Fire",
+   "source": "CEFA",
+   "pattern": "northeast foehn",
+   "expected": [
+    "C",
+    "A"
+   ],
+   "regime": "A",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1990-06-27",
+   "case": "Painted Cave Fire",
+   "source": "CEFA; the Synthesis",
+   "pattern": "Sundowner",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "B",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1992-08-20",
+   "case": "Fountain Fire",
+   "source": "CEFA",
+   "pattern": "southwest foehn",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "C",
+   "from": "R1 archive (classified)",
+   "match": false
+  },
+  {
+   "date": "1953-12-12",
+   "case": "Santa Ana with a Pacific High",
+   "source": "Schroeder et al. 1964 (fig. 83)",
+   "pattern": "Santa Ana",
+   "expected": [
+    "C",
+    "A",
+    "D"
+   ],
+   "regime": "A",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1954-10-14",
+   "case": "Great Basin High (Mono winds)",
+   "source": "Schroeder et al. 1964 (fig. 79)",
+   "pattern": "northeast foehn (Great Basin High)",
+   "expected": [
+    "C",
+    "A"
+   ],
+   "regime": "E",
+   "from": "R1 archive (classified)",
+   "match": false
+  },
+  {
+   "date": "1954-10-23",
+   "case": "Pacific High post-frontal north wind",
+   "source": "Schroeder et al. 1964 (fig. 78)",
+   "pattern": "post-frontal north wind",
+   "expected": [
+    "C",
+    "A",
+    "F"
+   ],
+   "regime": "A",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1955-06-29",
+   "case": "Post-frontal, Southern California",
+   "source": "Schroeder et al. 1964 (fig. 82)",
+   "pattern": "post-frontal north wind",
+   "expected": [
+    "C",
+    "A",
+    "F"
+   ],
+   "regime": "A",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1955-09-01",
+   "case": "Subtropical High Aloft heat wave",
+   "source": "Schroeder et al. 1964 (fig. 76)",
+   "pattern": "subtropical high aloft",
+   "expected": [
+    "D",
+    "C"
+   ],
+   "regime": "D",
+   "from": "R1 archive (classified)",
+   "match": true
+  },
+  {
+   "date": "1956-08-11",
+   "case": "Cold low aloft",
+   "source": "Schroeder et al. 1964 (fig. 80)",
+   "pattern": "cold low / trough aloft",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "F",
+   "from": "R1 archive (classified)",
+   "match": false
+  },
+  {
+   "date": "1956-09-16",
+   "case": "Meridional ridge, southwest flow",
+   "source": "Schroeder et al. 1964 (fig. 77)",
+   "pattern": "southwest flow (trough near 130 W)",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "C",
+   "from": "R1 archive (classified)",
+   "match": false
+  },
+  {
+   "date": "2003-10-25",
+   "case": "Cedar Fire",
+   "source": "CEFA",
+   "pattern": "Santa Ana",
+   "expected": [
+    "C",
+    "A",
+    "D"
+   ],
+   "regime": "C",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2006-10-26",
+   "case": "Esperanza Fire",
+   "source": "the Synthesis",
+   "pattern": "Santa Ana onset",
+   "expected": [
+    "C",
+    "A",
+    "D"
+   ],
+   "regime": "A",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2007-07-07",
+   "case": "Inyo Complex, Seven Oak",
+   "source": "the Synthesis",
+   "pattern": "east-slope afternoon wind",
+   "expected": [
+    "E",
+    "B",
+    "D"
+   ],
+   "regime": "A",
+   "from": "2001-present record",
+   "match": false
+  },
+  {
+   "date": "2007-10-21",
+   "case": "October 2007 siege",
+   "source": "the Synthesis",
+   "pattern": "Santa Ana",
+   "expected": [
+    "C",
+    "A",
+    "D"
+   ],
+   "regime": "A",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2007-10-22",
+   "case": "October 2007 siege",
+   "source": "the Synthesis (figs. 3-19, 3-20)",
+   "pattern": "Santa Ana",
+   "expected": [
+    "C",
+    "A",
+    "D"
+   ],
+   "regime": "D",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2008-06-20",
+   "case": "June 2008 lightning siege",
+   "source": "CEFA; Wallmann et al. 2010",
+   "pattern": "dry thunderstorms (trough offshore)",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "B",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2008-06-21",
+   "case": "June 2008 lightning siege",
+   "source": "CEFA; Wallmann et al. 2010",
+   "pattern": "dry thunderstorms (trough offshore)",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "E",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2008-11-13",
+   "case": "Tea Fire",
+   "source": "CEFA",
+   "pattern": "Sundowner",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "A",
+   "from": "2001-present record",
+   "match": false
+  },
+  {
+   "date": "2009-05-05",
+   "case": "Jesusita Fire",
+   "source": "CEFA",
+   "pattern": "Sundowner",
+   "expected": [
+    "E",
+    "B"
+   ],
+   "regime": "E",
+   "from": "2001-present record",
+   "match": true
+  },
+  {
+   "date": "2011-09-21",
+   "case": "Southern California dry lightning",
+   "source": "CEFA",
+   "pattern": "dry thunderstorms (cut-off low)",
+   "expected": [
+    "D",
+    "E"
+   ],
+   "regime": "E",
+   "from": "2001-present record",
+   "match": true
+  }
+ ],
+ "source4": {
+  "name": "Critical Fire Weather Patterns of the United States (NWS fire weather offices; NWCC compilation, 2008)",
+  "url": "https://gacc.nifc.gov/nwcc/content/products/fwx/publications/CRITICAL_FWX_PATTERNS_US.pdf"
+ },
+ "hawaii": {
+  "large_fire_days": 241,
+  "patterns": [
+   {
+    "key": "trades",
+    "name": "Strong trade winds (high pressure to the north)",
+    "rule": "Lihue or Hilo 850 hPa wind from 30\u2013120\u00b0 at \u2265 30 kt",
+    "days": 155,
+    "large_fire_days": 12,
+    "lift": 3.22
+   },
+   {
+    "key": "tc_south",
+    "name": "Tropical cyclone passing south of the islands",
+    "rule": "tropical storm or stronger, south of 19\u00b0 N, within 1,200 km of the chain (IBTrACS)",
+    "days": 109,
+    "large_fire_days": 12,
+    "lift": 2.23
+   },
+   {
+    "key": "trades_and_tc",
+    "name": "Both: strong trades with a tropical cyclone to the south",
+    "rule": "the August 2023 Maui setup",
+    "days": 9,
+    "large_fire_days": 4,
+    "lift": 7.75
+   },
+   {
+    "key": "kona",
+    "name": "Southwest frontal (Kona-type) wind",
+    "rule": "Lihue or Hilo 850 hPa wind from 180\u2013270\u00b0 at \u2265 20 kt",
+    "days": 386,
+    "large_fire_days": 3,
+    "lift": 0.51
+   }
+  ],
+  "aug_2023": {
+   "trades": true,
+   "tc_south": true,
+   "storm": "Dora"
+  }
+ },
+ "ridge_breakdown": {
+  "ONCC": {
+   "stage2_last_ridge_day": {
+    "lift": 1.18,
+    "days": 98,
+    "big_days": 24
+   },
+   "stage3_first_trough_day": {
+    "lift": 0.89,
+    "days": 99,
+    "big_days": 18
+   },
+   "ridge_persists": {
+    "lift": 1.28,
+    "days": 918,
+    "big_days": 275
+   }
+  },
+  "OSCC": {
+   "stage2_last_ridge_day": {
+    "lift": 0.99,
+    "days": 169,
+    "big_days": 25
+   },
+   "stage3_first_trough_day": {
+    "lift": 1.07,
+    "days": 169,
+    "big_days": 27
+   },
+   "ridge_persists": {
+    "lift": 1.08,
+    "days": 1466,
+    "big_days": 263
+   }
+  }
+ },
+ "nws_objective": [
+  {
+   "office": "Riverside",
+   "pattern": "Santa Ana",
+   "rule": "LAX\u2013TPH \u2264 -6.4 hPa (our elevated cutoff)",
+   "days": 1120,
+   "lift": 1.86
+  },
+  {
+   "office": "Riverside",
+   "pattern": "Santa Ana",
+   "rule": "LAX\u2013TPH \u2264 -8.6 hPa (our high cutoff)",
+   "days": 592,
+   "lift": 3.08
+  },
+  {
+   "office": "Riverside",
+   "pattern": "Santa Ana",
+   "rule": "LAX\u2013TPH \u2264 -10 hPa (Riverside: > 10 mb, potential)",
+   "days": 332,
+   "lift": 4.85
+  },
+  {
+   "office": "Riverside",
+   "pattern": "Santa Ana",
+   "rule": "LAX\u2013TPH \u2264 -12 hPa (Riverside: > 12 mb, very strong)",
+   "days": 116,
+   "lift": 7.81
+  },
+  {
+   "office": "Riverside",
+   "pattern": "Santa Ana",
+   "rule": "Vandenberg 850 hPa northerly (340\u2013020\u00b0) \u2265 50 kt",
+   "days": 0,
+   "lift": null
+  },
+  {
+   "office": "Fresno",
+   "pattern": "Sundowner",
+   "rule": "SMX\u2013SBA evening max \u2265 4 mb",
+   "days": 612,
+   "lift": 0.83
+  },
+  {
+   "office": "Fresno",
+   "pattern": "Sundowner",
+   "rule": "SMX\u2013SBA \u2265 4 mb and Vandenberg 850 hPa 320\u2013040\u00b0 \u2265 15 kt",
+   "days": 178,
+   "lift": 0.53
+  },
+  {
+   "office": "Redding",
+   "pattern": "North winds",
+   "rule": "Medford minus Sacramento, fire-day max \u2265 8.3 hPa (top 10%)",
+   "days": 463,
+   "lift": 1.26
+  },
+  {
+   "office": "Redding",
+   "pattern": "North winds",
+   "rule": "Medford minus Sacramento, fire-day max \u2265 9.9 hPa (top 5%)",
+   "days": 232,
+   "lift": 1.48
+  },
+  {
+   "office": "Redding",
+   "pattern": "North winds",
+   "rule": "Medford minus Sacramento, fire-day max \u2265 11.6 hPa (top 2%)",
+   "days": 92,
+   "lift": 2.7
+  },
+  {
+   "office": "Redding",
+   "pattern": "North winds",
+   "rule": "for comparison: our RDD\u2013MFR gradient, lowest 5%",
+   "days": 224,
+   "lift": 1.26
+  }
+ ],
+ "source5": {
+  "name": "Schroeder, M.J. et al. 1964. Synoptic weather types associated with critical fire weather. U.S. Weather Bureau and USDA Forest Service, Pacific Southwest Forest and Range Experiment Station (Ortel's Northern and Central California types, pp. 237-256; Southern California pp. 257-274).",
+  "url": "https://research.fs.usda.gov/download/treesearch/44220.pdf"
+ },
+ "schroeder_monthly": [
+  {
+   "type": "NC subtropical high aloft",
+   "corr": {
+    "A": 0.43,
+    "B": 0.78,
+    "C": 0.19,
+    "D": 0.05,
+    "E": -0.69,
+    "F": -0.51
+   },
+   "best": "B"
+  },
+  {
+   "type": "NC meridional ridge - southwest flow",
+   "corr": {
+    "A": 0.34,
+    "B": 0.76,
+    "C": 0.3,
+    "D": 0.11,
+    "E": -0.68,
+    "F": -0.52
+   },
+   "best": "B"
+  },
+  {
+   "type": "NC Pacific High post-frontal + Great Basin High",
+   "corr": {
+    "A": 0.51,
+    "B": 0.47,
+    "C": 0.39,
+    "D": 0.4,
+    "E": -0.7,
+    "F": -0.7
+   },
+   "best": "A"
+  },
+  {
+   "type": "SC subtropical high aloft",
+   "corr": {
+    "A": 0.57,
+    "B": 0.61,
+    "C": 0.23,
+    "D": 0.21,
+    "E": -0.69,
+    "F": -0.6
+   },
+   "best": "B"
+  },
+  {
+   "type": "SC Santa Ana",
+   "corr": {
+    "A": -0.65,
+    "B": -0.52,
+    "C": 0.69,
+    "D": 0.43,
+    "E": 0.38,
+    "F": -0.07
+   },
+   "best": "C"
+  }
+ ]
+}
