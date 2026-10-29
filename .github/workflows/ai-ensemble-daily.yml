@@ -54,7 +54,8 @@ jobs:
         id: c
         run: |
           pip install -q numpy requests
-          new=$(python scripts/ai_ensemble_fetch.py --check | tail -n 1)
+          python scripts/ai_ensemble_fetch.py --check | tee check.txt   # per-model lines stay in the log
+          new=$(tail -n 1 check.txt)
           site="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
           live=$(curl -fsS "$site/cycle.txt?t=$(date +%s)" 2>/dev/null | tr -d '[:space:]' || true)
           echo "sources: $new  site: ${live:-none}"
