@@ -2,6 +2,7 @@
 # Source of truth: FireAnalystToolkit scripts/templates/ai_ensemble_cloud/ (staged here by
 # scripts/ai_ensemble_cloud_stage.py); edit it there, not in this repo.
 #
+#   check : hourly -- is there a newer 00Z/12Z cycle all four models have than the site shows?
 #   build : refresh the CurrentYear NFDRS observations, fetch the newest runs of the four open
 #           ensembles, build the products and the viewer, archive the regime-box fields
 #   deploy: publish the viewer to GitHub Pages -- only from main, and only once the repo variable
@@ -10,13 +11,11 @@ name: AI ensemble daily
 
 on:
   schedule:
-    # 08:45 UTC = 01:45 PDT / 00:45 PST: all four 00Z runs are posted by ~08:00 UTC. GitHub
-    # often starts scheduled runs late; with a ~75 min run there is still room before 06:00 Pacific.
-    - cron: "45 8 * * *"
-    # Backup (added 2026-10-29 after GitHub dropped the first night's 08:45 run). When the 08:45
-    # run went, the cycles are already fetched and this one only rebuilds and redeploys.
-    - cron: "15 10 * * *"
-  workflow_dispatch:
+    # Hourly since 2026-10-29: the check job asks the four sources for the newest 00Z/12Z cycle they
+    # ALL have complete and builds only when that isn't what the site shows -- about twice a day,
+    # 00Z overnight and 12Z around midday Pacific. A dropped or late schedule is caught next hour.
+    - cron: "17 * * * *"
+  workflow_dispatch:      # always builds
   push:
     branches: [pipeline-test]
 
@@ -37,7 +36,43 @@ env:
   RUNS_CACHE_PREFIX: ai-ensemble-runs-
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      build: ${{ steps.c.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+            config
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Newest common cycle vs the site
+        id: c
+        run: |
+          pip install -q numpy requests
+          new=$(python scripts/ai_ensemble_fetch.py --check | tail -n 1)
+          site="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          live=$(curl -fsS "$site/cycle.txt?t=$(date +%s)" 2>/dev/null | tr -d '[:space:]' || true)
+          echo "sources: $new  site: ${live:-none}"
+          if [ "$GITHUB_EVENT_NAME" != "schedule" ]; then build=true
+          elif [ "$new" = "none" ] || [ "$new" = "$live" ]; then build=false
+          else build=true; fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "sources $new, site ${live:-none} -> build $build" >> "$GITHUB_STEP_SUMMARY"
+
+      # A public repo's schedule is switched off after 60 days without repository activity;
+      # re-enabling it every run keeps it on.
+      - name: Keep the schedule enabled
+        continue-on-error: true
+        run: gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/ai-ensemble-daily.yml/enable"
+
   build:
+    needs: check
+    if: needs.check.outputs.build == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
@@ -124,16 +159,17 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
+      # The cycle the site now shows, for the next hourly check ("partial" if a model missed it, so
+      # the next check tries again).
+      - name: Mark the cycle
+        run: |
+          cp data/ai_ensembles/runs/target_cycle.txt data/outputs/ai_ensembles/web/cycle.txt \
+              || echo partial > data/outputs/ai_ensembles/web/cycle.txt
+          cat data/outputs/ai_ensembles/web/cycle.txt
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: data/outputs/ai_ensembles/web
-
-      # A public repo's schedule is switched off after 60 days without repository activity;
-      # re-enabling it every run keeps it on.
-      - name: Keep the schedule enabled
-        if: always()
-        continue-on-error: true
-        run: gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/ai-ensemble-daily.yml/enable"
 
   deploy:
     needs: build

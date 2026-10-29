@@ -301,10 +301,14 @@ class Store:
 
 # ----------------------------------------------------------------------------- sources
 
+# Cycles the run looks at; ai_ensemble_fetch.run sets it from the settings' cycle_hours (2026-10-29: 00Z + 12Z).
+CYCLE_HOURS = (0, 6, 12, 18)
+
+
 def _candidate_cycles(now_utc, back_h=48):
     base = now_utc.replace(minute=0, second=0, microsecond=0)
     base -= dt.timedelta(hours=base.hour % 6)
-    return [base - dt.timedelta(hours=h) for h in range(0, back_h + 1, 6)]
+    return [c for c in (base - dt.timedelta(hours=h) for h in range(0, back_h + 1, 6)) if c.hour in CYCLE_HOURS]
 
 
 # Humidity / instability fields added 2026-10-11 (700 hPa dryness, surface RH, CAPE). Specific

@@ -119,7 +119,8 @@ def main():
     if cfg.get("lightning_lopez", {}).get("enabled", False):
         try:
             import ai_ensemble_lightning_lopez
-            f = ai_ensemble_lightning_lopez.fetch(cfg)
+            tgt = ai_ensemble_fetch.TARGET   # same cycle as the model runs (00Z or 12Z, 2026-10-29)
+            f = ai_ensemble_lightning_lopez.fetch(cfg, f"{tgt:%Y%m%d%H}" if tgt else None)
             ltg_note = f"; lightning formula {f.stem.rsplit('_', 1)[1]}z"
         except Exception as e:  # noqa: BLE001 -- the other products don't need it
             print(f"LIGHTNING FORMULA FAILED: {type(e).__name__}: {e}")

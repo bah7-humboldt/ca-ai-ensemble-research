@@ -70,6 +70,10 @@
     ]
   },
   "keep_cycles": 4,
+  "cycle_hours": [
+    0,
+    12
+  ],
   "models": {
     "aifs_ens": {
       "enabled": true,
@@ -580,5 +584,6 @@
     "b": "SBA",
     "_comment": "Sundowner gradient, Santa Maria minus Santa Barbara (DRI CEFA). Used by ai_ensemble_cefa_patterns.py (evening max); not a calibrated outlook row -- AUC 0.53 against Santa Barbara-area growth, 2001-2025. Its sign is the opposite of the offshore gradients, so it isn't in 'gradients' (those are scored by their minimum)."
   },
-  "_comment_keep_cycles": "Full runs kept per model in <data_dir>/runs/ (about 0.8 GB per day for all four). 4 since 2026-10-14 so the research viewer's run selector can show today plus the previous three daily runs."
+  "_comment_keep_cycles": "Full runs kept per model in <data_dir>/runs/ (about 0.8 GB per day for all four). 4 since 2026-10-14 so the research viewer's run selector can show today plus the previous three daily runs. Since 2026-10-29 it counts run dates: every cycle of the newest date plus the 00Z run of the 3 dates before it.",
+  "_comment_cycle_hours": "Cycles fetched (UTC hours), 2026-10-29 for the hourly cloud run: 00Z and 12Z. Every model is fetched at the newest of these that all enabled models have complete, so the viewer posts a 12Z update around midday Pacific and never mixes cycles."
 }

@@ -4,6 +4,12 @@
     python scripts/ai_ensemble_fetch.py --models aifs_ens gefs
     python scripts/ai_ensemble_fetch.py --refresh           # re-download even if the cycle's file exists
     python scripts/ai_ensemble_fetch.py --estimate          # print request/download counts, fetch nothing
+    python scripts/ai_ensemble_fetch.py --check             # print the newest cycle every model has, fetch nothing
+
+Since 2026-10-29 (hourly cloud run) every model is fetched at the newest cycle in cycle_hours (00Z,
+12Z) that ALL enabled models have complete, so the products never mix cycles; the cycle is written
+to <data_dir>/runs/target_cycle.txt once every model has it. Pruning keeps the newest run date's
+cycles plus the 00Z run of each of the keep_cycles - 1 dates before it (the viewer's run selector).
 
 Models run in parallel (different servers); AIGEFS is the slow one (NOMADS ~100 requests/min,
 ~30-60 min a run). See ai_ensemble_sources.py for what each source is.
@@ -25,6 +31,7 @@ import ai_ensemble_common as common
 import ai_ensemble_sources as ens_sources
 
 DATA = None   # set from settings in main() / run()
+TARGET = None  # the common cycle run() fetched (None: none common)
 _print_lock = threading.Lock()
 
 
@@ -107,17 +114,48 @@ def fields_for(name, cfg, src):
     return list(cfg["fields"]) + extra
 
 
-def prune(name, keep):
-    files = sorted(DATA.glob(f"{name}_??????????.nc"))
-    for old in files[:-keep]:
-        old.unlink(missing_ok=True)
+def prune(name, keep_days):
+    """Every cycle of the newest run date, the 00Z (else first) run of the keep_days - 1 dates before
+    it, nothing else -- cycles outside cycle_hours (e.g. an old 06Z) included."""
+    by_date = {}
+    for f in sorted(DATA.glob(f"{name}_??????????.nc")):
+        c = f.stem.rsplit("_", 1)[1]
+        if int(c[8:]) not in ens_sources.CYCLE_HOURS:
+            f.unlink(missing_ok=True)
+            continue
+        by_date.setdefault(c[:8], []).append(f)
+    for i, d in enumerate(sorted(by_date, reverse=True)):
+        keep = by_date[d] if i == 0 else by_date[d][:1] if i < keep_days else []
+        for f in by_date[d]:
+            if f not in keep:
+                f.unlink(missing_ok=True)
 
 
-def fetch_model(name, cfg, refresh, estimate, results, mem_limit=None):
+def common_cycle(cfg, names):
+    """The newest cycle every model in names has complete (None if one has none). Returns (cycle, {name: newest})."""
+    now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
+    newest = {}
+
+    def one(n):
+        try:
+            newest[n] = ens_sources.make_source(n).pick_cycle(now, cfg["max_lead_h"], log)
+        except Exception as e:  # noqa: BLE001
+            log(f"{n}: no complete cycle ({type(e).__name__}: {e})")
+    threads = [threading.Thread(target=one, args=(n,)) for n in names]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    return (min(newest.values()) if len(newest) == len(names) else None), newest
+
+
+def fetch_model(name, cfg, refresh, estimate, results, mem_limit=None, target=None):
     try:
         src = ens_sources.make_source(name)
         now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
-        cycle = src.pick_cycle(now, cfg["max_lead_h"], log)
+        cycle = src.pick_cycle(now, cfg["max_lead_h"], log)   # also picks the source's mirror
+        if target is not None and target < cycle:
+            cycle = target
         path = DATA / f"{name}_{cycle:%Y%m%d%H}.nc"
         steps = list(range(0, cfg["max_lead_h"] + 1, cfg["step_h"]))
         if path.exists() and not refresh and not estimate:
@@ -163,8 +201,17 @@ def main():
     ap.add_argument("--estimate", action="store_true")
     ap.add_argument("--max-lead", type=int, help="testing: stop at this lead (h)")
     ap.add_argument("--mem-limit", type=int, help="testing: first N members only")
+    ap.add_argument("--check", action="store_true", help="print the newest cycle all models have (YYYYMMDDHH, or none)")
     a = ap.parse_args()
     cfg = load_config()
+    if a.check:
+        ens_sources.CYCLE_HOURS = tuple(cfg.get("cycle_hours", ens_sources.CYCLE_HOURS))
+        names = a.models or [m for m, v in cfg["models"].items() if v["enabled"]]
+        cyc, newest = common_cycle(cfg, names)
+        for n, c in newest.items():
+            log(f"{n}: newest complete {c:%Y-%m-%d %HZ}")
+        print(f"{cyc:%Y%m%d%H}" if cyc else "none")
+        return {}
     return run(cfg, a.models, a.refresh, a.estimate, a.max_lead, a.mem_limit)
 
 
@@ -179,13 +226,27 @@ def run(cfg, models=None, refresh=False, estimate=False, max_lead=None, mem_limi
     if a.max_lead or a.mem_limit:
         DATA = common.Paths(cfg).data / "runs_test"
     names = a.models or [m for m, v in cfg["models"].items() if v["enabled"]]
+    global TARGET
+    ens_sources.CYCLE_HOURS = tuple(cfg.get("cycle_hours", ens_sources.CYCLE_HOURS))
+    for n in names:
+        prune(n, cfg["keep_cycles"])
+    # One cycle for all (2026-10-29); if a model has none at all, each falls back to its own newest.
+    TARGET, newest = common_cycle(cfg, names)
+    log(f"common cycle {TARGET:%Y-%m-%d %HZ}" if TARGET else "no common cycle -- each model's newest")
     results = {}
-    threads = [threading.Thread(target=fetch_model, args=(n, cfg, a.refresh, a.estimate, results, a.mem_limit)) for n in names]
+    threads = [threading.Thread(target=fetch_model, args=(n, cfg, a.refresh, a.estimate, results, a.mem_limit, TARGET))
+               for n in names]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
     log("summary: " + "; ".join(f"{n} {results.get(n, ('?',))[0]}" for n in names))
+    # What the hourly cloud check compares with the site: written only when every model has the cycle.
+    marker = DATA / "target_cycle.txt"
+    have_all = TARGET and all(results.get(n, ("",))[0] in ("ok", "cached") for n in names)
+    if not a.estimate:
+        DATA.mkdir(parents=True, exist_ok=True)
+        marker.write_text(f"{TARGET:%Y%m%d%H}\n" if have_all else "partial\n")
     return results
 
 
