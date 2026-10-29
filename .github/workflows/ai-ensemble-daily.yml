@@ -75,6 +75,8 @@ jobs:
     if: needs.check.outputs.build == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 300
+    outputs:
+      cycle: ${{ steps.mark.outputs.cycle }}
     steps:
       - uses: actions/checkout@v4
 
@@ -162,10 +164,12 @@ jobs:
       # The cycle the site now shows, for the next hourly check ("partial" if a model missed it, so
       # the next check tries again).
       - name: Mark the cycle
+        id: mark
         run: |
           cp data/ai_ensembles/runs/target_cycle.txt data/outputs/ai_ensembles/web/cycle.txt \
               || echo partial > data/outputs/ai_ensembles/web/cycle.txt
           cat data/outputs/ai_ensembles/web/cycle.txt
+          echo "cycle=$(tr -d '[:space:]' < data/outputs/ai_ensembles/web/cycle.txt)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -181,3 +185,30 @@ jobs:
     steps:
       - id: deploy
         uses: actions/deploy-pages@v4
+
+  # Teams card after every build (2026-10-29): "updated" once the site deployed, "failed" if the
+  # build or deploy failed. Needs the repo secret TEAMS_WEBHOOK_URL; without it the step just notes it.
+  notify:
+    needs: [check, build, deploy]
+    if: always() && needs.check.outputs.build == 'true' && needs.build.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+      - name: Post to Teams
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          if [ "${{ needs.build.result }}" = "success" ] && [ "${{ needs.deploy.result }}" = "success" ]; then
+            status=success
+          elif [ "${{ needs.build.result }}" = "success" ] && [ "${{ needs.deploy.result }}" = "skipped" ]; then
+            echo "built but not deployed (not main, or deploy switched off) -- no card"; exit 0
+          else
+            status=failure
+          fi
+          python3 scripts/ai_ensemble_teams_notify.py --status "$status" --cycle "${{ needs.build.outputs.cycle }}" \
+              --site "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" \
+              --run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+              --started "$(gh run view "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" --json createdAt --jq .createdAt 2>/dev/null)"
