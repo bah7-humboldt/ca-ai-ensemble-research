@@ -13,6 +13,9 @@ on:
     # 08:45 UTC = 01:45 PDT / 00:45 PST: all four 00Z runs are posted by ~08:00 UTC. GitHub
     # often starts scheduled runs late; with a ~75 min run there is still room before 06:00 Pacific.
     - cron: "45 8 * * *"
+    # Backup (added 2026-10-29 after GitHub dropped the first night's 08:45 run). When the 08:45
+    # run went, the cycles are already fetched and this one only rebuilds and redeploys.
+    - cron: "15 10 * * *"
   workflow_dispatch:
   push:
     branches: [pipeline-test]
