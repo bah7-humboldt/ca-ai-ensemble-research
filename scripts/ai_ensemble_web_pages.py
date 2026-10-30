@@ -563,6 +563,26 @@ def footprint_map(out_png, past_days, other_days, gdf_growth, psas, cells, fp_ps
     plt.close(fig)
 
 
+def validation_card(row, target):
+    """Out-of-sample results for a row (row["validation"] from ai_ensemble_calibrated.validation)."""
+    V = row.get("validation") or []
+    if not V:
+        return ""
+    trs = "".join(f'<tr><td>{esc(v["test"])}</td><td class="n">×{v["lift"]:.{2 if v["verdict"] != "holds" and f"{v['lift']:.1f}" == "2.0" else 1}f}</td><td class="n">×{v["lo90"]:.1f}–{v["hi90"]:.1f}</td>'
+                  f'<td><span class="chip{" yes" if v["verdict"] == "holds" else ""}">{esc(v["verdict"])}</span></td></tr>' for v in V)
+    rec = (" The fire-records test runs back to 1992 on the hourly ERA5 reanalysis (for an airport or gradient, ERA5 at the station's"
+           " grid cell) and counts the days whose newly found fires reached the size." if any(v["test"].startswith("Fire records") for v in V)
+           else "")
+    return f"""<div class="card"><h2>How well it holds up out of sample</h2>
+<p class="sub">The ×{row["elevated"]["lift_adj"]:.1f} above is in-sample: the cutoff was picked on the same years it's scored on. Here each
+season-year is held out in turn, the cutoff refit on the other years, and the held-out year's {target} past it counted against what its
+dates would expect.</p>
+<div class="scroll"><table><tr><th>Test</th><th class="n">× usual odds, out of sample</th><th class="n">90% range</th><th>Verdict</th></tr>
+{trs}</table></div>
+<p class="note"><b>holds</b>: ×2 or more, 90% range above ×1. <b>weaker</b>: range above ×1, short of ×2. <b>noise</b>: can't be told from
+usual odds.{rec} More: <a href="../guide/outlook.html">Reading the calibrated outlook</a>.</p></div>"""
+
+
 def predictor_page(row, cfg, cal, scan, derived, growth, data, region_lines, psas=None, cells=None, out_dir=None):
     ent, key = row["entity"], row["key"]
     g, season = ent.split("-")[0], ("offshore season" if ent.endswith("offshore") else "fire season")
@@ -719,6 +739,7 @@ same time of year</b>. The cutoff is the most inclusive one that reaches ×2 wit
 <p class="note">The share of {season} days at each value: all days (dashed) and days with ≥{THRESH:,} acres of growth (orange).
 The further the orange curve sits toward the cutoff side, the more useful the measure.</p></div>
 
+{validation_card(row, f"days with ≥{THRESH:,} acres of growth")}
 <div class="card"><h2>The biggest growth days and what this measure showed</h2>
 <p class="sub">{esc(area)}, {season}, 2001–present. Acres are only those inside the footprint; fire names and acres from satellite
 detections inside mapped perimeters.
@@ -924,6 +945,7 @@ InFORM) carry most of the history.</p></div>
 <p>On a typical day, {base:.1%} of days are {t:,}+ acre fire days in {esc(area)}. Past the elevated cutoff they're about
 <b>{el['lift_adj']:.1f} times as likely as usual for the date</b>.</p>
 <h3>Lift vs cutoff</h3>{curve}</div>
+{validation_card(row, f"{t:,}+ acre fire days")}
 <div class="card"><h2>The biggest fire days and what this measure showed</h2>
 <ul>{''.join(stories) or '<li>None in the record.</li>'}</ul>
 <div class="scroll"><table><tr><th>Day</th><th class="n">Acres</th><th>Fires</th><th>Island</th><th class="n">ERC pct</th><th class="n">Value</th><th>Past cutoff?</th></tr>
@@ -1450,7 +1472,8 @@ anomaly) with a cutoff learned from history: on days past that cutoff, Californi
 about twice as likely as usual for the time of year (the "elevated" cutoff). Some rows also have a "high" cutoff, about four times as
 likely. Click a row's <b>About</b> link for its stations, history and the fires behind it.</p>
 <p>Rows are grouped by region and season: <b>offshore season</b> (Northern California Sep–Nov, Southern California Oct–Jan) or the
-general <b>fire season</b>. Only rows with real skill (AUC at least 0.65) are shown, so the rows change with the season.</p></div>
+general <b>fire season</b>. Only rows with real skill (AUC at least 0.65) that also hold up on years they weren't fit to (below)
+are shown, so the rows change with the season.</p></div>
 <div class="card"><h2>What the colors mean</h2>
 {swatch_legend(SEQ, ['<5%', '5–20%', '20–40%', '40–60%', '60–80%', '≥80%'])}
 <p>Each box is the share of all ensemble members (the four models weighted equally) past the cutoff on that fire day. Hover a box for
@@ -1492,6 +1515,24 @@ weather + fuels view for these rows shows the odds of a <b>new large (1,000+ acr
 <li>History: in Northern California, a day with 500+ strikes on critically dry fuels has run several times to over twenty times the usual
 odds of a new large lightning fire, depending on the area; on moister fuels much less.</li>
 <li>The lightning history is licensed (Vaisala NLDN) and is only shown as derived counts, rates and maps.</li></ul></div>
+<div class="card"><h2>How well does this hold up?</h2>
+<p>The "× usual odds" on each row is <b>in-sample</b>: the cutoff was picked on the same 2001–2025 days it's scored on, and the best of
+~100 cutoffs on a few dozen big days always looks a little better than it will forecast. So every row was also tested <b>out of sample</b>
+(October 2026): each season-year is held out in turn, the cutoff refit on the other years exactly as the calibration does, and the
+held-out year's big days past that cutoff counted against what its dates would expect.</p>
+<ul><li><b>holds</b>: still ×2 or more, with the 90% range above ×1. <b>weaker</b>: better than usual odds, short of ×2.
+<b>noise</b>: can't be told from usual odds. The row's label shows the out-of-sample lift and marks any row that's only "weaker";
+a row whose own growth days come out "noise" is left off the outlook.</li>
+<li>California: about 7 in 10 calibrated measures hold or come out weaker, and the in-sample ×2 mostly survives (median out of sample
+×1.8–2.0). The strongest: the footprint humidity anomalies in the Santa Ana season (Central Coast ×3–5), the Sacramento and Southern
+California airport humidities, and the SFO–WMC, LAX–TPH and LAX–DAG gradients.</li>
+<li>A second test reaches back to <b>1992</b> on the fire records (FPA FOD and InFORM: the final size of the fires found each day) using
+the hourly ERA5 reanalysis. Rows that hold on both the satellite growth days and the 1992-on records are the most trustworthy; each
+row's About page shows both.</li>
+<li>Hawaii's record is thinner. Of the measures tried, Maui Nui wind and Hawaii Island wind and humidity hold back to 1992; Kauai
+humidity, the 850 hPa east wind and the north–south trade gradient didn't, and were taken off.</li>
+<li>Taking the hourly maximum or minimum instead of the 00/12 UTC values the models carry helps only a little (better a bit more often than not);
+gusts and topsoil moisture add little over the measures already here.</li></ul></div>
 <div class="card"><h2>The detail chart and the cutoff slider</h2>
 <p>Below the grid, the chart shows each model's share by day for the selected row. Drag the <b>cutoff</b> to see how the forecast changes
 with a stricter or looser threshold. The buttons jump back to the calibrated or "high" cutoff. A model that stays high at the "high"

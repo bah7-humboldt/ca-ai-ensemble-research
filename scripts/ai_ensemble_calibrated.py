@@ -76,6 +76,50 @@ def load():
     return cal, reg, rstats, skill
 
 
+# Out-of-sample results (ai_ensemble_validate.py, 2026-10-29/30) for the outlook rows and predictor pages
+_VAL = {}
+
+
+def _val_table(name):
+    if name not in _VAL:
+        p = CAL / "validation" / name
+        _VAL[name] = pd.read_csv(p) if p.exists() else pd.DataFrame()
+    return _VAL[name]
+
+
+def _era5_twin(key):
+    """A station measure's name in the hourly-archive validation (the reverse of _alias)."""
+    key = re.sub(r"_rhmin6$", "_era5_rhmin", key)
+    return re.sub(r"^([A-Z]{3}-[A-Z]{3})_min6$", r"\1_era5", key)
+
+
+def validation(entity, key, thresh):
+    """[{test, lift, lo90, hi90, verdict}] for an outlook row, the headline test first: California's
+    satellite growth days (what the row forecasts), then the 1992-on fire records through the measure's
+    ERA5 twin; Hawaii's archive runs, 1992-on records first (the longest), else the station-history run.
+    verdict: holds (x2 or more, 90% range above x1), weaker (range above x1), noise."""
+    if entity == "HI":
+        tests = [("validation_era5arch_hi1992.csv", "Fire records, 1992–2025", key),
+                 ("validation_era5arch_hi2001.csv", "Growth days and fire records, 2001–2025", key)]
+    else:
+        tests = [("validation_calibration.csv", "Satellite growth days, 2001–2025", key),
+                 ("validation_era5arch_ca_rec1992.csv", "Fire records, 1992–2025 (ERA5 version)", _era5_twin(key))]
+    out = []
+    for f, label, k in tests + ([("validation_calibration.csv", "Growth days and fire records, 2001–2025", key)]
+                                if entity == "HI" else []):
+        if entity == "HI" and out and f == "validation_calibration.csv":
+            break
+        d = _val_table(f)
+        if d.empty:
+            continue
+        r = d[(d.entity == entity) & (d.predictor == k) & (d.threshold_acres == int(thresh))]
+        if len(r):
+            r = r.iloc[0]
+            out.append({"test": label, "lift": round(float(r.oos_lift), 2), "lo90": round(float(r.oos_lo90), 2),
+                        "hi90": round(float(r.oos_hi90), 2), "verdict": r.verdict})
+    return out
+
+
 def fire_day_of(valid_utc):
     return [((v.replace(tzinfo=dt.timezone.utc).astimezone(PACIFIC)) - dt.timedelta(hours=6)).date()
             for v in valid_utc]
@@ -399,6 +443,16 @@ LOCAL = {
 # growth days are long-running fires under hot ridges, which pulls its AUC down, but past -10 hPa
 # big days are ~5x as likely as usual, the strongest signal there.
 SIGNATURE = {"ONCC": ["SFO-WMC_min6"], "OSCC": ["LAX-TPH_min6", "LAX-DAG_min6"]}
+# Out-of-sample rule (analyst 2026-10-30): a row whose headline validation -- its own satellite growth
+# days, each season-year held out (validation()) -- comes out noise stays off the outlook. Taken off then:
+# Redding RH in the Northern California offshore season (x0.5; Sacramento RH, already on, holds) and the
+# Reno 500 mb height in its summer season (x1.5, range from x0.8), plus Oakland's 850 mb temperature,
+# which would have stepped into Redding's place (x1.1).
+
+
+def validated(entity, key, thresh=THRESH):
+    v = validation(entity, key, thresh)
+    return not v or v[0]["verdict"] != "noise"
 
 
 from ai_ensemble_history_era5 import DTS_CAPE, DTS_DD700
@@ -467,7 +521,8 @@ def choose_predictors(cal, skill, months, per_entity=3, min_auc=0.65, min_auc_fi
         floor = min_auc if g.endswith("offshore") else min_auc_fire_season   # summer weather alone is weaker
 
         def usable(p):
-            return (is_local(region, p) and not p.endswith("_min") and p in sug and "elevated" in sug[p]
+            return (is_local(region, p) and validated(g, p)
+                    and not p.endswith("_min") and p in sug and "elevated" in sug[p]
                     and "850_dd_" not in p and not re.search(r"_(t|z|dd)_(00z|12z)$", p)
                     and not p.endswith("_rhmin") and not p.endswith("_windmax") and not p.endswith("_blh_max")
                     # Hot-Dry-Windy: history only until the models' bias against ERA5 is measured
@@ -599,7 +654,13 @@ def hawaii_predictor(run, name, days, lats, lons):
     return None
 
 
-HI_SIGNATURE = ("HI25N-HI19N_max6",)
+# Hawaii outlook rows (analyst 2026-10-30), from the out-of-sample validation rather than in-sample AUC:
+# measures at the main threshold that held -- or, for the Lihue-Kahului gradient, came out "weaker" --
+# with each year held out, on the 1992-on fire records (local ERA5 archive) and the 2001-on growth days
+# alike. Dropped then: Kauai (HI01) RH (x0.0-0.7), the 850 hPa east wind (x0.6-1.3) and the 25N-19N
+# trade gradient (x1.2 from 1992; the 2026-10-15 signature row, there for Aug 8, 2023) -- all noise.
+# Hot-Dry-Windy (HI03/HI04) holds too but stays history-only until the bias check (HI_HISTORY_ONLY).
+HI_VALIDATED = ("HI03_wind_max", "HI04_wind_max", "HI04_rh_min_anom", "PHLI-PHOG_max6")
 
 
 def hawaii_family(key):
@@ -612,11 +673,10 @@ def hawaii_family(key):
     return key.split("_")[0]
 
 
-def choose_hawaii(cal, months, per_entity=4, floor=0.62):
-    """Hawaii rows: the season covers most forecast days -> its top measures at >= main_threshold acres
-    (AUC >= floor), one per station / gradient / island field, skipping history-only measures (the
-    trade inversion and 850 hPa dryness, which the models don't carry, and Hot-Dry-Windy until the bias
-    check)."""
+def choose_hawaii(cal, months, floor=0.60):
+    """Hawaii rows: the season covers most forecast days -> the validated measures (HI_VALIDATED) at
+    main_threshold acres that the calibration gives an 'elevated' cutoff, in that order, skipping
+    history-only ones and any whose AUC has fallen below floor after a recalibration."""
     H = cal.get("hawaii")
     if not H or np.mean([m in H["seasons"]["HI"] for m in months]) < 0.5:
         return []
@@ -626,29 +686,16 @@ def choose_hawaii(cal, months, per_entity=4, floor=0.62):
     if not p.exists():
         return []
     sk = pd.read_csv(p)
-    sk = sk[sk.threshold_acres == int(t)].sort_values("auc", ascending=False)
-    picks, fams = [], set()
-    for r in sk.itertuples():
-        if len(picks) >= per_entity or r.auc < floor:
-            break
-        k = r.predictor
-        if k not in sug or "elevated" not in sug[k] or HI_HISTORY_ONLY.search(k) or hawaii_family(k) in fams:
+    auc = sk[sk.threshold_acres == int(t)].set_index("predictor").auc
+    picks = []
+    for k in HI_VALIDATED:
+        if k not in sug or "elevated" not in sug[k] or HI_HISTORY_ONLY.search(k) or auc.get(k, 0) < floor:
             continue
         s_ = dict(sug[k])
         fid = s_.get("footprint")
         s_["base"] = H["base_rates"].get(f"HI:{fid}_{t}" if fid else f"HI_{t}")
         s_["footprint_hi"] = fid
-        picks.append(("HI", k, s_, r.auc))
-        fams.add(hawaii_family(k))
-    # signature row (2026-10-15), like the mainland's offshore gradients: the ERA5 trade-wind gradient is
-    # only AUC ~0.60 year-round, but ~x2 seasonally adjusted and at its 98.8th percentile on Aug 8, 2023 (Maui)
-    for k in HI_SIGNATURE:
-        if k in sug and "elevated" in sug[k] and hawaii_family(k) not in fams:
-            s_ = dict(sug[k])
-            s_["base"] = H["base_rates"].get(f"HI_{t}")
-            s_["footprint_hi"] = None
-            picks.append(("HI", k, s_, float(sk.loc[sk.predictor == k, "auc"].max())))
-            fams.add(hawaii_family(k))
+        picks.append(("HI", k, s_, float(auc[k])))
     return picks
 
 

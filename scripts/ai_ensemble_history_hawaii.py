@@ -38,6 +38,7 @@ import datetime as dt
 import shutil
 import sys
 import time
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -347,6 +348,97 @@ def derive_era5(cfg, log=print):
     return res
 
 
+def derive_era5_archive(cfg, start_year=1990, end_year=None, log=print):
+    """The local Hawaii ERA5 archive (era5_archive.py --settings config/era5_archive_hawaii_settings.json,
+    hourly, 1990 on; analyst 2026-10-29: fetch Hawaii and validate there) -> history/hawaii/
+    era5arch_hi_daily.csv, for ai_ensemble_validate.py --hawaii-pred:
+      the same measures as derive_era5 (00/12 UTC, the models' times; a cross-check of the CDS download)
+      <name>_h    the same over every hour of the fire day (pressure levels: every 3 h), which catches the
+                  short downslope peaks the synoptic hours miss
+      <FP>_gust_max_h      fire-day max of the island-mean 10 m gust (i10fg, m/s)
+      <FP>_gustcell_max_h  fire-day max of the gustiest island cell: lee-slope winds that an island mean dilutes
+      <FP>_wind100_max_h   fire-day max of the island-mean 100 m wind (m/s)
+      <FP>_swvl1           fire-day mean topsoil moisture (m3/m3): drought below the fuels"""
+    import geopandas as gpd
+    import shapely
+    import era5_archive as A
+    from ai_ensemble_history_era5 import es
+    settings = common.ROOT / "config" / "era5_archive_hawaii_settings.json"
+    fps = gpd.read_file(fetch_footprints(cfg)).to_crs(4326)
+    end_year = end_year or dt.date.today().year
+    rows, masks = [], None
+    J = I = None
+    for y in range(start_year, end_year + 1):
+        # fire day D (06-06 HST) = UTC D 16:00 .. D+1 15:00
+        t0, t1 = f"{y}-01-01T16:00", f"{y + 1}-01-01T15:00"
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            s = A.open(["t2m", "d2m", "u10", "v10", "u100", "v100", "msl", "i10fg", "swvl1"], t0, t1, settings=settings).load()
+            p = A.open(["u", "v", "t", "q"], t0, t1, levels=[850, 700], settings=settings).load()
+        if not np.isfinite(s.t2m.values[::24]).any():
+            continue
+        lat, lon = s.latitude.values, s.longitude.values
+        if masks is None:
+            yy, xx = np.meshgrid(lat, lon, indexing="ij")
+            masks = {r.PSANationa: shapely.contains_xy(r.geometry.buffer(0.15), xx, yy) for r in fps.itertuples()}
+            J = lambda la: int(np.abs(lat - la).argmin())
+            I = lambda lo: int(np.abs(lon - lo).argmin())
+        times = pd.DatetimeIndex(s.time.values)
+        syn = np.isin(times.hour, (0, 12))
+        fd = fire_day(s.time.values)
+        t2, d2 = s.t2m.values - 273.15, s.d2m.values - 273.15
+        rh = np.clip(100 * es(d2) / es(t2), 0, 100)
+        wind = np.hypot(s.u10.values, s.v10.values)
+        w100 = np.hypot(s.u100.values, s.v100.values)
+        hdw = np.clip(es(t2) - es(d2), 0, None) * wind
+        msl = s.msl.values / 100.0
+        gust, sw = s.i10fg.values, s.swvl1.values
+        fr = pd.DataFrame({"HI25N-HI19N": msl[:, J(25), I(-157)] - msl[:, J(19), I(-157)],
+                           "HI30N-HI19N": msl[:, J(30), I(-157)] - msl[:, J(19), I(-157)]}, index=fd)
+        daily = pd.DataFrame(index=pd.DatetimeIndex(sorted(set(fd))))
+        for k in ("HI25N-HI19N", "HI30N-HI19N"):
+            daily[f"{k}_max6"] = fr[syn].groupby(level=0)[k].max()
+            daily[f"{k}_max_h"] = fr.groupby(level=0)[k].max()
+        pt = pd.DatetimeIndex(p.time.values)
+        pfd, psyn = fire_day(p.time.values), np.isin(pt.hour, (0, 12))
+        u8, v8 = p.u.sel(level=850).values, p.v.sel(level=850).values
+        t7, q7 = p.t.sel(level=700).values - 273.15, p.q.sel(level=700).values
+        e7 = q7 * 700 / (0.622 + 0.378 * q7)
+        ln = np.log(np.clip(e7, 1e-4, None) / 6.112)
+        dd7 = t7 - 243.5 * ln / (17.67 - ln)
+        box = (lat[:, None] >= 20) & (lat[:, None] <= 24) & (lon[None, :] >= -158) & (lon[None, :] <= -153)
+        tw = pd.DataFrame({"HI_850spd": np.hypot(u8, v8)[:, box].mean(axis=1), "HI_850east": (-u8)[:, box].mean(axis=1),
+                           "HI_700dd": dd7[:, box].mean(axis=1)}, index=pfd)
+        for k in ("HI_850spd", "HI_850east", "HI_700dd"):
+            daily[f"{k}_max"] = tw[psyn].groupby(level=0)[k].max()
+            daily[f"{k}_max_h"] = tw.groupby(level=0)[k].max()
+        for fid, m in masks.items():
+            if not m.any():
+                continue
+            ext = pd.DataFrame({"hdw": hdw[:, m].mean(axis=1), "rh": rh[:, m].mean(axis=1), "wind": wind[:, m].mean(axis=1),
+                                "gust": gust[:, m].mean(axis=1), "gustcell": gust[:, m].max(axis=1),
+                                "w100": w100[:, m].mean(axis=1), "sw": sw[:, m].mean(axis=1)}, index=fd)
+            g12, gh = ext[syn].groupby(level=0), ext.groupby(level=0)
+            daily[f"{fid}_vpd_wind"] = g12.hdw.max()
+            daily[f"{fid}_rh_min"] = g12.rh.min()
+            daily[f"{fid}_wind_max"] = g12.wind.max()
+            daily[f"{fid}_vpd_wind_h"] = gh.hdw.max()
+            daily[f"{fid}_rh_min_h"] = gh.rh.min()
+            daily[f"{fid}_wind_max_h"] = gh.wind.max()
+            daily[f"{fid}_gust_max_h"] = gh.gust.max()
+            daily[f"{fid}_gustcell_max_h"] = gh.gustcell.max()
+            daily[f"{fid}_wind100_max_h"] = gh.w100.max()
+            daily[f"{fid}_swvl1"] = gh.sw.mean()
+        daily = daily[daily.index.year == y]
+        rows.append(daily)
+        log(f"  ERA5 archive Hawaii {y}: {len(daily)} fire days")
+    res = pd.concat(rows).sort_index()
+    res.index.name = "fire_day"
+    res.to_csv(out_dir(cfg) / "era5arch_hi_daily.csv", float_format="%.3f")
+    log(f"  era5arch_hi_daily.csv: {len(res)} fire days, {res.shape[1]} columns")
+    return res
+
+
 # ----------------------------------------------------------------------------- NFDRS
 
 def build_nfdrs(cfg):
@@ -404,8 +496,12 @@ def main():
     ap.add_argument("--obs-only", action="store_true")
     ap.add_argument("--era5", action="store_true", help="derive the ERA5 summary only")
     ap.add_argument("--nfdrs", action="store_true", help="island ERC/BI history + forecast roster only")
+    ap.add_argument("--era5-archive", action="store_true", help="derive era5arch_hi_daily.csv from the local Hawaii ERA5 archive only")
     a = ap.parse_args()
     cfg = common.load_settings()
+    if a.era5_archive:
+        derive_era5_archive(cfg)
+        return 0
     if a.era5:
         derive_era5(cfg)
         return 0

@@ -435,6 +435,8 @@ def run(cfg):
                 for k in ("elevated", "high"):
                     if row[k]:
                         row[k] = {**row[k], "cutoff": round(row[k]["cutoff"] * scale, 2)}
+            # out-of-sample results (2026-10-30): chip on the outlook, card on the predictor page
+            row["validation"] = [] if g.endswith("-lightning") else C.validation(g, p, row.get("thresh", C.THRESH))
             row["joint"] = sug.get("joint")
             row["starts"] = sug.get("starts")
             refs = C.REF_CUTOFFS.get(p)

@@ -115,6 +115,7 @@
   .gtag { display: inline-block; padding: 0 7px; border-radius: 9px; font-size: 11px; font-weight: 600; line-height: 18px; color: #fff; letter-spacing: .02em; }
   .gt-ONCC { background: #1f6fb2; } .gt-OSCC { background: #a8481a; } .gt-HI { background: #2a7347; }
   .mtag { display: inline-block; padding: 0 6px; border-radius: 8px; font-size: 10px; line-height: 15px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); margin-left: 4px; }
+  .vtag { display: inline-block; padding: 0 5px; border-radius: 8px; font-size: 10px; line-height: 14px; border: 1px dashed var(--text-dim); color: var(--text-dim); margin-left: 3px; }
   .chartBox { position: relative; }
   svg.chart { width: 100%; display: block; overflow: visible; }
   svg.chart text { fill: var(--text-dim); font-size: 11px; }
@@ -891,6 +892,13 @@
   function pooledP(row, k, cut) { const ps = []; for (const m of models) { const mm = row.members[m.key]; if (!mm) continue;
       const p = frac(mm[k] || [], cut, row.tail); if (isFinite(p)) ps.push(p); } return ps.length ? ps.reduce((a, b) => a + b) / ps.length : NaN; }
   function seqColor(p) { if (!isFinite(p)) return "transparent"; const i = p < .05 ? 0 : p < .2 ? 1 : p < .4 ? 2 : p < .6 ? 3 : p < .8 ? 4 : 5; return css("--seq-" + i); }
+  // out-of-sample result (ai_ensemble_validate.py, 2026-10-30): each season-year held out in turn
+  function valNote(row) { const v = (row.validation || [])[0]; if (!v) return "";
+    // a "weaker" ×1.97 would read as ×2.0: two decimals there
+    const lift = v.verdict !== "holds" && v.lift.toFixed(1) === "2.0" ? v.lift.toFixed(2) : v.lift.toFixed(1);
+    return ` · out of sample ×${lift}` + (v.verdict === "holds" ? "" : `<span class="vtag" title="Held out a year at a time, this measure `
+      + (v.verdict === "weaker" ? "still beat the usual odds but stayed short of ×2" : "wasn't distinguishable from the usual odds")
+      + ` (${v.test}): read it as supporting evidence">${v.verdict}</span>`); }
   function drawOutlook() {
     if (!O.length) { $("outlookCard").style.display = "none"; return; }
     const tbl = $("og"); let h = "<tr><th></th>" + days.map((d, i) => `<th>${relDay(d) || fmtDay(d).split(",")[0].split(" ")[0]}<br>${d.slice(5).replace("-", "/")}</th>`).join("") + "</tr>";
@@ -911,7 +919,7 @@
         + (row.page ? `<a class="about" href="${row.page}" title="${isLtg(row) ? "Lightning history, strike maps and the fires behind this measure" : "Stations, history and the fires behind this measure"}">About ›</a>` : "")
         + `<span class="ent">${entityName(row.entity)} · ` + (isLtg(row)
           ? `×${row.elevated.lift_adj.toFixed(1)} usual odds of a ≥${row.ltg.lightning_day}-strike day · AUC ${row.auc.toFixed(2)}`
-          : `×${row.elevated.lift_adj.toFixed(1)} usual odds · AUC ${row.auc.toFixed(2)}`) + `</span></td>`;
+          : `×${row.elevated.lift_adj.toFixed(1)} usual odds · AUC ${row.auc.toFixed(2)}` + valNote(row)) + `</span></td>`;
       days.forEach((_, k) => {
         if (ogState.mode === "odds") { const o = pooledOdds(row, k), dark = isFinite(o) && o >= 3;
           const pers = (row.fuels && row.fuels.persisted_from && days[k] >= row.fuels.persisted_from) || ltgFar(row, k);
