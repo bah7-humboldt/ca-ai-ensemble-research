@@ -354,10 +354,14 @@ class EcmwfEns:
 
     def pick_cycle(self, now_utc, max_lead, log):
         for base in self.MIRRORS:
-            for c in _candidate_cycles(now_utc):
-                if self.http.exists(base + self._path(c, max_lead) + ".index"):
-                    self.base = base
-                    return c
+            try:
+                for c in _candidate_cycles(now_utc):
+                    if self.http.exists(base + self._path(c, max_lead) + ".index"):
+                        self.base = base
+                        return c
+            except Exception as e:  # noqa: BLE001 -- a mirror erroring (S3 503s, 2026-10-30) isn't the end
+                log(f"  {self.name}: {base} failing ({type(e).__name__}: {e}); trying the next mirror")
+                continue
             log(f"  {self.name}: no complete cycle on {base}")
         raise RuntimeError(f"{self.name}: no cycle reaching {max_lead} h in the last 48 h")
 
