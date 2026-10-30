@@ -415,6 +415,7 @@ def run(cfg):
         masks = C.region_masks(cfg, lats, lons)
         for g, p, sug, a in C.choose_predictors(cal, skill, [d.month for d in dates]):
             el, hi = sug["elevated"], sug.get("high")
+            scale = 1.0
             row = {"entity": g, "key": p, "auc": round(float(a), 3), "tail": sug["tail"],
                    "elevated": el, "high": hi, "base": C.base_rate(cal, g, sug), "days": {}, "members": {}}
             fp = sug.get("footprint")
@@ -428,6 +429,12 @@ def run(cfg):
                 row["thresh"] = int(sug.get("thresh", 300))
                 row["footprint"] = ({"id": fh, "label": hf[fh]["label"], "psas": [fh]} if fh in hf else
                                     {"id": "HI", "label": "Hawaii (all islands)", "psas": sorted(hf)})
+                # wind in mph, pressure in mb (2026-10-29): cutoffs and members scaled from the stored kt / m/s
+                import ai_ensemble_web_pages
+                row["units"], scale = ai_ensemble_web_pages.hawaii_units(p)
+                for k in ("elevated", "high"):
+                    if row[k]:
+                        row[k] = {**row[k], "cutoff": round(row[k]["cutoff"] * scale, 2)}
             row["joint"] = sug.get("joint")
             row["starts"] = sug.get("starts")
             refs = C.REF_CUTOFFS.get(p)
@@ -463,7 +470,7 @@ def run(cfg):
                 x = C.model_predictor(runs[name], p, dates, climo, masks, lats, lons)
                 if x is None:
                     continue
-                row["members"][name] = [[None if not np.isfinite(v) else round(float(v), 1) for v in col]
+                row["members"][name] = [[None if not np.isfinite(v) else round(float(v) * scale, 1) for v in col]
                                         for col in x.T]       # per day, per member
             if not row["members"]:
                 print(f"  outlook: {g} {p} -- no model in this run carries it yet, row left out")

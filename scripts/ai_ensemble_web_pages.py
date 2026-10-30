@@ -751,7 +751,30 @@ HI_STATIONS = {"PHLI": "Lihue, Kauai", "PHNL": "Honolulu, Oahu", "PHJR": "Kalael
                "PHNY": "Lanai", "PHMK": "Molokai", "PHKO": "Kona, Hawaii Island", "PHTO": "Hilo, Hawaii Island"}
 
 
+# Display units on the Hawaii rows (analyst, 2026-10-29): wind in mph, pressure in mb (1 hPa = 1 mb). The
+# calibration keeps the stored units -- kt from the soundings, m/s from ERA5 / the ensembles -- and
+# ai_ensemble_web_export scales each Hawaii row's cutoffs and members by the factor here.
+KT_MPH, MS_MPH = 1.15078, 2.23694
+
+
+def hawaii_units(key):
+    """(display units, factor from the stored units) for a Hawaii calibration measure."""
+    if re.search(r"_(min|max)6$", key):
+        return "mb", 1.0
+    if "_spd_" in key:
+        return "mph", KT_MPH
+    if key.startswith("HI_850") or re.search(r"_wind_max(_anom)?$", key):
+        return "mph", MS_MPH
+    if "vpd_wind" in key:
+        return "mb·mph", MS_MPH
+    return ("%" if "rh" in key else "°C"), 1.0
+
+
 def describe_hawaii(key, cfg):
+    return {**_describe_hawaii(key, cfg), "units": hawaii_units(key)[0]}
+
+
+def _describe_hawaii(key, cfg):
     st = cfg.get("hawaii", {}).get("stations", {})
     stn = lambda c: [(c, tuple(st[c]), HI_STATIONS.get(c, c))] if c in st else []
     m = re.match(r"^(HI\d\dN)-(HI\d\dN)_max6$", key)
@@ -782,18 +805,18 @@ def describe_hawaii(key, cfg):
         c, lev, kind, tag = m.groups()
         when = "2 a.m." if tag == "12z" else "2 p.m."
         if kind == "spd":
-            return dict(title=f"{c} {lev} hPa trade wind ({when})", units="kt", arrow=None, region=None, stations=stn(c),
-                        what=f"Wind speed at {lev} hPa (about 5,000 ft) in the {HI_STATIONS.get(c, c)} weather-balloon sounding at {when} HST.",
+            return dict(title=f"{c} {lev} mb trade wind ({when})", units="kt", arrow=None, region=None, stations=stn(c),
+                        what=f"Wind speed at {lev} mb (about 5,000 ft) in the {HI_STATIONS.get(c, c)} weather-balloon sounding at {when} HST.",
                         why="The trades' strength just under the inversion: strong winds here mix down as gusty surface winds on lee slopes.")
-        return dict(title=f"{c} {lev} hPa dryness ({when})", units="°C", arrow=None, region=None, stations=stn(c),
-                    what=f"Dewpoint depression (temperature minus dewpoint) at {lev} hPa in the {HI_STATIONS.get(c, c)} sounding at {when} HST.",
+        return dict(title=f"{c} {lev} mb dryness ({when})", units="°C", arrow=None, region=None, stations=stn(c),
+                    what=f"Dewpoint depression (temperature minus dewpoint) at {lev} mb in the {HI_STATIONS.get(c, c)} sounding at {when} HST.",
                     why="Dry air above the trade inversion can be mixed down on the leeward slopes, dropping humidity sharply.")
     m = re.match(r"^HI_(850spd|850east|700dd)_max$", key)
     if m:
         k = m.group(1)
-        t = {"850spd": ("Trade-wind speed upstream (850 hPa)", "m/s", "the 850 hPa wind speed"),
-             "850east": ("Easterly trade wind upstream (850 hPa)", "m/s", "the easterly part of the 850 hPa wind"),
-             "700dd": ("700 hPa dryness upstream", "°C", "the 700 hPa dewpoint depression")}[k]
+        t = {"850spd": ("Trade-wind speed upstream (850 mb)", "m/s", "the 850 mb wind speed"),
+             "850east": ("Easterly trade wind upstream (850 mb)", "m/s", "the easterly part of the 850 mb wind"),
+             "700dd": ("700 mb dryness upstream", "°C", "the 700 mb dewpoint depression")}[k]
         return dict(title=t[0], units=t[1], arrow=None, region=None, stations=[],
                     what=(f"The fire day's highest value of {t[2]} averaged over the trade-wind box northeast of the islands "
                           "(20–24°N, 158–153°W), from ERA5 for the history and from each ensemble for the forecast."),
@@ -803,7 +826,7 @@ def describe_hawaii(key, cfg):
         fid, kind, anom = m.groups()
         isl = HI_ISLANDS.get(fid, fid)
         title, units, what, why = {
-            "vpd_wind": ("Hot-Dry-Windy", "hPa·m/s", "The highest island-average 2 m vapour-pressure deficit times 10 m wind of the fire day (ERA5 / ensembles at 2 a.m. and 2 p.m.).",
+            "vpd_wind": ("Hot-Dry-Windy", "mb·mph", "The highest island-average 2 m vapour-pressure deficit times 10 m wind of the fire day (ERA5 / ensembles at 2 a.m. and 2 p.m.).",
                          "Heat, dryness and wind at once, over the whole island rather than one airport."),
             "rh_min": ("area minimum humidity", "%", "The lowest island-average 2 m relative humidity of the fire day.",
                        "Island-wide afternoon dryness: low humidity everywhere cures the grass and slows overnight recovery."),
@@ -820,6 +843,7 @@ def hawaii_page(row, cfg, cal, data, paths):
     key = row["key"]
     H = cal["hawaii"]
     info = describe_hawaii(key, cfg)
+    f = hawaii_units(key)[1]          # history in stored units -> mph (the row is already scaled)
     t = int(row.get("thresh", H.get("main_threshold", 300)))
     op = "≤" if row["tail"] == "low" else "≥"
     el, hi = row["elevated"], row.get("high")
@@ -834,14 +858,14 @@ def hawaii_page(row, cfg, cal, data, paths):
         sc = pd.read_csv(scan_p)
         sc = sc[(sc.predictor == key) & (sc.threshold_acres == t) & (sc.days >= 25)]
         if len(sc):
-            curve = svg_line_chart([("lift", "var(--accent)", False, list(zip(sc.cutoff, sc.lift_adj)))],
+            curve = svg_line_chart([("lift", "var(--accent)", False, list(zip(sc.cutoff * f, sc.lift_adj)))],
                                    f"cutoff ({info['units']}; counts days {op} cutoff)", "× usual odds for the date",
                                    hlines=[(1, "usual odds"), (2, "elevated ×2"), (4, "high ×4")],
                                    marks=[(el["cutoff"], el["lift_adj"], f"elevated {op} {el['cutoff']:.1f}")], xfmt="{:.1f}", yfmt="{:.1f}")
     occ_p = paths.history / "hawaii" / "fire_occurrence" / "hi_fire_occurrence.csv"
     if der_p.exists() and occ_p.exists():
         der = pd.read_csv(der_p, index_col=0, parse_dates=True)
-        x = der[key] if key in der else pd.Series(dtype=float)
+        x = (der[key] if key in der else pd.Series(dtype=float)) * f
         occ = pd.read_csv(occ_p, usecols=["FireDiscoveryDate", "TotalAcres", "FDRA_Name", "FireName"], parse_dates=["FireDiscoveryDate"])
         occ = occ[occ.FDRA_Name.astype(str).str.startswith("HI") & (occ.TotalAcres >= t)]
         if fid:
@@ -1761,7 +1785,8 @@ pattern but doesn't separate large-growth days near Santa Barbara in this record
 def hawaii_card(H):
     if not H:
         return ""
-    rows = "".join(f"<tr><td>{esc(p_['name'])}</td><td class='note'>{esc(p_['rule'])}</td><td class='n'>{p_['days']:,}</td>"
+    mph = lambda r: re.sub(r"(\d+(?:\.\d+)?) kt", lambda m: f"{float(m.group(1)) * KT_MPH:.0f} mph", r).replace(" hPa", " mb")
+    rows = "".join(f"<tr><td>{esc(p_['name'])}</td><td class='note'>{esc(mph(p_['rule']))}</td><td class='n'>{p_['days']:,}</td>"
                    f"<td class='n'>{p_['large_fire_days']:,}</td><td class='n'>{'–' if p_['lift'] is None else '×%.1f' % p_['lift']}</td></tr>"
                    for p_ in H["patterns"])
     a = H.get("aug_2023") or {}

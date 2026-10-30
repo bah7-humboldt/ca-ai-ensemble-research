@@ -855,10 +855,10 @@
     const HI_ISL = { HI01: "Kauai", HI02: "Oahu", HI03: "Maui Nui", HI04: "Hawaii Island" };
     if ((m = key.match(/^(HI\d\dN)-(HI\d\dN)_max6$/))) return `trade-wind gradient ${m[1].slice(2)}–${m[2].slice(2)} (fire-day max)`;
     if ((m = key.match(/^(PH[A-Z]{2})-(PH[A-Z]{2})_(min|max)6$/))) return `${m[1]}–${m[2]} gradient (fire-day ${m[3]})`;
-    if ((m = key.match(/^(PH[A-Z]{2})_rhmin6$/))) return `${m[1]} minimum humidity (%)`;
-    if ((m = key.match(/^(PH[A-Z]{2})850_spd_(12z|00z)$/))) return `${m[1]} 850 hPa trade wind (${m[2] === "12z" ? "night" : "afternoon"}, kt)`;
-    if ((m = key.match(/^(PH[A-Z]{2})700_dd_(12z|00z)$/))) return `${m[1]} 700 hPa dryness (${m[2] === "12z" ? "night" : "afternoon"})`;
-    if ((m = key.match(/^HI_(850spd|850east|700dd)_max$/))) return { "850spd": "trade-wind speed at 850 hPa (m/s)", "850east": "easterly trade wind at 850 hPa (m/s)", "700dd": "700 hPa dryness upstream" }[m[1]];
+    if ((m = key.match(/^(PH[A-Z]{2})_rhmin6$/))) return `${m[1]} minimum humidity`;
+    if ((m = key.match(/^(PH[A-Z]{2})850_spd_(12z|00z)$/))) return `${m[1]} 850 mb trade wind (${m[2] === "12z" ? "night" : "afternoon"})`;
+    if ((m = key.match(/^(PH[A-Z]{2})700_dd_(12z|00z)$/))) return `${m[1]} 700 mb dryness (${m[2] === "12z" ? "night" : "afternoon"})`;
+    if ((m = key.match(/^HI_(850spd|850east|700dd)_max$/))) return { "850spd": "trade-wind speed at 850 mb", "850east": "easterly trade wind at 850 mb", "700dd": "700 mb dryness upstream" }[m[1]];
     if ((m = key.match(/^(HI0\d)_(vpd_wind|rh_min|wind_max)(_anom)?$/))) return `${HI_ISL[m[1]]} ${{ vpd_wind: "hot-dry-windy", rh_min: "area min humidity", wind_max: "10 m wind" }[m[2]]}${m[3] ? " anomaly" : ""}`;
     if ((m = key.match(/^([a-z_]+)_capep90$/))) return `${m[1].replace("_", " ")} thunderstorm setup (CAPE)`;
     if ((m = key.match(/^([a-z_]+)_ltgformula$/))) return `${m[1].replace("_", " ")} lightning formula (expected strikes)`;
@@ -885,6 +885,7 @@
     M2: { short: "Method 2 · ECMWF formula", long: "Method 2: ECMWF lightning formula (Lopez 2016, IFS ENS)", tip: "Method 2: ECMWF's lightning formula (Lopez 2016) on IFS ENS convective fields, calibrated to NLDN strikes. IFS ENS only, 14 fire days; faded past day 7 (low skill, unverified)" } };
   const ltgFar = (row, k) => isLtg(row) && ltgMethod(row.key) === "M2" && k >= 7;   // 2026-10-23: formula out to day 14
   const fmtCut = (row, v) => isLtg(row) ? Math.round(v).toString() : v.toFixed(1);
+  // Hawaii rows carry their own display units (row.units: mph / mb, 2026-10-29); the rest go by key.
   const units = key => /_min6$|_max6$|_era5$/.test(key) ? "hPa" : /850_spd_/.test(key) ? "kt" : /^HI_850/.test(key) || /_wind_max/.test(key) ? "m/s" : /offshore_kt/.test(key) ? "kt" : /rhmin|rh_min/.test(key) ? "%"
     : /z500|500_z/.test(key) ? "m" : /vpd_wind/.test(key) ? "hPa·m/s" : /dry_tstorm/.test(key) ? "share" : /capep90/.test(key) ? "J/kg" : /ltgformula/.test(key) ? "strikes" : "°C";
   function pooledP(row, k, cut) { const ps = []; for (const m of models) { const mm = row.members[m.key]; if (!mm) continue;
@@ -905,7 +906,7 @@
         h += `<tr><th class="grp" colspan="${days.length + 1}">Thunderstorms and new lightning fires · fit to 25 years of lightning strikes · `
           + ms.map(m => METHOD[m].long).join(" + ") + `</th></tr>`; }
       prevLtg = isLtg(row);
-      h += `<tr class="${r === ogState.row ? "sel" : ""}" data-r="${r}"><td class="lab">${niceName(row.key)} ${op} ${fmtCut(row, row.elevated.cutoff)}`
+      h += `<tr class="${r === ogState.row ? "sel" : ""}" data-r="${r}"><td class="lab">${niceName(row.key)} ${op} ${fmtCut(row, row.elevated.cutoff)}${row.units ? " " + row.units : ""}`
         + (isLtg(row) ? `<span class="mtag" title="${METHOD[ltgMethod(row.key)].tip}">${METHOD[ltgMethod(row.key)].short}</span>` : "")
         + (row.page ? `<a class="about" href="${row.page}" title="${isLtg(row) ? "Lightning history, strike maps and the fires behind this measure" : "Stations, history and the fires behind this measure"}">About ›</a>` : "")
         + `<span class="ent">${entityName(row.entity)} · ` + (isLtg(row)
@@ -946,7 +947,7 @@
           + "7-day FEMS forecast, the last day's fuels carried forward." : "Fuels forecast not available for this run.")
       : "";
     // detail chart
-    const row = O[ogState.row]; const u = units(row.key);
+    const row = O[ogState.row]; const u = row.units || units(row.key);
     let lo = Infinity, hi = -Infinity; for (const m of models) for (const col of (row.members[m.key] || [])) for (const v of col) if (v !== null) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
     if (ogState.cut === null) ogState.cut = row.elevated.cutoff;
     const step = (hi - lo) / 200 || 0.1;
@@ -979,7 +980,7 @@
           el("polyline", { points: pts.map(p => sx(p[0]) + "," + sy(p[1])).join(" "), fill: "none", stroke: m.color, "stroke-width": 2, "stroke-dasharray": m.dash ? "6 4" : "" }, g);
           for (const p of pts) el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 3.2, fill: m.color, stroke: css("--surface"), "stroke-width": 1.5 }, g); } },
       hover: xv => { const k = Math.round(xv) - 1; if (k < 0 || k >= days.length) return null;
-        let t = `<b>${fmtDay(days[k])}</b> · ${row.tail === "low" ? "≤" : "≥"} ${cut.toFixed(1)} ${units(row.key)}<table>`;
+        let t = `<b>${fmtDay(days[k])}</b> · ${row.tail === "low" ? "≤" : "≥"} ${cut.toFixed(1)} ${row.units || units(row.key)}<table>`;
         for (const m of models) { const mm = row.members[m.key]; if (!mm) continue; const col = mm[k] || []; const p = frac(col, cut, row.tail);
           const o = oddsFor(row, col, k);
           t += `<tr><td><span class="sw${m.dash ? " dash" : ""}" style="border-color:${m.color};display:inline-block;width:12px"></span> ${m.label}</td><td class="v">${isFinite(p) ? Math.round(100 * p) + "%" : "–"}</td><td class="v">${isFinite(o) ? "×" + o.toFixed(1) : ""}</td><td class="v">med ${isFinite(quant(col, .5)) ? quant(col, .5).toFixed(1) : "–"}</td></tr>`; }
