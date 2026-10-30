@@ -11,10 +11,11 @@ name: AI ensemble daily
 
 on:
   schedule:
-    # Hourly since 2026-10-29: the check job asks the four sources for the newest 00Z/12Z cycle they
-    # ALL have complete and builds only when that isn't what the site shows -- about twice a day,
-    # 00Z overnight and 12Z around midday Pacific. A dropped or late schedule is caught next hour.
-    - cron: "17 * * * *"
+    # The check job asks the four sources for the newest 00Z/12Z cycle they ALL have complete and
+    # builds only when that isn't what the site shows -- about twice a day, 00Z overnight and 12Z
+    # around midday Pacific. Every 15 min since 2026-10-30 (hourly before): GitHub fired only 3 of
+    # ~15 hourly checks overnight 10-29/30, each 30-40 min late, so more tries per hour. Off :00/:30.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:      # always builds
   push:
     branches: [pipeline-test]
