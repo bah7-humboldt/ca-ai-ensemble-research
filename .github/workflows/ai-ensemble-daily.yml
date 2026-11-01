@@ -16,7 +16,15 @@ on:
     # around midday Pacific. Every 15 min since 2026-10-30 (hourly before): GitHub fired only 3 of
     # ~15 hourly checks overnight 10-29/30, each 30-40 min late, so more tries per hour. Off :00/:30.
     - cron: "7,22,37,52 * * * *"
-  workflow_dispatch:      # always builds
+  # A manual dispatch always builds. check_only=true makes it behave like a scheduled check -- used by
+  # the toolkit PC's backup trigger (scripts/ai_ensemble_cloud_trigger.py, every 30 min, 2026-11-01),
+  # since GitHub fired only 9 of ~170 scheduled checks 10-31..11-01 and cycles posted 6-14 h late.
+  workflow_dispatch:
+    inputs:
+      check_only:
+        description: "Build only if the sources have a newer cycle than the site"
+        type: boolean
+        default: false
   push:
     branches: [pipeline-test]
 
@@ -60,7 +68,7 @@ jobs:
           site="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
           live=$(curl -fsS "$site/cycle.txt?t=$(date +%s)" 2>/dev/null | tr -d '[:space:]' || true)
           echo "sources: $new  site: ${live:-none}"
-          if [ "$GITHUB_EVENT_NAME" != "schedule" ]; then build=true
+          if [ "$GITHUB_EVENT_NAME" != "schedule" ] && [ "${{ inputs.check_only }}" != "true" ]; then build=true
           elif [ "$new" = "none" ] || [ "$new" = "$live" ]; then build=false
           else build=true; fi
           echo "build=$build" >> "$GITHUB_OUTPUT"
